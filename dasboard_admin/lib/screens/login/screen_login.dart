@@ -1,0 +1,158 @@
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
+import 'package:dasboard_admin/screens/dashboard/screen_dashboard.dart';
+import 'package:dasboard_admin/ulti/theme/theme.dart';
+import 'package:dasboard_admin/widgets/form_custom_widget/input_field.dart';
+import 'package:dasboard_admin/widgets/form_custom_widget/primary_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final GlobalKey _formKey = GlobalKey<FormState>();
+  TextEditingController txtName = TextEditingController();
+  TextEditingController txtPass = TextEditingController();
+
+  bool passwordVisible = false;
+  void togglePassword() {
+    setState(() {
+      passwordVisible = !passwordVisible;
+    });
+  }
+
+  @override
+  void dispose() {
+    txtName.dispose();
+    txtPass.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24.0, 40.0, 24.0, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 40,
+                  ),
+                  Text(
+                    'Login to your\naccount ADMIN',
+                    style: heading2.copyWith(color: textBlack),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Image.asset(
+                    'assets/images/accent.png',
+                    width: 99,
+                    height: 4,
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 70,
+              ),
+              Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    InputField(
+                      hintText: 'Email',
+                      suffixIcon: const SizedBox(),
+                      prefexIcon: const Icon(Icons.alternate_email_sharp),
+                      controller: txtName,
+                    ),
+                    const SizedBox(
+                      height: 32,
+                    ),
+                    InputField(
+                      hintText: 'Password',
+                      controller: txtPass,
+                      prefexIcon: const Icon(Icons.key),
+                      obscureText: !passwordVisible,
+                      suffixIcon: IconButton(
+                        color: textGrey,
+                        splashRadius: 1,
+                        icon: Icon(passwordVisible
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined),
+                        onPressed: togglePassword,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              const SizedBox(
+                height: 32,
+              ),
+              CustomPrimaryButton(
+                buttonColor: primaryBlue,
+                textValue: 'Login',
+                textColor: Colors.white,
+                onPressed: () async {
+                  try {
+                    // ignore: unused_local_variable
+                    UserCredential userCredential = await FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: txtName.text, password: txtPass.text);
+                    // ignore: use_build_context_synchronously
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const ScreenDashboard()),
+                    );
+                  } on FirebaseException catch (e) {
+                    if (e.code == 'user-not-found') {
+                      CherryToast(
+                        icon: Icons.cancel,
+                        themeColor: Colors.red,
+                        title: const Text('Login Messege'),
+                        displayTitle: true,
+                        description:
+                            const Text('User not Found for that email'),
+                        toastPosition: Position.top,
+                        animationDuration: const Duration(milliseconds: 1000),
+                        autoDismiss: false,
+                      ).show(context);
+                    } else if (e.code == 'wrong-password') {
+                      // ignore: avoid_print
+
+                      CherryToast(
+                        icon: Icons.cancel,
+                        themeColor: Colors.red,
+                        title: const Text('Login Messege'),
+                        displayTitle: true,
+                        description: const Text('Please retry enter password'),
+                        toastPosition: Position.top,
+                        animationDuration: const Duration(milliseconds: 1000),
+                        autoDismiss: false,
+                      ).show(context);
+                    }
+                  }
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
