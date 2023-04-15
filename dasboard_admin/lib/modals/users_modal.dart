@@ -7,6 +7,7 @@ class User {
   bool? Status;
   // ignore: non_constant_identifier_names
   int? ActiveAt, CreateAt;
+  String? Id;
   User(
       // ignore: non_constant_identifier_names
       {this.Address,
@@ -27,10 +28,13 @@ class User {
       // ignore: non_constant_identifier_names
       this.ActiveAt,
       // ignore: non_constant_identifier_names
+      this.Id,
+      // ignore: non_constant_identifier_names
       this.CreateAt});
 
   Map<String, dynamic> toJson() {
     return {
+      'Id': Id,
       'Address': Address,
       'Avatar': Avatar,
       'Name': Name,
@@ -46,6 +50,7 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> map) {
     return User(
+      Id: map['Id'],
       Address: map['Address'],
       Avatar: map['Avatar'],
       Name: map['Name'],
@@ -84,6 +89,14 @@ class UserSnapshot {
 
   static Future<DocumentReference> themMoi(User sv) async {
     return FirebaseFirestore.instance.collection("Users").add(sv.toJson());
+  }
+
+  static Future<void> themMoiAutoId(User sv) async {
+    CollectionReference usersRef =
+        FirebaseFirestore.instance.collection('Users');
+    DocumentReference newDocRef = usersRef.doc();
+    sv.Id = newDocRef.id;
+    await newDocRef.set(sv.toJson());
   }
 
   static Stream<List<UserSnapshot>> dsUserTuFirebase() {

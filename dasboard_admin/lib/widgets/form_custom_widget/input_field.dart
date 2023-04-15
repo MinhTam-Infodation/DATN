@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class InputField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
-  final Widget suffixIcon;
+  final Widget? suffixIcon;
   final Widget? prefexIcon;
   final TextEditingController controller;
 
@@ -13,16 +13,17 @@ class InputField extends StatelessWidget {
     this.prefexIcon,
     required this.hintText,
     this.obscureText = false,
-    required this.suffixIcon,
+    this.suffixIcon,
     required this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 55,
       decoration: BoxDecoration(
         color: textWhiteGrey,
-        borderRadius: BorderRadius.circular(14.0),
+        borderRadius: BorderRadius.circular(6.0),
       ),
       child: TextFormField(
         controller: controller,

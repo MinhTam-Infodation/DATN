@@ -1,5 +1,6 @@
 import 'package:dasboard_admin/connect/firebase_connection.dart';
 import 'package:dasboard_admin/screens/login/screen_login.dart';
+import 'package:dasboard_admin/screens/panigator/main_panigator_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         connectingMessage: "In Progress",
         builder: (context) {
           return const MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: "GetX Firebase App",
             home: LoginScreen(),
           );
