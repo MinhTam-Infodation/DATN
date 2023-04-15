@@ -1,11 +1,14 @@
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
+import 'package:dasboard_admin/controllers/login_controller.dart';
 import 'package:dasboard_admin/screens/dashboard/screen_dashboard.dart';
+import 'package:dasboard_admin/screens/panigator/main_panigator_page.dart';
 import 'package:dasboard_admin/ulti/theme/theme.dart';
 import 'package:dasboard_admin/widgets/form_custom_widget/input_field.dart';
 import 'package:dasboard_admin/widgets/form_custom_widget/primary_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -35,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final cu = Get.put(AuthController());
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
@@ -110,14 +114,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   try {
                     // ignore: unused_local_variable
-                    UserCredential userCredential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: txtName.text, password: txtPass.text);
+                    cu.login(txtName.text, txtPass.text);
                     // ignore: use_build_context_synchronously
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const ScreenDashboard()),
+                          builder: (context) =>
+                              const MainScreenContainPanigator()),
                     );
                   } on FirebaseException catch (e) {
                     if (e.code == 'user-not-found') {

@@ -14,6 +14,8 @@ Color yellowLight = const Color(0xFFFFF7DF);
 Color blueLight = const Color(0xFFDEF7FF);
 Color labelColor = const Color(0xFF485465);
 Color red = const Color(0xFFEB5757);
+Color blueChill = const Color.fromRGBO(21, 152, 149, 1);
+Color fountainBlue = const Color.fromRGBO(87, 197, 182, 1);
 
 TextStyle textBold = GoogleFonts.openSans()
     .copyWith(fontWeight: FontWeight.bold, fontSize: 24, color: purple1);
@@ -36,3 +38,21 @@ TextStyle textSemiBold = GoogleFonts.openSans()
 
 TextStyle label = GoogleFonts.openSans()
     .copyWith(fontWeight: FontWeight.w400, fontSize: 11, color: labelColor);
+
+TextStyle headerUser = GoogleFonts.poppins()
+    .copyWith(fontWeight: FontWeight.w600, fontSize: 18, color: purple1);
+
+TextStyle titleHeader = GoogleFonts.poppins()
+    .copyWith(fontWeight: FontWeight.w400, fontSize: 16, color: purple1);
+
+TextStyle cartName = GoogleFonts.poppins()
+    .copyWith(fontWeight: FontWeight.w600, fontSize: 16, color: purple1);
+
+TextStyle cartEmail = GoogleFonts.poppins()
+    .copyWith(fontWeight: FontWeight.w400, fontSize: 14, color: purple1);
+
+TextStyle cartTag = GoogleFonts.poppins()
+    .copyWith(fontWeight: FontWeight.w600, fontSize: 12, color: bgColor);
+
+TextStyle textMonster = GoogleFonts.ubuntu()
+    .copyWith(fontWeight: FontWeight.w700, fontSize: 25, color: Colors.black);
