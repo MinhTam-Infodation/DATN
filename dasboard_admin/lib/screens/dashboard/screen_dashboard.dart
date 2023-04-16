@@ -1,3 +1,4 @@
+import 'package:dasboard_admin/controllers/ticket_controller.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/screens/manager_ticket/screen_ticket_overview.dart';
 import 'package:dasboard_admin/screens/manager_user/screen_user_overview.dart';
@@ -32,6 +33,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
     //final cu = Get.find<TotalController>(tag: "dsuser");
     // ignore: unused_local_variable
     final cu = Get.put(TotalController());
+    final ti = Get.put(TicketController());
 
     Size size = MediaQuery.of(context).size;
     return SafeArea(
@@ -125,19 +127,25 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                         ),
                         Row(
                           children: [
-                            GestureDetector(
-                              onTap: () =>
-                                  {Get.to(() => const TicketOverviewScreen())},
-                              child: CardCustom(
-                                width: size.width / 2 - 23,
-                                height: 88.9,
-                                mLeft: 0,
-                                mRight: 3,
-                                child: ListTileCustom(
-                                  bgColor: yellowLight,
-                                  pathIcon: "starts.svg",
-                                  title: "TICKET",
-                                  subTitle: "3",
+                            GetBuilder<TicketController>(
+                              init: TicketController(),
+                              builder: (s) => GestureDetector(
+                                onTap: () => {
+                                  Get.to(() => const TicketOverviewScreen())
+                                },
+                                child: CardCustom(
+                                  width: size.width / 2 - 23,
+                                  height: 88.9,
+                                  mLeft: 0,
+                                  mRight: 3,
+                                  child: ListTileCustom(
+                                    bgColor: yellowLight,
+                                    pathIcon: "starts.svg",
+                                    title: "TICKET",
+                                    subTitle: s
+                                        .countMyDocuments(ti.ticketList)
+                                        .toString(),
+                                  ),
                                 ),
                               ),
                             ),

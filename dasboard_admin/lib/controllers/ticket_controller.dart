@@ -27,6 +27,10 @@ class TicketController extends GetxController {
   Future<void> deleteTicket(TicketSnapshot ticketSnapshot) {
     return ticketSnapshot.xoa();
   }
+
+  int countMyDocuments(RxList<TicketSnapshot> documents) {
+    return documents.length;
+  }
 }
 
 //* Example

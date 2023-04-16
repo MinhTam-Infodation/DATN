@@ -41,7 +41,7 @@ class CartItemUser extends StatelessWidget {
             },
             backgroundColor: bgColor,
             foregroundColor: Colors.black,
-            icon: Icons.delete,
+            icon: Icons.edit,
             label: 'Edit',
           ),
         ],
