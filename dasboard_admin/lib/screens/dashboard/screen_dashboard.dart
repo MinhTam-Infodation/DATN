@@ -127,9 +127,8 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                         ),
                         Row(
                           children: [
-                            GetBuilder<TicketController>(
-                              init: TicketController(),
-                              builder: (s) => GestureDetector(
+                            Obx(
+                              () => GestureDetector(
                                 onTap: () => {
                                   Get.to(() => const TicketOverviewScreen())
                                 },
@@ -142,7 +141,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                     bgColor: yellowLight,
                                     pathIcon: "starts.svg",
                                     title: "TICKET",
-                                    subTitle: s
+                                    subTitle: ti
                                         .countMyDocuments(ti.ticketList)
                                         .toString(),
                                   ),

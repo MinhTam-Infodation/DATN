@@ -10,11 +10,9 @@ import 'package:get/get.dart';
 
 // ignore: must_be_immutable
 class CartItemUser extends StatelessWidget {
-  CartItemUser({
-    super.key,
-    required this.user,
-  });
+  CartItemUser({super.key, required this.user, required this.parentContext});
   User user;
+  BuildContext parentContext;
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +51,8 @@ class CartItemUser extends StatelessWidget {
         children: [
           SlidableAction(
             onPressed: (context) => _dialogBuilder(
-                context, "Delete", "Are you sure you want to delete?", () {
+                parentContext, "Delete", "Are you sure you want to delete?",
+                () {
               cu.deleteUser(user.Id!);
             }),
             backgroundColor: bgColor,

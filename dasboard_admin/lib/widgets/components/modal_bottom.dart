@@ -2,6 +2,9 @@
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -153,9 +156,17 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                           width: 2.0,
                         ),
                       ),
-                      child: _imageChange
-                          ? Image.file(File(_xImage!.path))
-                          : Image.network(widget.user.Avatar!),
+                      child: ClipOval(
+                        child: _imageChange
+                            ? Image.file(
+                                File(_xImage!.path),
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                widget.user.Avatar!,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
                     ),
                     Positioned(
                         left: 105,
@@ -314,22 +325,7 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                         // ignore: avoid_print
                         print(convertInputDateTimetoNumber(txtActiveDate.text));
                         // ignore: unused_local_variable
-                        User user = User(
-                            Address: txtAddress.text,
-                            Avatar:
-                                "https://firebasestorage.googleapis.com/v0/b/datn-c5a0a.appspot.com/o/images%2Fwallhaven-jxwlpw.png?alt=media&token=a82ec64c-0ef7-4eef-b2a5-90a26a2457cd",
-                            Name: txtName.text,
-                            Email: txtEmail.text,
-                            PackageType: widget.user.PackageType,
-                            Phone: txtPhone.text,
-                            Password: widget.user.Password,
-                            Status: false,
-                            ActiveAt: convertInputDateTimetoNumber(
-                                txtActiveDate.text),
-                            Id: widget.user.Id,
-                            CreateAt: convertInputDateTimetoNumber(
-                                txtCreateDate.text));
-                        controller.updateUser(widget.user.Id!, user);
+                        _updateUser(context);
                         Navigator.pop(context);
                       },
                       child: const Text("Helllo")),
@@ -353,6 +349,35 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
       });
     }
   }
+
+  _updateUser(BuildContext context) async {
+    final cu = Get.put(TotalController());
+    User user = User(
+        Address: txtAddress.text,
+        Avatar: widget.user.Avatar,
+        Name: txtName.text,
+        Email: txtEmail.text,
+        PackageType: widget.user.PackageType,
+        Phone: txtPhone.text,
+        Password: widget.user.Password,
+        Status: false,
+        ActiveAt: convertInputDateTimetoNumber(txtActiveDate.text),
+        Id: widget.user.Id,
+        CreateAt: convertInputDateTimetoNumber(txtCreateDate.text));
+    if (_imageChange) {
+      FirebaseStorage _storage = FirebaseStorage.instance;
+      Reference reference =
+          _storage.ref().child("images").child("anh_${widget.user.Id}");
+
+      UploadTask uploadTask = await _uploadTask(reference, _xImage!);
+      uploadTask.whenComplete(() async {
+        user.Avatar = await reference.getDownloadURL();
+        cu.updateUser(widget.user.Id!, user);
+      });
+    } else {
+      cu.updateUser(widget.user.Id!, user);
+    }
+  }
 }
 
 convertInputDateTimetoNumber(String tiem) {
@@ -361,4 +386,17 @@ convertInputDateTimetoNumber(String tiem) {
       DateTime.parse(activeDate); // chuyển đổi thành đối tượng DateTime
   int timestamp = dateTime.millisecondsSinceEpoch; // chuyển đổi thành số
   return timestamp;
+}
+
+Future<UploadTask> _uploadTask(Reference reference, XFile xImage) async {
+  final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': xImage.path});
+  UploadTask uploadTask;
+  if (kIsWeb) {
+    uploadTask = reference.putData(await xImage.readAsBytes(), metadata);
+  } else {
+    uploadTask = reference.putFile(File(xImage.path), metadata);
+  }
+  return Future.value(uploadTask);
 }
