@@ -80,8 +80,10 @@ class _UserOverviewScreenState extends State<UserOverviewScreen> {
                           () {
                             return ListView.separated(
                               physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) =>
-                                  CartItemUser(user: cu.users[index].user!),
+                              itemBuilder: (context, index) => CartItemUser(
+                                user: cu.users[index].user!,
+                                parentContext: context,
+                              ),
                               // ignore: invalid_use_of_protected_member
                               itemCount: cu.users.value.length,
                               padding: const EdgeInsets.only(bottom: 50 + 16),

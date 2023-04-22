@@ -9,6 +9,24 @@ class ModalBottomAddUser extends StatefulWidget {
 }
 
 class _ModalBottomAddUserState extends State<ModalBottomAddUser> {
+  late TextEditingController txtName;
+  late TextEditingController txtAddress;
+  late TextEditingController txtEmail;
+  late TextEditingController txtPhone;
+  late TextEditingController txtActiveDate;
+  late TextEditingController txtCreateDate;
+
+  @override
+  void initState() {
+    super.initState();
+    txtName = TextEditingController();
+    txtAddress = TextEditingController();
+    txtEmail = TextEditingController();
+    txtPhone = TextEditingController();
+    txtActiveDate = TextEditingController();
+    txtCreateDate = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,6 +70,16 @@ class _ModalBottomAddUserState extends State<ModalBottomAddUser> {
                       weight: 900,
                     ))
               ],
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            TextFormField(
+              controller: txtName,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Username',
+              ),
             ),
           ],
         ),
