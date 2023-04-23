@@ -31,15 +31,27 @@ TextStyle textNormalKanit = GoogleFonts.kanit().copyWith(
   color: Colors.black,
 );
 
-TextStyle textNormalQuicksan = GoogleFonts.quicksand().copyWith(
+TextStyle textXLQuicksan = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.w500,
   fontSize: 20,
   color: Colors.black,
 );
 
-TextStyle textSmallQuicksan = GoogleFonts.quicksand().copyWith(
+TextStyle textNormalQuicksan = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.w500,
   fontSize: 18,
+  color: Colors.black,
+);
+
+TextStyle textNormalQuicksanBold = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 18,
+  color: Colors.black,
+);
+
+TextStyle textSmallQuicksan = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.w500,
+  fontSize: 16,
   color: Colors.black,
 );
 
@@ -47,4 +59,28 @@ TextStyle textSmallQuicksanLink = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.w500,
   fontSize: 18,
   color: Colors.blue,
+);
+
+TextStyle textSmallQuicksanWhite = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 18,
+  color: Colors.white,
+);
+
+TextStyle textCouterKanit = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 20,
+  color: Colors.black,
+);
+
+TextStyle textTitleOTP = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.w900,
+  fontSize: 80,
+  color: Colors.black,
+);
+
+TextStyle textsubTitleOTP = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.w900,
+  fontSize: 18,
+  color: Colors.black,
 );

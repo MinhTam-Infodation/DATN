@@ -23,7 +23,7 @@ class _ScreenErr404State extends State<ScreenErr404> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image(
+              const Image(
                 image: AssetImage(i404v1),
                 width: 250,
               ),

@@ -48,11 +48,15 @@ dependencies:
   google_sign_in: ^6.1.0
   loading_animation_widget: ^1.2.0+4
   animated_text_kit: ^4.2.2
+  liquid_swipe: ^3.1.0
+  smooth_page_indicator: ^1.1.0
+  flutter_otp_text_field: ^1.1.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.13.0
+  flutter_lints: ^2.0.1
 
 flutter_native_splash:
   color: "#f7f6f1"
@@ -97,7 +101,9 @@ flutter:
     - assets/img/inprogress/
     - assets/img/welcome/
     - assets/img/login/
-  #   - images/a_dot_ham.jpeg
+    - assets/img/signup/
+    - assets/img/onboarding/
+    - assets/img/forgot/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

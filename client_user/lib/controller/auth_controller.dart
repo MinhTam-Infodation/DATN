@@ -104,6 +104,7 @@ class AuthController extends GetxController {
       await _firestore.collection('users').doc(userc.uid).set(newUser.toJson());
     } catch (e) {
       // Handle lỗi nếu có
+      // ignore: avoid_print
       print(e);
     }
   }
@@ -112,8 +113,10 @@ class AuthController extends GetxController {
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
+      // ignore: avoid_print
       print('Gửi email thành công');
     } catch (e) {
+      // ignore: avoid_print
       print('Lỗi khi gửi email: $e');
       rethrow;
     }
@@ -126,8 +129,10 @@ class AuthController extends GetxController {
         code: code,
         newPassword: newPassword,
       );
+      // ignore: avoid_print
       print('Thiết lập mật khẩu mới thành công');
     } catch (e) {
+      // ignore: avoid_print
       print('Lỗi khi thiết lập mật khẩu mới: $e');
       rethrow;
     }
@@ -153,6 +158,7 @@ class AuthController extends GetxController {
       final userRef = _firestore.collection('Wailting').doc(userId);
       await userRef.update(data);
     } catch (e) {
+      // ignore: avoid_print
       print('Error updating user: $e');
       rethrow;
     }

@@ -1,7 +1,10 @@
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
+import 'package:client_user/screens/forget_password/forget_password_options/forget_password_btn_widget.dart';
+import 'package:client_user/screens/forget_password/forget_password_options/forget_password_modal_bottom_sheet.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
+import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
@@ -19,39 +22,53 @@ class LoginForm extends StatelessWidget {
         children: [
           TextFormField(
             decoration: InputDecoration(
-                prefixIcon: Icon(Icons.person_outline_outlined),
+                labelStyle: textSmallQuicksan,
+                prefixIcon: const Icon(Icons.person_outline_outlined),
                 labelText: tEmail,
-                border: OutlineInputBorder()),
+                border: const OutlineInputBorder()),
           ),
           const SizedBox(
             height: sButtonHeight,
           ),
           TextFormField(
             decoration: InputDecoration(
-                prefixIcon: Icon(Icons.fingerprint),
-                labelText: tEmail,
-                border: OutlineInputBorder(),
+                labelStyle: textSmallQuicksan,
+                prefixIcon: const Icon(Icons.fingerprint),
+                labelText: tPassword,
+                border: const OutlineInputBorder(),
                 suffixIcon: IconButton(
-                    onPressed: () {}, icon: Icon(Icons.remove_red_eye_sharp))),
-          ),
-          const SizedBox(
-            height: 10,
+                    onPressed: () {},
+                    icon: const Icon(Icons.remove_red_eye_sharp))),
           ),
           Align(
             alignment: Alignment.centerRight,
-            child: TextButton(onPressed: () {}, child: Text(tForgot)),
+            child: TextButton(
+                onPressed: () {
+                  ForgetPasswordScreen.buildShowModalBottomSheet(context);
+                },
+                child: Text(
+                  tForgot,
+                  style: textSmallQuicksanLink,
+                )),
           ),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     elevation: 0,
-                    shape: RoundedRectangleBorder(),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                      side: BorderSide(color: bgBlack, width: 5.0),
+                    ),
                     foregroundColor: bgWhite,
                     backgroundColor: bgBlack,
-                    padding: EdgeInsets.symmetric(vertical: sButtonHeight)),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: sButtonHeight)),
                 onPressed: () {},
-                child: Text(tButtonLogin.toUpperCase())),
+                child: Text(
+                  tButtonLogin.toUpperCase(),
+                  style: textSmallQuicksanWhite,
+                )),
           )
         ],
       ),

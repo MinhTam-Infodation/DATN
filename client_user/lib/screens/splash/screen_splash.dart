@@ -9,7 +9,7 @@ class SplashScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Stack(
-          children: [
+          children: const [
             Positioned(
                 top: 0,
                 left: 0,

@@ -33,3 +33,15 @@ const String iLogin3 = "assets/img/login/login3.gif";
 const String iLogin4 = "assets/img/login/login4.png";
 const String iLogin5 = "assets/img/login/login5.gif";
 const String iLoginGG = "assets/img/login/login_gg.png";
+
+/* -- Sign Up -- */
+const String iSignup = "assets/img/signup/signup.gif";
+const String iSignup1 = "assets/img/signup/signup1.png";
+
+/* -- Onboarding -- */
+const String iOnboarding = "assets/img/onboarding/onboarding1.png";
+const String iOnboarding1 = "assets/img/onboarding/onboarding2.png";
+const String iOnboarding2 = "assets/img/onboarding/onboarding3.png";
+
+/* -- Forgot -- */
+const String iForgot = "assets/img/forgot/forgot.png";

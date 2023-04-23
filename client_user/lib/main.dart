@@ -1,15 +1,18 @@
+import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/screens/init_firebase/screen_err404.dart';
 import 'package:client_user/screens/init_firebase/screen_inprogress.dart';
-import 'package:client_user/screens/login/screen_login.dart';
-import 'package:client_user/screens/signup/screen_signup.dart';
-import 'package:client_user/screens/splash/screen_splash.dart';
 import 'package:client_user/screens/welcome/screen_welcome.dart';
 import 'package:client_user/shared/connect_firebase.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'firebase_options.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
+      .then((value) => Get.put(AuthenticationRepository));
   await GetStorage.init();
   runApp(const MyApp());
 }
@@ -32,6 +35,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: "GetX Firebase App",
             home: ScreenWelcome(),
+            transitionDuration: Duration(milliseconds: 500),
           );
         },
         builderConnect: (BuildContext context) {

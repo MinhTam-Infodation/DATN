@@ -25,3 +25,7 @@ Color textBlack = Colors.black;
 
 Color bgWhite = Colors.white;
 Color bgBlack = Colors.black;
+
+Color cOnboardingPage1Color = const Color.fromRGBO(166, 227, 233, 1);
+Color cOnboardingPage2Color = const Color.fromRGBO(255, 182, 185, 1);
+Color cOnboardingPage3Color = const Color.fromRGBO(50, 130, 184, 1);

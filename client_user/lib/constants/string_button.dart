@@ -10,3 +10,5 @@ const String tPassword = "Password";
 
 /* -- SignUp --*/
 const String tButtonSignUp = "SIGNUP";
+const String tInputFullname = "Full Name";
+const String tInputPhone = "Phone No";

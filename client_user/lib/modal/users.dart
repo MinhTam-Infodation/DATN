@@ -7,6 +7,7 @@ class Users {
   bool? Status;
   // ignore: non_constant_identifier_names
   int? ActiveAt, CreateAt;
+  // ignore: non_constant_identifier_names
   String? Id;
   Users(
       // ignore: non_constant_identifier_names

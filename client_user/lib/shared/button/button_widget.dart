@@ -20,6 +20,7 @@ class ButtonWidget extends StatelessWidget {
     Size screenWidth = MediaQuery.of(context).size;
     return ElevatedButton(
       onPressed: () {},
+      // ignore: sort_child_properties_last
       child: Text(
         text,
         style: style,

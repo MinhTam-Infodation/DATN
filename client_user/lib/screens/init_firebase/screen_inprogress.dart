@@ -21,7 +21,7 @@ class _ScreenInprogressState extends State<ScreenInprogress> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image(
+              const Image(
                 image: AssetImage(iInprosvg3),
                 width: 400,
               ),

@@ -29,7 +29,7 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Image(
-                  image: AssetImage(iWelcom3),
+                  image: const AssetImage(iWelcom3),
                   height: height * 0.5,
                 ),
                 Column(
@@ -50,34 +50,42 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                     Expanded(
                         child: ElevatedButton(
                       onPressed: () {
-                        Get.to(() => ScreenLogin());
+                        Get.to(() => const ScreenLogin());
                       },
-                      child: Text(tButtonLogin),
+                      // ignore: sort_child_properties_last
+                      child: const Text(tButtonLogin),
                       style: ElevatedButton.styleFrom(
                           elevation: 0,
-                          shape: RoundedRectangleBorder(),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: bgBlack, width: 5.0),
+                          ),
                           foregroundColor: bgWhite,
                           backgroundColor: bgBlack,
-                          padding:
-                              EdgeInsets.symmetric(vertical: sButtonHeight)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: sButtonHeight)),
                     )),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Expanded(
                         child: OutlinedButton(
                       onPressed: () {
-                        Get.to(() => ScreenSignup());
+                        Get.to(() => const ScreenSignup());
                       },
-                      child: Text(
+                      // ignore: sort_child_properties_last
+                      child: const Text(
                         tButtonSignUp,
                       ),
                       style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: BorderSide(color: bgBlack, width: 5.0),
+                          ),
                           foregroundColor: bgBlack,
                           side: BorderSide(color: bgBlack),
-                          padding:
-                              EdgeInsets.symmetric(vertical: sButtonHeight)),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: sButtonHeight)),
                     ))
                   ],
                 )
