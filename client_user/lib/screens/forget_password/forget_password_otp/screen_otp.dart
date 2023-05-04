@@ -1,5 +1,6 @@
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_context.dart';
+import 'package:client_user/controller/otp_controller.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class ScreenOTP extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var otp;
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -52,6 +54,8 @@ class ScreenOTP extends StatelessWidget {
                     onSubmit: (code) {
                       // ignore: avoid_print
                       print("OTP is => $code");
+                      otp = code;
+                      OTPController.instance.verifiOTP(otp);
                     },
                   ),
                 ),

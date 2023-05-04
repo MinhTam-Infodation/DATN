@@ -1,4 +1,5 @@
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
+import 'package:client_user/screens/home/screen_home.dart';
 import 'package:client_user/screens/init_firebase/screen_err404.dart';
 import 'package:client_user/screens/init_firebase/screen_inprogress.dart';
 import 'package:client_user/screens/welcome/screen_welcome.dart';

@@ -1,4 +1,6 @@
+import 'package:client_user/modal/users.dart';
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
+import 'package:client_user/repository/auth_repository/user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,10 +13,21 @@ class SignUpController extends GetxController {
   final fullName = TextEditingController();
   final phoneNo = TextEditingController();
 
+  final userRepo = Get.put(UserRepository());
+
   // Call this Fun
   void registerUser(String email, String password) {
     Get.put(AuthenticationRepository());
-    AuthenticationRepository.instance
-        .createUserWithEmailAndPassword(email, password);
+    String? error = AuthenticationRepository.instance
+        .createUserWithEmailAndPasswordv2(email, password) as String?;
+    if (error != null) {
+      Get.showSnackbar(GetSnackBar(message: error.toString()));
+    }
+  }
+
+  void phoneAuthentication(String phoneNo) {}
+
+  Future<void> createUser(Users users) async {
+    await userRepo.createUser(users);
   }
 }

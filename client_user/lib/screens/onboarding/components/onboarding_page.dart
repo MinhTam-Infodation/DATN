@@ -18,8 +18,8 @@ class OnBoardingPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Image(
-            image: AssetImage(modal.image),
+          Image.asset(
+            modal.image,
             height: modal.height * 0.3,
           ),
           Column(

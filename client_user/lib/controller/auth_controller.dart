@@ -1,76 +1,115 @@
 import 'package:client_user/modal/users.dart';
+import 'package:client_user/screens/home/screen_home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthController extends GetxController {
+  static AuthController get instance => Get.find();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final box = GetStorage();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
-  /* Sign In */
-  Future<void> register(Users user, String password) async {
+  Future<void> register(
+      String email, String password, String username, String phone) async {
     try {
-      // Đăng ký tài khoản Firebase bằng email và password
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: user.Email!,
-        password: password,
-      );
+      // Check Create Account
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
+          .whenComplete(() => {
+                Get.snackbar('Success', "Create Account Success",
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.greenAccent.withOpacity(0.1),
+                    colorText: Colors.white)
+              });
 
-      await _firestore
-          .collection("Wailting")
-          .doc(userCredential.user!.uid)
-          .set({
-        "id": userCredential.user!.uid,
-        'name': user.Name,
-        'email': user.Email,
-        'phone': user.Phone,
-        'address': user.Address,
-        'avatar': user.Avatar,
-        'packageType': user.PackageType,
-        'status': user.Status,
-        'activeAt': user.ActiveAt,
-        'createdAt': user.CreateAt,
-      });
+      // Lưu vào GetStorage() để sử dụng sau này
+      box.write('idCredential', userCredential.user!.uid);
 
-      // box.write('user', user.toJson());
-      // final user = box.read('user');
+      // Thực hiện Add Collection Data dự vào credential
+      final timestampObject = Timestamp.now();
+      final timestampNumber = timestampObject.toDate().millisecondsSinceEpoch;
+
+      await _firestore.collection("Users").doc(userCredential.user!.uid).set({
+        "Id": userCredential.user!.uid,
+        'Name': username,
+        'Email': email,
+        "Paassword": password,
+        'Phone': phone,
+        'Address': "",
+        'Avatar': "",
+        'PackageType': "",
+        'Status': false,
+        'ActiveAt': 0,
+        'CreatedAt': timestampNumber,
+      }).whenComplete(() => {
+            Get.snackbar('Success', "Create Profile Success",
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.greenAccent.withOpacity(0.1),
+                colorText: Colors.white)
+          });
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        Get.snackbar('Password is not strong enough', e.toString());
+        Get.snackbar('Password is not strong enough', e.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent.withOpacity(0.1),
+            colorText: Colors.black);
       } else if (e.code == 'email-already-in-use') {
-        Get.snackbar('Email already used for another account', e.toString());
+        Get.snackbar('Email already used for another account', e.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent.withOpacity(0.1),
+            colorText: Colors.black);
       } else {
-        Get.snackbar('Registration failed', e.toString());
+        Get.snackbar('Registration failed', e.toString(),
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent.withOpacity(0.1),
+            colorText: Colors.black);
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Error', e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
+          colorText: Colors.black);
     }
   }
-
-  /* User:
-    void signUp(User user, String password) async {
-      await signUpWithEmailPassword(user, password);
-    }
-  */
 
   /* Login */
   Future<void> login(String email, String password) async {
     try {
-      // ignore: unused_local_variable
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      //* Lưu Storage Info User
+      UserCredential userCredential = await _auth
+          .signInWithEmailAndPassword(
+            email: email,
+            password: password,
+          )
+          .whenComplete(() => {Get.to(() => const ScreenHome())});
       box.write('email', email);
       box.write('idCredential', userCredential.user!.uid);
+
+      CollectionReference usersRef =
+          FirebaseFirestore.instance.collection('Users');
+      QuerySnapshot querySnapshot =
+          await usersRef.where('Id', isEqualTo: box.read("idCredential")).get();
+      if (querySnapshot.docs.isEmpty) {
+        querySnapshot = await usersRef.get();
+        Get.snackbar('Error', "No Data To User Query",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent.withOpacity(0.1),
+            colorText: Colors.black);
+      } else {
+        querySnapshot = await usersRef.get();
+      }
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Error', e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
+          colorText: Colors.black);
     }
   }
 
@@ -161,6 +200,31 @@ class AuthController extends GetxController {
       // ignore: avoid_print
       print('Error updating user: $e');
       rethrow;
+    }
+  }
+
+  Future<void> updateUserv2(
+      String userId, List<Map<String, dynamic>> updates) async {
+    try {
+      final userRef = _firestore.collection('Users').doc(userId);
+      // ignore: prefer_collection_literals
+      final dataToUpdate = Map<String, dynamic>();
+      for (final update in updates) {
+        dataToUpdate.addAll(update);
+      }
+      // ignore: void_checks
+      await userRef.update(dataToUpdate).whenComplete(() {
+        Get.to(() => const ScreenHome());
+        Get.snackbar('Update', "Update Success",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.greenAccent.withOpacity(0.1),
+            colorText: Colors.white);
+      });
+    } catch (e) {
+      Get.snackbar('Error', e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.greenAccent.withOpacity(0.1),
+          colorText: Colors.white);
     }
   }
 

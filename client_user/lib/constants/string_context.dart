@@ -63,3 +63,32 @@ const String tForgetMailSubTitle =
 const String tOtpTitle = "CO\nDE";
 const String tOtpSubTitle = "Verification";
 const String tOptMessage = "Enter the verification code sent at ";
+
+/* Confim more Info */
+const String tConfirmMoreInfo = " Confirm Info";
+
+/* Home */
+const String tHomeTitle = "Hey, Manager with ";
+const String tHomeHeading = "Explore ..";
+const String tHomeSearch = "Search...";
+const String tHomeBannerTitle1 = "Android for Beginners";
+const String tHomeBannerTitle2 = "Seler";
+const String tHomeSubTitle = "10 people";
+const String tHomeButton = "View All";
+const String tHomeTopProduct = "Status Table";
+
+/* Manager Product */
+const String tProductTitle = "Product";
+
+/* Profile */
+const String tProfileTitle = "Profile";
+const String tProfileMenu1 = "Settings";
+
+/* Update Profile */
+const String tUpdateProfileTitle = "Update Profile";
+
+/* Manager Table */
+const String tManageTableTitle = "Manage Table";
+
+/* Manager Seller */
+const String tManageSellerTitle = "Manage Seller";

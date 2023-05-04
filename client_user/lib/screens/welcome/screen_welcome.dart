@@ -28,8 +28,8 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Image(
-                  image: const AssetImage(iWelcom3),
+                Image.asset(
+                  i404v1,
                   height: height * 0.5,
                 ),
                 Column(
@@ -50,7 +50,8 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
                     Expanded(
                         child: ElevatedButton(
                       onPressed: () {
-                        Get.to(() => const ScreenLogin());
+                        // ignore: prefer_const_constructors
+                        Get.to(() => ScreenLogin());
                       },
                       // ignore: sort_child_properties_last
                       child: const Text(tButtonLogin),

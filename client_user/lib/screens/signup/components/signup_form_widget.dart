@@ -1,9 +1,15 @@
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
+import 'package:client_user/controller/auth_controller.dart';
 import 'package:client_user/controller/signup_controller.dart';
+import 'package:client_user/modal/users.dart';
+import 'package:client_user/repository/auth_repository/auth_repository.dart';
+import 'package:client_user/screens/continue_confim_info/screen_continue_info.dart';
+import 'package:client_user/screens/forget_password/forget_password_otp/screen_otp.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,6 +21,7 @@ class SignupFormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
+    final controllerauth = Get.put(AuthenticationRepository());
     final _formKey = GlobalKey<FormState>();
 
     return Container(
@@ -115,9 +122,11 @@ class SignupFormWidget extends StatelessWidget {
                             vertical: sButtonHeight)),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        SignUpController.instance.registerUser(
+                        controllerauth.createUserWithEmailAndPassword(
                             controller.email.text.trim(),
-                            controller.password.text.trim());
+                            controller.password.text.trim(),
+                            controller.fullName.text.trim(),
+                            controller.phoneNo.text.trim());
                       }
                     },
                     child: Text(

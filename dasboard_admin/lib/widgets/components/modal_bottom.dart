@@ -36,7 +36,6 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
 
   @override
   void initState() {
-    super.initState();
     txtName = TextEditingController();
     txtAddress = TextEditingController();
     txtEmail = TextEditingController();
@@ -56,6 +55,7 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
     txtPhone.text = widget.user.Phone!;
     txtActiveDate.text = DateFormat('yyyy-MM-dd').format(tsdate);
     txtCreateDate.text = DateFormat('yyyy-MM-dd').format(tsdatecreate);
+    super.initState();
   }
 
   @override

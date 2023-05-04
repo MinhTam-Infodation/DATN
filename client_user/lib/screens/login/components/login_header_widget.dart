@@ -16,8 +16,8 @@ class LoginHeaderWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Image(
-          image: const AssetImage(iLogin5),
+        Image.asset(
+          iLogin5,
           height: size.height * 0.2,
         ),
         Text(

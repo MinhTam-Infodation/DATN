@@ -36,8 +36,8 @@ class LoginFooterWidget extends StatelessWidget {
                 backgroundColor: bgWhite,
                 padding: const EdgeInsets.symmetric(vertical: sButtonHeight),
               ),
-              icon: const Image(
-                image: AssetImage(iLoginGG),
+              icon: Image.asset(
+                iLoginGG,
                 width: 20.0,
               ),
               onPressed: () {},

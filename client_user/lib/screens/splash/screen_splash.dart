@@ -9,13 +9,13 @@ class SplashScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: Stack(
-          children: const [
+          children: [
             Positioned(
                 top: 0,
                 left: 0,
-                child: Image(
+                child: Image.asset(
                   width: 300,
-                  image: AssetImage(iSplash1),
+                  iSplash1,
                 ))
           ],
         ),

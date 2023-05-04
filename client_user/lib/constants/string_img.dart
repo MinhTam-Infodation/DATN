@@ -45,3 +45,9 @@ const String iOnboarding2 = "assets/img/onboarding/onboarding3.png";
 
 /* -- Forgot -- */
 const String iForgot = "assets/img/forgot/forgot.png";
+
+/* -- Home -- */
+const String iHomeProfileTemp = "assets/img/home/home1.png";
+const String iHomeProfileTemp2 = "assets/img/home/home2.png";
+const String iHomeContent1 = "assets/img/home/home3.png";
+const String iHomeNoData = "assets/img/home/home_nodata.png";

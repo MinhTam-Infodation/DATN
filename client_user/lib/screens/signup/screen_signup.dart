@@ -18,7 +18,6 @@ class ScreenSignup extends StatefulWidget {
 class _ScreenSignupState extends State<ScreenSignup> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
         backgroundColor: bgWhite,
@@ -58,8 +57,8 @@ class _ScreenSignupState extends State<ScreenSignup> {
                                 vertical: sButtonHeight),
                           ),
                           onPressed: () {},
-                          icon: const Image(
-                            image: AssetImage(iLoginGG),
+                          icon: Image.asset(
+                            iLoginGG,
                             width: 20.0,
                           ),
                           label: Text(
