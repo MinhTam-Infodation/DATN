@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
 import 'package:get/get.dart';
 
@@ -6,6 +7,7 @@ class TotalController extends GetxController {
   RxList<UserSnapshot> users = RxList<UserSnapshot>();
   final CollectionReference usersRef =
       FirebaseFirestore.instance.collection('Users');
+  final walt = Get.put(WaltingUserController());
 
   @override
   void onInit() {
@@ -18,6 +20,31 @@ class TotalController extends GetxController {
     final value = await UserSnapshot.dsUserTuFirebaseOneTime();
     users.value = value;
     users.refresh();
+  }
+
+  getListUser() async {
+    users.bindStream(UserSnapshot.dsUserTuFirebase());
+  }
+
+  void searchUser(String keyword) {
+    final dataSearch = usersRef
+        .where('Name', isGreaterThanOrEqualTo: keyword)
+        // ignore: prefer_interpolation_to_compose_strings
+        .where('Name', isLessThanOrEqualTo: keyword + '\uf8ff')
+        .snapshots();
+    dataSearch.listen((snapshot) {
+      users.value =
+          snapshot.docs.map((doc) => UserSnapshot.fromSnapshot(doc)).toList();
+    });
+  }
+
+  void updateUserStatus(String userId, bool status) {
+    usersRef.doc(userId).update({
+      'Status': status,
+    });
+    walt.countMyDocuments();
+    walt.countMyDocumentsWithStatusFalse();
+    walt.countMyDocumentsWithStatusTrue();
   }
 
   int countMyDocuments(RxList<UserSnapshot> documents) {
@@ -43,6 +70,7 @@ class TotalController extends GetxController {
         users = ((await usersRef.get()) as RxList<UserSnapshot>?)!;
       }
     } catch (e) {
+      // ignore: avoid_print
       print(e);
     }
   }

@@ -1,10 +1,12 @@
+import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:dasboard_admin/controllers/ticket_controller.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
+import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
+import 'package:dasboard_admin/screens/dashboard/components/indicator.dart';
 import 'package:dasboard_admin/screens/manager_ticket/screen_ticket_overview.dart';
+import 'package:dasboard_admin/screens/manager_user/manager_walting/screen_user_wailting.dart';
 import 'package:dasboard_admin/screens/manager_user/screen_user_overview.dart';
-import 'package:dasboard_admin/screens/users/screen_user_settings.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
-import 'package:dasboard_admin/widgets/components/bottom_bar.dart';
 import 'package:dasboard_admin/widgets/components/card_custom.dart';
 import 'package:dasboard_admin/widgets/components/list_tile_custom.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,11 +24,29 @@ class ScreenDashboard extends StatefulWidget {
 
 class _ScreenDashboardState extends State<ScreenDashboard> {
   late double width = 7;
-
+  int touchedIndex = -1;
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
+  late int showingTooltip = -1;
 
+  int _currentIndex = 0;
   int touchedGroupIndex = -1;
+
+  @override
+  void initState() {
+    showingTooltip = -1;
+    super.initState();
+  }
+
+  BarChartGroupData generateGroupData(int x, int y) {
+    return BarChartGroupData(
+      x: x,
+      showingTooltipIndicators: showingTooltip == x ? [0] : [],
+      barRods: [
+        BarChartRodData(toY: y.toDouble()),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +55,16 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
     final cu = Get.put(TotalController());
     final ti = Get.put(TicketController());
 
+    final wail = Get.put(WaltingUserController());
+    wail.countMyDocuments();
+    wail.countMyDocumentsWithStatusFalse();
+    wail.countMyDocumentsWithStatusTrue();
+    wail.countNewUsers();
+
     Size size = MediaQuery.of(context).size;
     return SafeArea(
       child: Scaffold(
+        bottomNavigationBar: _bottomNavBar(),
         body: SingleChildScrollView(
           child: SizedBox(
             width: double.infinity,
@@ -72,20 +99,17 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                           ],
                         ),
                         const SizedBox(
-                          height: 24,
+                          height: 10,
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: Container(
-                            width: 100,
-                            child: Text(
-                              "Sumary",
-                              style: titleHeader,
-                            ),
+                          child: Text(
+                            "Sumary",
+                            style: textBigKanit,
                           ),
                         ),
                         const SizedBox(
-                          height: 10,
+                          height: 5,
                         ),
                         Row(
                           children: [
@@ -110,16 +134,20 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                               ),
                             ),
                             Obx(
-                              () => CardCustom(
-                                width: size.width / 2 - 23,
-                                height: 88.9,
-                                mLeft: 3,
-                                mRight: 0,
-                                child: ListTileCustom(
-                                  bgColor: greenLight,
-                                  pathIcon: "thumb_up.svg",
-                                  title: "WALTING",
-                                  subTitle: cu.countAdults(false).toString(),
+                              () => GestureDetector(
+                                onTap: () =>
+                                    {Get.to(() => const ScreenUserWalting())},
+                                child: CardCustom(
+                                  width: size.width / 2 - 23,
+                                  height: 88.9,
+                                  mLeft: 3,
+                                  mRight: 0,
+                                  child: ListTileCustom(
+                                    bgColor: greenLight,
+                                    pathIcon: "thumb_up.svg",
+                                    title: "WALTING",
+                                    subTitle: cu.countAdults(false).toString(),
+                                  ),
                                 ),
                               ),
                             )
@@ -163,17 +191,14 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                           ],
                         ),
                         const SizedBox(
-                          height: 40,
+                          height: 20,
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
                           // ignore: sized_box_for_whitespace
-                          child: Container(
-                            width: 100,
-                            child: Text(
-                              "Caculator",
-                              style: titleHeader,
-                            ),
+                          child: Text(
+                            "Overview",
+                            style: textBigKanit,
                           ),
                         ),
                         const SizedBox(
@@ -183,68 +208,171 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                             mLeft: 0,
                             mRight: 0,
                             width: size.width - 40,
-                            height: 211,
+                            height: 235,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(20),
                                   child: Row(
-                                    children: [
-                                      Container(
-                                        width: 9.71,
-                                        height: 9.71,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: purple2),
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Indicator(
+                                        color: Colors.greenAccent,
+                                        text: 'Active',
+                                        isSquare: false,
+                                        size: touchedIndex == 0 ? 14 : 12,
+                                        textColor: touchedIndex == 0
+                                            ? Colors.black
+                                            : Colors.grey,
                                       ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Text(
-                                        "All User",
-                                        style: label,
-                                      ),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Container(
-                                        width: 9.71,
-                                        height: 9.71,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: green),
-                                      ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Text(
-                                        "User Walting",
-                                        style: label,
-                                      ),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      Container(
-                                        width: 9.71,
-                                        height: 9.71,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle, color: red),
-                                      ),
-                                      const SizedBox(
-                                        width: 6,
-                                      ),
-                                      Text(
-                                        "Conversions",
-                                        style: label,
-                                      ),
-                                      const SizedBox(
-                                        width: 12,
+                                      Indicator(
+                                        color: Colors.blueAccent,
+                                        text: 'Walting',
+                                        isSquare: false,
+                                        size: touchedIndex == 1 ? 14 : 12,
+                                        textColor: touchedIndex == 1
+                                            ? Colors.black
+                                            : Colors.grey,
                                       ),
                                     ],
                                   ),
                                 ),
                                 // Bar Cusstom
+                                SizedBox(
+                                  width: 200,
+                                  height: 150,
+                                  child: Obx(() => PieChart(
+                                        PieChartData(
+                                          pieTouchData: PieTouchData(
+                                            touchCallback: (FlTouchEvent event,
+                                                pieTouchResponse) {
+                                              setState(() {
+                                                if (!event
+                                                        .isInterestedForInteractions ||
+                                                    pieTouchResponse == null ||
+                                                    pieTouchResponse
+                                                            .touchedSection ==
+                                                        null) {
+                                                  touchedIndex = -1;
+                                                  return;
+                                                }
+                                                touchedIndex = pieTouchResponse
+                                                    .touchedSection!
+                                                    .touchedSectionIndex;
+                                              });
+                                            },
+                                          ),
+                                          startDegreeOffset: 180,
+                                          borderData: FlBorderData(
+                                            show: false,
+                                          ),
+                                          sectionsSpace: 10,
+                                          centerSpaceRadius: 0,
+                                          sections: showingSections(),
+                                        ),
+                                        swapAnimationDuration: const Duration(
+                                            milliseconds: 150), // Optional
+                                        swapAnimationCurve:
+                                            Curves.linear, // Optional
+                                      )),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                )
+                              ],
+                            )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CardCustom(
+                            mLeft: 0,
+                            mRight: 0,
+                            width: size.width - 40,
+                            height: 235,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(20),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Indicator(
+                                        color: Colors.greenAccent,
+                                        text: 'Active',
+                                        isSquare: false,
+                                        size: touchedIndex == 0 ? 14 : 12,
+                                        textColor: touchedIndex == 0
+                                            ? Colors.black
+                                            : Colors.grey,
+                                      ),
+                                      Indicator(
+                                        color: Colors.blueAccent,
+                                        text: 'Walting',
+                                        isSquare: false,
+                                        size: touchedIndex == 1 ? 14 : 12,
+                                        textColor: touchedIndex == 1
+                                            ? Colors.black
+                                            : Colors.grey,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // Bar Cusstom
+                                SizedBox(
+                                  width: 200,
+                                  height: 150,
+                                  child: AspectRatio(
+                                      aspectRatio: 2,
+                                      child: Obx(
+                                        () => BarChart(BarChartData(
+                                            barGroups: [
+                                              generateGroupData(1,
+                                                  wail.userCountMonth1.toInt()),
+                                              generateGroupData(2,
+                                                  wail.userCountMonth2.toInt()),
+                                              generateGroupData(3,
+                                                  wail.userCountMonth3.toInt()),
+                                              generateGroupData(4,
+                                                  wail.userCountMonth4.toInt()),
+                                            ],
+                                            barTouchData: BarTouchData(
+                                                enabled: true,
+                                                handleBuiltInTouches: false,
+                                                touchCallback:
+                                                    (event, response) {
+                                                  if (response != null &&
+                                                      response.spot != null &&
+                                                      event is FlTapUpEvent) {
+                                                    setState(() {
+                                                      final x = response.spot!
+                                                          .touchedBarGroup.x;
+                                                      final isShowing =
+                                                          showingTooltip == x;
+                                                      if (isShowing) {
+                                                        showingTooltip = -1;
+                                                      } else {
+                                                        showingTooltip = x;
+                                                      }
+                                                    });
+                                                  }
+                                                },
+                                                mouseCursorResolver:
+                                                    (event, response) {
+                                                  return response == null ||
+                                                          response.spot == null
+                                                      ? MouseCursor.defer
+                                                      : SystemMouseCursors
+                                                          .click;
+                                                }))),
+                                      )),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                )
                               ],
                             )),
                       ],
@@ -256,6 +384,78 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           ),
         ),
       ),
+    );
+  }
+
+  //* Item
+  static const List<TabItem> items = [
+    TabItem(
+      icon: Icons.home,
+      title: 'Home',
+    ),
+    TabItem(
+      icon: Icons.chat,
+      title: 'Chat',
+    ),
+    TabItem(
+      icon: Icons.person,
+      title: 'User',
+    ),
+  ];
+
+  //* Define Panigator
+  Widget _bottomNavBar() => Container(
+        margin: const EdgeInsets.only(bottom: 15, right: 15, left: 15),
+        child: BottomBarFloating(
+          items: items,
+          borderRadius: BorderRadius.circular(50),
+          backgroundColor: Colors.white,
+          color: Colors.black,
+          colorSelected: Colors.red,
+          indexSelected: _currentIndex,
+          onTap: (int index) => setState(() {
+            _currentIndex = index;
+          }),
+        ),
+      );
+  //* Pie Data
+  List<PieChartSectionData> showingSections() {
+    final wail = Get.put(WaltingUserController());
+    return List.generate(
+      2,
+      (i) {
+        final isTouched = i == touchedIndex;
+        const color0 = Colors.greenAccent;
+        const color1 = Colors.blueAccent;
+        switch (i) {
+          case 0:
+            return PieChartSectionData(
+              color: color0,
+              value: double.parse(wail.totalActive.value.toString()),
+              title:
+                  '${((double.parse(wail.totalActive.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
+              radius: 80,
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? const BorderSide(color: Colors.white, width: 6)
+                  : BorderSide(color: Colors.white.withOpacity(0)),
+            );
+          case 1:
+            return PieChartSectionData(
+              color: color1,
+              value: double.parse(wail.totalWalting.value.toString()),
+              title:
+                  '${((double.parse(wail.totalWalting.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
+              radius: 65,
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? const BorderSide(color: Colors.white, width: 6)
+                  : BorderSide(color: Colors.white.withOpacity(0)),
+            );
+          default:
+            throw Error();
+        }
+      },
     );
   }
 }

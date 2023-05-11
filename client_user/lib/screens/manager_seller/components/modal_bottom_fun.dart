@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/controller/manage_seller.dart';
@@ -5,8 +7,11 @@ import 'package:client_user/modal/sellers.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
@@ -25,6 +30,8 @@ class _ModalBottomFunSellerState extends State<ModalBottomFunSeller> {
   // ignore: no_leading_underscores_for_local_identifiers, unused_field
   final _formKey = GlobalKey<FormState>();
   var userId = "";
+  bool _imageChange = false;
+  XFile? _xImage;
 
   final sellerController = Get.put(ManageSellerController());
   final homeController = Get.put(HomeController());
@@ -134,6 +141,74 @@ class _ModalBottomFunSellerState extends State<ModalBottomFunSeller> {
                     ))
               ],
             ),
+            if (!widget.viewMode)
+              Container(
+                  width: 130,
+                  height: 130,
+                  padding: const EdgeInsets.all(
+                      2), // thêm khoảng cách giữa viền và CircleAvatar
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Colors.grey,
+                      width: 2.0,
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: widget.seller.Avatar != null
+                        ? Image.network(
+                            widget.seller.Avatar!,
+                            fit: BoxFit.cover,
+                          )
+                        : Container(
+                            color: padua,
+                          ),
+                  ))
+            else
+              Stack(
+                children: [
+                  Container(
+                    width: 150,
+                    height: 150,
+                    padding: const EdgeInsets.all(
+                        4), // thêm khoảng cách giữa viền và CircleAvatar
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey,
+                        width: 2.0,
+                      ),
+                    ),
+                    child: ClipOval(
+                      child: _imageChange
+                          ? Image.file(
+                              File(_xImage!.path),
+                              fit: BoxFit.cover,
+                            )
+                          : widget.seller.Avatar != null
+                              ? Image.network(
+                                  widget.seller.Avatar!,
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(
+                                  color: padua,
+                                ),
+                    ),
+                  ),
+                  Positioned(
+                      left: 105,
+                      top: 105,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.black,
+                        child: IconButton(
+                            color: Colors.white,
+                            onPressed: () => _pickerImage(context),
+                            icon: const Icon(Icons.add_a_photo)),
+                      ))
+                ],
+              ),
             const SizedBox(
               height: 20,
             ),
@@ -253,7 +328,18 @@ class _ModalBottomFunSellerState extends State<ModalBottomFunSeller> {
                           labelText: tInputSexSeller,
                           border: const OutlineInputBorder()),
                     ),
-
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFormField(
+                      enabled: widget.viewMode,
+                      controller: txtAge,
+                      decoration: InputDecoration(
+                          labelStyle: textSmallQuicksan,
+                          prefixIcon: const Icon(Icons.access_time_sharp),
+                          labelText: tInputAgeSeller,
+                          border: const OutlineInputBorder()),
+                    ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -263,12 +349,10 @@ class _ModalBottomFunSellerState extends State<ModalBottomFunSeller> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            // if (_formKey.currentState!.validate()) {
-                            //   tableController.deleteTable(
-                            //       userId, widget.table.Id!);
-                            //   // Back
-                            //   Navigator.pop(context);
-                            // }
+                            sellerController.deleteSeller(
+                                userId, widget.seller.Id!);
+                            // ignore: use_build_context_synchronously
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
@@ -288,18 +372,52 @@ class _ModalBottomFunSellerState extends State<ModalBottomFunSeller> {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            // // ignore: avoid_print
-                            // print(widget.table.Id!);
-                            // final table = Tables(
-                            //     Id: widget.table.Id!,
-                            //     Name: txtName.text,
-                            //     Status: false,
-                            //     Slot: int.parse(txtSlot.text));
-                            // tableController.editTable(
-                            //     userId, table, widget.table.Id!);
-                            // // Back
-                            // Navigator.pop(context);
+                          onPressed: () async {
+                            // Caculator Age
+                            DateTime birthday = DateFormat("yyyy-MM-dd")
+                                .parse(txtBirthday.text);
+                            DateTime now = DateTime.now();
+
+                            Duration difference = now.difference(birthday);
+                            int days = difference.inDays;
+                            int age = (days / 365).floor();
+
+                            final seller = Seller(
+                                Id: widget.seller.Id,
+                                Name: txtName.text,
+                                Address: txtAddress.text,
+                                Email: txtEmail.text,
+                                Phone: txtPhone.text,
+                                Salary: txtSalary.text,
+                                Sex: txtSex.text,
+                                Age: int.parse(txtAge.text),
+                                Birthday: convertInputDateTimetoNumber(
+                                    txtBirthday.text));
+
+                            if (_imageChange) {
+                              // ignore: no_leading_underscores_for_local_identifiers
+                              FirebaseStorage _storage =
+                                  FirebaseStorage.instance;
+                              Reference reference = _storage
+                                  .ref()
+                                  .child("images_seller")
+                                  .child("anh_${widget.seller.Phone}");
+
+                              UploadTask uploadTask =
+                                  await _uploadTask(reference, _xImage!);
+                              uploadTask.whenComplete(() async {
+                                seller.Avatar =
+                                    await reference.getDownloadURL();
+                                sellerController.editSeller(
+                                    userId, seller, widget.seller.Id!);
+                              });
+                            } else {
+                              sellerController.editSeller(
+                                  userId, seller, widget.seller.Id!);
+                            }
+
+                            // ignore: use_build_context_synchronously
+                            Navigator.pop(context);
                           },
                           style: ElevatedButton.styleFrom(
                             elevation: 0,
@@ -322,4 +440,34 @@ class _ModalBottomFunSellerState extends State<ModalBottomFunSeller> {
       ),
     );
   }
+
+  _pickerImage(BuildContext context) async {
+    _xImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (_xImage != null) {
+      setState(() {
+        _imageChange = true;
+      });
+    }
+  }
+}
+
+convertInputDateTimetoNumber(String tiem) {
+  String activeDate = tiem; // giá trị ngày tháng dưới dạng chuỗi
+  DateTime dateTime =
+      DateTime.parse(activeDate); // chuyển đổi thành đối tượng DateTime
+  int timestamp = dateTime.millisecondsSinceEpoch; // chuyển đổi thành số
+  return timestamp;
+}
+
+Future<UploadTask> _uploadTask(Reference reference, XFile xImage) async {
+  final metadata = SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': xImage.path});
+  UploadTask uploadTask;
+  if (kIsWeb) {
+    uploadTask = reference.putData(await xImage.readAsBytes(), metadata);
+  } else {
+    uploadTask = reference.putFile(File(xImage.path), metadata);
+  }
+  return Future.value(uploadTask);
 }

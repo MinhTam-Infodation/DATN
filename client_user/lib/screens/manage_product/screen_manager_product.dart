@@ -2,7 +2,11 @@ import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
 import 'package:client_user/controller/home_controller.dart';
+import 'package:client_user/controller/manage_product.dart';
+import 'package:client_user/screens/manage_product/components/cart_item_products.dart';
+import 'package:client_user/screens/manage_product/components/modal_bottom_add.dart';
 import 'package:client_user/screens/manage_product/components/test_multi_file.dart';
+import 'package:client_user/uilt/style/button_style/button_style.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +21,31 @@ class ScreenManagerProduct extends StatefulWidget {
 }
 
 class _ScreenManagerProductState extends State<ScreenManagerProduct> {
+  final productController = Get.put(ManageProductsController());
   var userId = "";
+
+  final TextEditingController _searchController = TextEditingController();
+  bool _isClearVisible = false;
+
+  void _onSearchTextChanged(String value) {
+    setState(() {
+      _isClearVisible = value.isNotEmpty;
+    });
+
+    // Get UserId
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+  }
+
+  void _onClearPressed() {
+    setState(() {
+      _searchController.clear();
+      _isClearVisible = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +56,7 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
     }
     final homeController = Get.put(HomeController());
     homeController.checkTotalProduct(userId);
+    productController.getListProduct(userId);
     final size = MediaQuery.of(context).size;
 
     return SafeArea(
@@ -45,7 +74,7 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
           backgroundColor: Colors.transparent,
           actions: [
             Container(
-              margin: const EdgeInsets.only(right: 20, top: 7),
+              margin: const EdgeInsets.only(right: 5, top: 7),
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: IconButton(
@@ -84,9 +113,18 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
                                   height: sDashboardPadding,
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    Get.to(() => const TestMultiPicker());
-                                  },
+                                  onPressed: () => showModalBottomSheet(
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(50.0),
+                                        topRight: Radius.circular(50.0),
+                                      ),
+                                    ),
+                                    isScrollControlled: true,
+                                    context: context,
+                                    builder: (context) =>
+                                        const ModalBootomAddProducts(),
+                                  ),
                                   style: ElevatedButton.styleFrom(
                                     elevation: 0,
                                     shape: const StadiumBorder(),
@@ -116,8 +154,92 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
                         ),
                       )
                     else
-                      Container(
-                        child: Text("No Data"),
+                      // ignore: avoid_unnecessary_containers
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.black,
+                                  width: 2,
+                                ),
+                              ),
+                              padding: const EdgeInsets.only(
+                                  top: 2, bottom: 2, right: 10, left: 10),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.search),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: TextField(
+                                      controller: _searchController,
+                                      onChanged: _onSearchTextChanged,
+                                      decoration: const InputDecoration(
+                                          hintText: 'Search...',
+                                          border: InputBorder.none),
+                                    ),
+                                  ),
+                                  Visibility(
+                                    visible: _isClearVisible,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.clear),
+                                      onPressed: _onClearPressed,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            SizedBox(
+                              child: Stack(
+                                children: [
+                                  SizedBox(
+                                    height: size.height - 180,
+                                    width: size.width - 40,
+                                    child: Obx(
+                                      () {
+                                        return ListView.separated(
+                                          physics:
+                                              const AlwaysScrollableScrollPhysics(),
+                                          itemBuilder: (context, index) =>
+                                              CartItemProducts(
+                                            products: productController
+                                                .product[index].products!,
+                                          ),
+                                          // ignore: invalid_use_of_protected_member
+                                          itemCount: productController
+                                              .product.value.length,
+                                          padding: const EdgeInsets.only(
+                                              bottom: 50 + 16),
+                                          separatorBuilder: (context, index) =>
+                                              const SizedBox(height: 0),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  ButtonBottomCustom(
+                                      textContent: "Add Table",
+                                      onPress: () => showModalBottomSheet(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(50.0),
+                                                topRight: Radius.circular(50.0),
+                                              ),
+                                            ),
+                                            isScrollControlled: true,
+                                            context: context,
+                                            builder: (context) =>
+                                                const ModalBootomAddProducts(),
+                                          )),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       )
                   ],
                 ),

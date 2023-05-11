@@ -2,7 +2,6 @@
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +23,7 @@ class CustomModalBottomUser extends StatefulWidget {
 }
 
 class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
+  final cu = Get.put(TotalController());
   bool _imageChange = false;
   XFile? _xImage;
 
@@ -44,15 +44,15 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
     txtCreateDate = TextEditingController();
 
     DateTime tsdate =
-        DateTime.fromMillisecondsSinceEpoch(widget.user.ActiveAt!);
+        DateTime.fromMillisecondsSinceEpoch(widget.user.ActiveAt ?? 0);
 
     DateTime tsdatecreate =
-        DateTime.fromMillisecondsSinceEpoch(widget.user.CreateAt!);
+        DateTime.fromMillisecondsSinceEpoch(widget.user.CreatedAt ?? 0);
 
-    txtName.text = widget.user.Name!;
-    txtAddress.text = widget.user.Address!;
-    txtEmail.text = widget.user.Email!;
-    txtPhone.text = widget.user.Phone!;
+    txtName.text = widget.user.Name ?? "";
+    txtAddress.text = widget.user.Address ?? "";
+    txtEmail.text = widget.user.Email ?? "";
+    txtPhone.text = widget.user.Phone ?? "";
     txtActiveDate.text = DateFormat('yyyy-MM-dd').format(tsdate);
     txtCreateDate.text = DateFormat('yyyy-MM-dd').format(tsdatecreate);
     super.initState();
@@ -69,7 +69,6 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
 
   @override
   Widget build(BuildContext context) {
-    final cu = Get.put(TotalController());
     return Container(
       height: 450,
       padding: const EdgeInsets.all(20),
@@ -138,8 +137,11 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                         width: 2.0,
                       ),
                     ),
-                    child: CircleAvatar(
-                        backgroundImage: NetworkImage(widget.user.Avatar!)))
+                    child: ClipOval(
+                      child: Container(
+                        color: Colors.greenAccent,
+                      ),
+                    ))
               else
                 Stack(
                   children: [
@@ -157,16 +159,14 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                         ),
                       ),
                       child: ClipOval(
-                        child: _imageChange
-                            ? Image.file(
-                                File(_xImage!.path),
-                                fit: BoxFit.cover,
-                              )
-                            : Image.network(
-                                widget.user.Avatar!,
-                                fit: BoxFit.cover,
-                              ),
-                      ),
+                          child: _imageChange
+                              ? Image.file(
+                                  File(_xImage!.path),
+                                  fit: BoxFit.cover,
+                                )
+                              : Container(
+                                  color: Colors.greenAccent,
+                                )),
                     ),
                     Positioned(
                         left: 105,
@@ -212,45 +212,6 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                   border: OutlineInputBorder(),
                   labelText: 'Email',
                 ),
-              ),
-              TextField(
-                enabled: widget.tranform,
-                controller:
-                    txtCreateDate, //editing controller of this TextField
-                decoration: const InputDecoration(
-                    icon: Icon(Icons.calendar_today), //icon of text field
-                    labelText: "Create Date" //label text of field
-                    ),
-                readOnly:
-                    true, //set it true, so that user will not able to edit text
-                onTap: () async {
-                  DateTime? pickedDate = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(
-                          2000), //DateTime.now() - not to allow to choose before today.
-                      lastDate: DateTime(2101));
-
-                  if (pickedDate != null) {
-                    // ignore: avoid_print
-                    print(
-                        pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
-                    String formattedDate =
-                        DateFormat('yyyy-MM-dd').format(pickedDate);
-                    // ignore: avoid_print
-                    print(
-                        formattedDate); //formatted date output using intl package =>  2021-03-16
-                    //you can implement different kind of Date Format here according to your requirement
-
-                    setState(() {
-                      txtCreateDate.text =
-                          formattedDate; //set output date to TextField value.
-                    });
-                  } else {
-                    // ignore: avoid_print
-                    print("Date is not selected");
-                  }
-                },
               ),
               const SizedBox(
                 height: 20,
@@ -308,9 +269,63 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
               const SizedBox(
                 height: 5,
               ),
+              TextField(
+                enabled: false,
+                controller:
+                    txtCreateDate, //editing controller of this TextField
+                decoration: const InputDecoration(
+                    icon: Icon(Icons.calendar_today), //icon of text field
+                    labelText: "Create Date" //label text of field
+                    ),
+                readOnly:
+                    true, //set it true, so that user will not able to edit text
+                onTap: () async {
+                  DateTime? pickedDate = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(
+                          2000), //DateTime.now() - not to allow to choose before today.
+                      lastDate: DateTime(2101));
+
+                  if (pickedDate != null) {
+                    // ignore: avoid_print
+                    print(
+                        pickedDate); //pickedDate output format => 2021-03-10 00:00:00.000
+                    String formattedDate =
+                        DateFormat('yyyy-MM-dd').format(pickedDate);
+                    // ignore: avoid_print
+                    print(
+                        formattedDate); //formatted date output using intl package =>  2021-03-16
+                    //you can implement different kind of Date Format here according to your requirement
+
+                    setState(() {
+                      txtCreateDate.text =
+                          formattedDate; //set output date to TextField value.
+                    });
+                  } else {
+                    // ignore: avoid_print
+                    print("Date is not selected");
+                  }
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               if (widget.tranform)
                 GetBuilder<TotalController>(
-                  builder: (controller) => ElevatedButton(
+                  builder: (controller) => SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                            side: const BorderSide(
+                                color: Colors.black, width: 5.0),
+                          ),
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(vertical: 20)),
                       onPressed: () {
                         // ignore: avoid_print
                         print(txtName.text);
@@ -328,11 +343,36 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                         _updateUser(context);
                         Navigator.pop(context);
                       },
-                      child: const Text("Helllo")),
+                      child: Text(
+                        "Edit User",
+                        style: textNormalQuicksanWhite,
+                      ),
+                    ),
+                  ),
                 )
-              else
-                const SizedBox(
-                  height: 20,
+              else if (widget.user.Status == true)
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          side:
+                              const BorderSide(color: Colors.black, width: 5.0),
+                        ),
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 20)),
+                    onPressed: () {
+                      cu.updateUserStatus(widget.user.Id!, false);
+                      Navigator.pop(context);
+                    },
+                    child: Text(
+                      "Lock User",
+                      style: textNormalQuicksanWhite,
+                    ),
+                  ),
                 )
             ],
           ),
@@ -360,11 +400,12 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
         PackageType: widget.user.PackageType,
         Phone: txtPhone.text,
         Password: widget.user.Password,
-        Status: false,
+        Status: widget.user.Status,
         ActiveAt: convertInputDateTimetoNumber(txtActiveDate.text),
         Id: widget.user.Id,
-        CreateAt: convertInputDateTimetoNumber(txtCreateDate.text));
+        CreatedAt: convertInputDateTimetoNumber(txtCreateDate.text));
     if (_imageChange) {
+      // ignore: no_leading_underscores_for_local_identifiers
       FirebaseStorage _storage = FirebaseStorage.instance;
       Reference reference =
           _storage.ref().child("images").child("anh_${widget.user.Id}");

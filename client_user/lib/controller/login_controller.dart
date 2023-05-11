@@ -1,4 +1,3 @@
-import 'package:client_user/controller/auth_controller.dart';
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/repository/auth_repository/user_repository.dart';
 import 'package:flutter/material.dart';

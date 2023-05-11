@@ -22,6 +22,12 @@ const String tButtonProfile = "Edit Profile";
 
 /* -- Manager Product */
 const String tInputNameProducts = "Name Products";
+const String tInputDesProducts = "Description";
+const String tInputTypeProducts = "Type";
+const String tInputPriceProducts = "Price";
+const String tInputPriceSaleProducts = "Price Sales";
+const String tInputSaleProducts = "Sales";
+const String tInputUnitProducts = "Unit";
 const String tInputStatusProducts = "Status";
 const String tInputSlotProducts = "Slot";
 
@@ -34,3 +40,4 @@ const String tInputPhoneSeller = "Phone";
 const String tInputSalarySeller = "Salary";
 const String tInputSexSeller = "Sex";
 const String tInputAgeSeller = "Age";
+const String tInputSearchSeller = "Search Seller Name";

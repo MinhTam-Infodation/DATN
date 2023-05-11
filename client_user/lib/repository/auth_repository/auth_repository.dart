@@ -2,6 +2,7 @@ import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/modal/users.dart';
 import 'package:client_user/repository/exceptions/signup_email_password_failure.dart';
 import 'package:client_user/screens/continue_confim_info/screen_continue_info.dart';
+import 'package:client_user/screens/fobiden/screen_fobident.dart';
 import 'package:client_user/screens/home/screen_home.dart';
 import 'package:client_user/screens/login/screen_login.dart';
 import 'package:client_user/screens/welcome/screen_welcome.dart';
@@ -178,13 +179,29 @@ class AuthenticationRepository extends GetxController {
         );
         // ignore: unnecessary_null_comparison
         if (userCredential != null) {
-          Get.to(() => const ScreenHome());
+          final userDoc = await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(userCredential.user!.uid)
+              .get();
+
+          if (userDoc.exists) {
+            final userData = userDoc.data();
+            if (userData != null) {
+              if (userData['Status'] == false) {
+                Get.to(() => const ScreenFobident());
+              }
+              if (userData['Status'] == true) {
+                Get.to(() => const ScreenHome());
+              }
+            }
+          }
+
           Get.snackbar('Suceess', "Login To Success",
               snackPosition: SnackPosition.BOTTOM,
               backgroundColor: Colors.greenAccent.withOpacity(0.1),
               colorText: Colors.black);
-          SharedPreferences pref = await SharedPreferences.getInstance();
-          pref.setString("UserId", userCredential.user!.uid);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('isLoggedIn', true);
         }
       } else {
         Get.snackbar('Error', "Data Invalid",
@@ -224,14 +241,16 @@ class AuthenticationRepository extends GetxController {
             });
 
     //! Code Replace
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLoggedIn', true);
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
       Get.delete<HomeController>(); // xóa instance cũ để tránh xung đột
     }
 
     //! New
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    pref.clear();
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.setBool('isLoggedIn', false);
   }
 
   checkData(id) async {

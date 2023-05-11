@@ -92,3 +92,14 @@ const String tManageTableTitle = "Manage Table";
 
 /* Manager Seller */
 const String tManageSellerTitle = "Manage Seller";
+
+/* Upload Image Product */
+const String tUploadImageProductTitle = "Upload Image";
+
+/* Forbident */
+const String tForbidentTitle = "Welcome to our software";
+const String tForbidentDes =
+    "Please wait for Admin's approval, we are very sorry for this inconvenience.";
+
+const String tForbidentTimming = "No more than 5 days";
+const String tButtonFor = "Back to Login!";

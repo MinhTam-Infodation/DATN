@@ -4,11 +4,14 @@ import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
 import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/controller/manage_table.dart';
+import 'package:client_user/modal/custom_modal/home_category.dart';
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/screens/home/components/box_content_manager.dart';
 import 'package:client_user/screens/home/components/category_catalog.dart';
 import 'package:client_user/screens/home/components/search_bar.dart';
 import 'package:client_user/screens/home/drawer/drawer_header.dart';
+import 'package:client_user/screens/home/set_up/walting_setup.dart';
+import 'package:client_user/screens/manage_order/screen_order.dart';
 import 'package:client_user/screens/manage_product/screen_manager_product.dart';
 import 'package:client_user/screens/manager_seller/screen_manager_seller.dart';
 import 'package:client_user/screens/manager_table/screen_manage_table.dart';
@@ -28,11 +31,12 @@ class ScreenHome extends StatefulWidget {
 }
 
 class _ScreenHomeState extends State<ScreenHome> {
-  final List<String> items = List<String>.generate(100, (i) => "Item $i");
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   final box = GetStorage();
   var userId = "";
   var currentPage = DrawerSections.dashboard;
+  final List<SpecialOffer> specialOffer = [];
 
   final controller = Get.put(AuthenticationRepository());
   final tableController = Get.put(ManageTableController());
@@ -61,9 +65,64 @@ class _ScreenHomeState extends State<ScreenHome> {
     homeController.checkTotalTable(userId);
     homeController.checkTotalSeller(userId);
     homeController.checkTotalProduct(userId);
-    // if (homeController.totalTable > 0) {
-    //   tableController.getListTable(userId);
-    // }
+
+    if (specialOffer.isNotEmpty) {
+      specialOffer.clear();
+    }
+
+    if (homeController.totalProduct.value.toInt() == 0) {
+      if (!specialOffer.contains(SpecialOffer(
+        discount: 'Product',
+        title: "Manager Product For Now!",
+        detail: 'Create Product Now',
+        icon: iSetup2,
+      ))) {
+        specialOffer.add(SpecialOffer(
+          discount: 'Product',
+          title: "Manager Product For Now!",
+          detail: 'Create Product Now',
+          icon: iSetup2,
+        ));
+      }
+    }
+
+    if (homeController.totalSeller.value.toInt() == 0) {
+      if (!specialOffer.contains(
+        SpecialOffer(
+          discount: 'Seller',
+          title: "Manager Seller For Now!",
+          detail: 'Create Seller Now',
+          icon: iSetup3,
+        ),
+      )) {
+        specialOffer.add(
+          SpecialOffer(
+            discount: 'Seller',
+            title: "Manager Seller For Now!",
+            detail: 'Create Seller Now',
+            icon: iSetup3,
+          ),
+        );
+      }
+    }
+
+    if (homeController.totalTable.value.toInt() == 0) {
+      if (!specialOffer.contains(
+        SpecialOffer(
+          discount: 'Table',
+          title: "Manager Table For Now!",
+          detail: 'Create Table Now',
+          icon: iSetup1,
+        ),
+      )) {
+        specialOffer.add(SpecialOffer(
+          discount: 'Table',
+          title: "Manager Table For Now!",
+          detail: 'Create Table Now',
+          icon: iSetup1,
+        ));
+      }
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -122,321 +181,212 @@ class _ScreenHomeState extends State<ScreenHome> {
         ),
         body: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.all(sDashboardPadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Obx(() => Text(
-                      tHomeTitle + controller.user.value.Email.toString(),
-                      style: textXLQuicksan,
-                    )),
-                Text(
-                  tHomeHeading,
-                  style: textBigQuicksan,
-                ),
-                // const SizedBox(
-                //   height: sDashboardPadding,
-                // ),
-                // Container(
-                //   decoration: const BoxDecoration(
-                //       border: Border(left: BorderSide(width: 4))),
-                //   padding:
-                //       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //     children: [
-                //       Text(
-                //         tHomeSearch,
-                //         style: textBigQuicksanGray,
-                //       ),
-                //       const Icon(
-                //         Icons.mic,
-                //         size: 25,
-                //       )
-                //     ],
-                //   ),
-                // ),
-                const SizedBox(
-                  height: sDashboardPadding,
-                ),
-                SizedBox(
-                  height: 50,
-                  child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        Obx(() => BoxContentManager(
-                              nameManager: "PR",
-                              subnameManager: "Product",
-                              total: homeController.totalProduct.toInt(),
-                              onPressed: () {
-                                Get.to(() => const ScreenManagerProduct());
-                              },
-                            )),
-                        Obx(() => BoxContentManager(
-                              nameManager: "SE",
-                              subnameManager: "Seller",
-                              total: homeController.totalSeller.toInt(),
-                              onPressed: () {
-                                Get.to(() => const ScreenManageSeller());
-                              },
-                            )),
-                        Obx(
-                          () => BoxContentManager(
-                            nameManager: "TA",
-                            subnameManager: "Table",
-                            total: homeController.totalTable.toInt(),
-                            onPressed: () {
-                              Get.to(() => const ScreenManageTable());
-                            },
-                          ),
-                        )
-                      ]),
-                ),
-                const SizedBox(
-                  height: sDashboardPadding,
-                ),
-
-                // Banner
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: sparatorColor),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Flexible(child: Icon(Icons.bookmark)),
-                                Flexible(
-                                  child: Image.asset(
-                                    iHomeContent1,
-                                    height: 100,
-                                  ),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 25,
-                            ),
-                            Text(
-                              tHomeBannerTitle1,
-                              style: textXLQuicksanBold,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              tHomeBannerTitle2,
-                              style: textNormalQuicksan,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )
-                          ],
-                        ),
+              padding: const EdgeInsets.all(sDashboardPadding),
+              child: Obx(() => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        tHomeTitle + controller.user.value.Email.toString(),
+                        style: textXLQuicksan,
                       ),
-                    ),
-                    const SizedBox(
-                      width: sDashboardCardPadding,
-                    ),
-                    Expanded(
-                        child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: sparatorColor),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 20),
+                      if (homeController.totalProduct.value.toInt() > 0 &&
+                          homeController.totalSeller.value.toInt() > 0 &&
+                          homeController.totalTable.value.toInt() > 0)
+                        SizedBox(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Flexible(child: Icon(Icons.bookmark)),
-                                  Flexible(
-                                      child: Image.asset(
-                                    iHomeContent1,
-                                    height: 80,
-                                  ))
-                                ],
-                              ),
                               Text(
-                                tHomeBannerTitle1,
-                                style: textXLQuicksanBold,
-                                overflow: TextOverflow.ellipsis,
+                                tHomeHeading,
+                                style: textBigQuicksan,
                               ),
-                              Text(
-                                tHomeBannerTitle2,
-                                style: textNormalQuicksan,
-                                overflow: TextOverflow.ellipsis,
-                              )
+                              const SizedBox(
+                                height: sDashboardPadding,
+                              ),
+                              SizedBox(
+                                height: 50,
+                                child: ListView(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      Obx(() => BoxContentManager(
+                                            nameManager: "PR",
+                                            subnameManager: "Product",
+                                            total: homeController.totalProduct
+                                                .toInt(),
+                                            onPressed: () {
+                                              Get.to(() =>
+                                                  const ScreenManagerProduct());
+                                            },
+                                          )),
+                                      Obx(() => BoxContentManager(
+                                            nameManager: "SE",
+                                            subnameManager: "Seller",
+                                            total: homeController.totalSeller
+                                                .toInt(),
+                                            onPressed: () {
+                                              Get.to(() =>
+                                                  const ScreenManageSeller());
+                                            },
+                                          )),
+                                      Obx(
+                                        () => BoxContentManager(
+                                          nameManager: "TA",
+                                          subnameManager: "Table",
+                                          total:
+                                              homeController.totalTable.toInt(),
+                                          onPressed: () {
+                                            Get.to(() =>
+                                                const ScreenManageTable());
+                                          },
+                                        ),
+                                      )
+                                    ]),
+                              ),
                             ],
                           ),
-                        ),
-                        const SizedBox(height: 15),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                              style: ElevatedButton.styleFrom(
-                                  elevation: 0,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    side:
-                                        BorderSide(color: bgBlack, width: 5.0),
-                                  ),
-                                  foregroundColor: bgBlack,
-                                  backgroundColor: bgWhite,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: sButtonHeight)),
-                              onPressed: () {
-                                controller.logout();
-                              },
-                              child: Text(
-                                tHomeButton,
-                                style: textXLQuicksanBold,
-                              )),
                         )
-                      ],
-                    )),
-                  ],
-                ),
-
-                const SizedBox(
-                  height: sDashboardPadding,
-                ),
-
-                Text(
-                  tHomeTopProduct,
-                  style: textBigQuicksan,
-                ),
-                const SizedBox(
-                  height: sDashboardPadding,
-                ),
-                Obx(() => SizedBox(
-                      child: Column(
-                        children: [
-                          if (homeController.totalTable.toInt() > 0)
-                            SizedBox(
-                              child: Column(
-                                children: [
-                                  const SearchBar(),
-                                  const CategoriesCatalog(),
-                                  const SizedBox(
-                                    height: sDashboardPadding,
-                                  ),
-                                  SizedBox(
-                                    height: 500,
-                                    child: GridView.builder(
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 2, // Số cột trong lưới
-                                        childAspectRatio:
-                                            1, // Tỷ lệ khung hình của mỗi phần tử trong lưới
-                                        crossAxisSpacing:
-                                            10.0, // khoảng cách giữa các phần tử trong cột
-                                        mainAxisSpacing: 10.0,
-                                      ),
-                                      itemCount:
-                                          homeController.totalTable.toInt(),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              color: sparatorColor),
-                                          padding: const EdgeInsets.all(10),
-                                          child: Obx(() => Text(
-                                                " ${tableController.users[index].table!.Name!}",
+                      else
+                        Column(
+                          children: [
+                            WaltingSetUp(
+                              onTapSeeAll: () {},
+                              category: const [],
+                              specials: specialOffer,
+                            ),
+                          ],
+                        ),
+                      const SizedBox(
+                        height: sDashboardPadding,
+                      ),
+                      Text(
+                        tHomeTopProduct,
+                        style: textBigQuicksan,
+                      ),
+                      const SizedBox(
+                        height: sDashboardPadding,
+                      ),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            if (homeController.totalTable.toInt() > 0)
+                              SizedBox(
+                                child: Column(
+                                  children: [
+                                    const SearchBars(),
+                                    const CategoriesCatalog(),
+                                    const SizedBox(
+                                      height: sDashboardPadding,
+                                    ),
+                                    SizedBox(
+                                      height: 500,
+                                      child: GridView.builder(
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount:
+                                              2, // Số cột trong lưới
+                                          childAspectRatio:
+                                              1, // Tỷ lệ khung hình của mỗi phần tử trong lưới
+                                          crossAxisSpacing:
+                                              10.0, // khoảng cách giữa các phần tử trong cột
+                                          mainAxisSpacing: 10.0,
+                                        ),
+                                        itemCount:
+                                            homeController.totalTable.toInt(),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return GestureDetector(
+                                            onTap: () => Get.to(() =>
+                                                ScreenOrder(
+                                                    table: tableController
+                                                        .users[index].table!)),
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: sparatorColor),
+                                              padding: const EdgeInsets.all(10),
+                                              child: Text(
+                                                " ${tableController.users[index].table!.Name! ?? ""}",
                                                 style: textXLQuicksanBold,
                                                 overflow: TextOverflow.visible,
-                                              )),
-                                        );
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            else
+                              SizedBox(
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Image.asset(
+                                          iHomeNoData,
+                                          width: 200,
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[
+                                            200], // màu nền của đoạn văn bản
+                                        borderRadius: BorderRadius.circular(
+                                            8.0), // bo tròn cạnh của hộp
+                                      ),
+                                      padding: const EdgeInsets.all(
+                                          10.0), // khoảng cách giữa nội dung và cạnh của hộp
+                                      child: const Text(
+                                        'Currently there is no data about your table. Please make more tables',
+                                        style: TextStyle(fontSize: 16.0),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      height: sDashboardPadding,
+                                    ),
+                                    ElevatedButton(
+                                      onPressed: () {
+                                        Get.to(() => const ScreenManageTable());
                                       },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          else
-                            SizedBox(
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Image.asset(
-                                        iHomeNoData,
-                                        width: 200,
+                                      style: ElevatedButton.styleFrom(
+                                        elevation: 0,
+                                        shape: const StadiumBorder(),
+                                        foregroundColor: bgBlack,
+                                        backgroundColor: padua,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 15, horizontal: 20),
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey[
-                                          200], // màu nền của đoạn văn bản
-                                      borderRadius: BorderRadius.circular(
-                                          8.0), // bo tròn cạnh của hộp
-                                    ),
-                                    padding: const EdgeInsets.all(
-                                        10.0), // khoảng cách giữa nội dung và cạnh của hộp
-                                    child: const Text(
-                                      'Currently there is no data about your table. Please make more tables',
-                                      style: TextStyle(fontSize: 16.0),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: sDashboardPadding,
-                                  ),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      Get.to(() => const ScreenManageTable());
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: const StadiumBorder(),
-                                      foregroundColor: bgBlack,
-                                      backgroundColor: padua,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 20),
-                                    ),
-                                    child: SizedBox(
-                                      width: 250,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text("Go to add new Tables"
-                                              .toUpperCase()),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          const Icon(Icons.arrow_forward_ios)
-                                        ],
+                                      child: SizedBox(
+                                        width: 250,
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text("Go to add new Tables"
+                                                .toUpperCase()),
+                                            const SizedBox(
+                                              width: 10,
+                                            ),
+                                            const Icon(Icons.arrow_forward_ios)
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            )
-                        ],
-                      ),
-                    ))
-              ],
-            ),
-          ),
+                                    )
+                                  ],
+                                ),
+                              )
+                          ],
+                        ),
+                      )
+                    ],
+                  ))),
         ),
       ),
     );

@@ -6,7 +6,7 @@ class User {
   // ignore: non_constant_identifier_names
   bool? Status;
   // ignore: non_constant_identifier_names
-  int? ActiveAt, CreateAt;
+  int? ActiveAt, CreatedAt;
   String? Id;
   User(
       // ignore: non_constant_identifier_names
@@ -30,7 +30,7 @@ class User {
       // ignore: non_constant_identifier_names
       this.Id,
       // ignore: non_constant_identifier_names
-      this.CreateAt});
+      this.CreatedAt});
 
   Map<String, dynamic> toJson() {
     return {
@@ -44,7 +44,7 @@ class User {
       'Password': Password,
       'Status': Status,
       'ActiveAt': ActiveAt,
-      'CreateAt': CreateAt
+      'CreatedAt': CreatedAt
     };
   }
 
@@ -60,7 +60,7 @@ class User {
       Password: map['Password'],
       Status: map['Status'],
       ActiveAt: map['ActiveAt'],
-      CreateAt: map['CreateAt'],
+      CreatedAt: map['CreatedAt'],
     );
   }
 }
@@ -102,6 +102,21 @@ class UserSnapshot {
   static Stream<List<UserSnapshot>> dsUserTuFirebase() {
     Stream<QuerySnapshot> qs =
         FirebaseFirestore.instance.collection("Users").snapshots();
+    // ignore: unnecessary_null_comparison
+    if (qs == null) return const Stream.empty();
+    Stream<List<DocumentSnapshot>> listDocSnap =
+        qs.map((querySn) => querySn.docs);
+    return listDocSnap.map((listDocSnap) => listDocSnap
+        .map((docSnap) => UserSnapshot.fromSnapshot(docSnap))
+        .toList());
+  }
+
+  static Stream<List<UserSnapshot>> dsUserTuFirebaseBool(bool status) {
+    Stream<QuerySnapshot> qs = FirebaseFirestore.instance
+        .collection("Users")
+        .where("Status", isEqualTo: status)
+        .snapshots();
+
     // ignore: unnecessary_null_comparison
     if (qs == null) return const Stream.empty();
     Stream<List<DocumentSnapshot>> listDocSnap =

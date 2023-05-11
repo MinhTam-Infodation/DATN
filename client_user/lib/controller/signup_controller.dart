@@ -14,6 +14,7 @@ class SignUpController extends GetxController {
   final phoneNo = TextEditingController();
 
   final userRepo = Get.put(UserRepository());
+  final auth = Get.put(AuthenticationRepository());
 
   // Call this Fun
   void registerUser(String email, String password) {
@@ -25,7 +26,9 @@ class SignUpController extends GetxController {
     }
   }
 
-  void phoneAuthentication(String phoneNo) {}
+  void phoneAuthentication(String phoneNo) {
+    auth.phoneAuthentication(phoneNo);
+  }
 
   Future<void> createUser(Users users) async {
     await userRepo.createUser(users);

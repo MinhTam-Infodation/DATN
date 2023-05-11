@@ -11,7 +11,7 @@ class Products {
   // ignore: non_constant_identifier_names
   bool? Sale;
   // ignore: non_constant_identifier_names
-  late List<ProductImage> Images;
+  late List<ProductImage>? Images;
 
   Products(
       {
@@ -57,7 +57,7 @@ class Products {
   }
 
   Map<String, dynamic> toJson() {
-    var imagesJson = Images.map((image) => image.toJson()).toList();
+    var imagesJson = Images!.map((image) => image.toJson()).toList();
     return {
       'Id': Id,
       'Name': Name,

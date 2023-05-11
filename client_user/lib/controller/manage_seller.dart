@@ -1,6 +1,7 @@
 import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/modal/sellers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +10,14 @@ class ManageSellerController extends GetxController {
   final CollectionReference tablesRef =
       FirebaseFirestore.instance.collection('Users');
   static ManageSellerController get instance => Get.find();
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (FirebaseAuth.instance.currentUser != null) {
+      getListSeller(FirebaseAuth.instance.currentUser!.uid);
+    }
+  }
 
   // Input variable
   final name = TextEditingController();
@@ -24,6 +33,20 @@ class ManageSellerController extends GetxController {
 
   getListSeller(String id) async {
     users.bindStream(SellerSnapshot.dsSellerTuFirebase(id));
+  }
+
+  void searchProducts(String keyword, String userId) {
+    final dataSearch = tablesRef
+        .doc(userId)
+        .collection("Sellers")
+        .where('Name', isGreaterThanOrEqualTo: keyword)
+        // ignore: prefer_interpolation_to_compose_strings
+        .where('Name', isLessThanOrEqualTo: keyword + '\uf8ff')
+        .snapshots();
+    dataSearch.listen((snapshot) {
+      users.value =
+          snapshot.docs.map((doc) => SellerSnapshot.fromSnapshot(doc)).toList();
+    });
   }
 
   void addNewSeller(String id, Seller seller) {
@@ -65,12 +88,12 @@ class ManageSellerController extends GetxController {
     homeController.checkTotalTable(id);
   }
 
-  void editTable(String userid, Seller tables, String tableId) async {
+  void editSeller(String userid, Seller seller, String sellerId) async {
     await tablesRef
         .doc(userid)
         .collection("Sellers")
-        .doc(tableId)
-        .update(tables.toJson())
+        .doc(sellerId)
+        .update(seller.toJson())
         .then((_) => {
               Get.snackbar('Success', "Edit Seller Success",
                   snackPosition: SnackPosition.BOTTOM,

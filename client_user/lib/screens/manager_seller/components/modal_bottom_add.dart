@@ -274,8 +274,10 @@ class _ModalBottomAddSellerState extends State<ModalBottomAddSeller> {
                                   // ignore: no_leading_underscores_for_local_identifiers
                                   FirebaseStorage _storage =
                                       FirebaseStorage.instance;
-                                  Reference reference =
-                                      _storage.ref().child("images_seller");
+                                  Reference reference = _storage
+                                      .ref()
+                                      .child("images_seller")
+                                      .child("anh_${sellerController.phone}");
 
                                   UploadTask uploadTask =
                                       await _uploadTask(reference, _xImage!);

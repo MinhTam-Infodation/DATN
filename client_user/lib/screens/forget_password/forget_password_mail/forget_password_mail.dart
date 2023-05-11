@@ -6,11 +6,21 @@ import 'package:client_user/constants/string_img.dart';
 import 'package:client_user/screens/forget_password/forget_password_otp/screen_otp.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ForgetPasswordMailScreen extends StatelessWidget {
+class ForgetPasswordMailScreen extends StatefulWidget {
   const ForgetPasswordMailScreen({super.key});
+
+  @override
+  State<ForgetPasswordMailScreen> createState() =>
+      _ForgetPasswordMailScreenState();
+}
+
+class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
+  final formKey = GlobalKey<FormState>();
+  final emailController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +50,11 @@ class ForgetPasswordMailScreen extends StatelessWidget {
                     child: Column(
                   children: [
                     TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) =>
+                          value != null && !EmailValidator.validate(value)
+                              ? "Enter a valid email"
+                              : null,
                       decoration: InputDecoration(
                           label: Text(
                             tEmail,

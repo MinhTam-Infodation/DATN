@@ -1,5 +1,4 @@
 // ignore: must_be_immutable
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
@@ -44,24 +43,24 @@ class CartItemUser extends StatelessWidget {
           ),
         ],
       ),
-      endActionPane: ActionPane(
-        motion: const ScrollMotion(),
-        dismissible:
-            DismissiblePane(onDismissed: () => {cu.deleteUser(user.Id!)}),
-        children: [
-          SlidableAction(
-            onPressed: (context) => _dialogBuilder(
-                parentContext, "Delete", "Are you sure you want to delete?",
-                () {
-              cu.deleteUser(user.Id!);
-            }),
-            backgroundColor: bgColor,
-            foregroundColor: Colors.black,
-            icon: Icons.save,
-            label: 'Delete',
-          ),
-        ],
-      ),
+      // endActionPane: ActionPane(
+      //   motion: const ScrollMotion(),
+      //   dismissible:
+      //       DismissiblePane(onDismissed: () => {cu.deleteUser(user.Id!)}),
+      //   children: [
+      //     SlidableAction(
+      //       onPressed: (context) => _dialogBuilder(
+      //           parentContext, "Delete", "Are you sure you want to delete?",
+      //           () {
+      //         cu.deleteUser(user.Id!);
+      //       }),
+      //       backgroundColor: bgColor,
+      //       foregroundColor: Colors.black,
+      //       icon: Icons.save,
+      //       label: 'Delete',
+      //     ),
+      //   ],
+      // ),
       child: GestureDetector(
         onTap: () {
           showModalBottomSheet(
@@ -87,6 +86,8 @@ class CartItemUser extends StatelessWidget {
             child: Row(
               children: [
                 Container(
+                  width: 50,
+                  height: 50,
                   padding: const EdgeInsets.all(
                       2), // thêm khoảng cách giữa viền và CircleAvatar
                   decoration: BoxDecoration(
@@ -97,12 +98,23 @@ class CartItemUser extends StatelessWidget {
                       width: 2.0,
                     ),
                   ),
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        // ignore: invalid_use_of_protected_member
-                        user.Avatar ?? ''),
+                  child: ClipOval(
+                    child: Container(
+                      color: Colors.greenAccent.withOpacity(0.5),
+                    ),
                   ),
                 ),
+                // ClipOval(
+                //     child: user.Avatar != null && user.Avatar != ""
+                //         ? Image.network(
+                //             user.Avatar!,
+                //             fit: BoxFit.cover,
+                //           )
+                //         : Container(
+                //             color: Colors.greenAccent.withOpacity(0.5),
+                //           ),
+                //   ),
+                // )
                 const SizedBox(width: 20),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,15 +122,19 @@ class CartItemUser extends StatelessWidget {
                     Text(
                       // ignore: invalid_use_of_protected_member
                       user.Name ?? '',
-                      style: cartName,
+                      style: textXLQuicksanBold,
                     ),
                     const SizedBox(height: 10),
                     Wrap(
                       children: [
-                        Text(
-                          // ignore: invalid_use_of_protected_member
-                          user.Email ?? '',
-                          style: cartEmail,
+                        SizedBox(
+                          width: 170,
+                          child: Text(
+                            // ignore: invalid_use_of_protected_member
+                            user.Email ?? '',
+                            style: textNormalQuicksan,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         // ignore: invalid_use_of_protected_member
                         if (user.Status == true)

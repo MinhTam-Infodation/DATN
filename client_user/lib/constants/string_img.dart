@@ -51,3 +51,11 @@ const String iHomeProfileTemp = "assets/img/home/home1.png";
 const String iHomeProfileTemp2 = "assets/img/home/home2.png";
 const String iHomeContent1 = "assets/img/home/home3.png";
 const String iHomeNoData = "assets/img/home/home_nodata.png";
+
+/* Forbident */
+const String iForbident = "assets/img/forbident/for1.png";
+
+/* Set Up */
+const String iSetup1 = "assets/img/set_up/setup1.png";
+const String iSetup2 = "assets/img/set_up/setup2.png";
+const String iSetup3 = "assets/img/set_up/setup3.png";

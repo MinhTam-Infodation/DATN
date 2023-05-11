@@ -68,6 +68,12 @@ TextStyle textXLQuicksanRed = GoogleFonts.quicksand().copyWith(
 );
 
 TextStyle textXLQuicksanBold = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.w900,
+  fontSize: 20,
+  color: Colors.black,
+);
+
+TextStyle textXLNunitoBold = GoogleFonts.nunito().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 20,
   color: Colors.black,
@@ -93,6 +99,12 @@ TextStyle textNormalQuicksanBold = GoogleFonts.quicksand().copyWith(
 
 TextStyle textSmallQuicksan = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.w500,
+  fontSize: 16,
+  color: Colors.black,
+);
+
+TextStyle textSmallQuicksanBold = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.bold,
   fontSize: 16,
   color: Colors.black,
 );

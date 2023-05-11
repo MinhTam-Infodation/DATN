@@ -1,8 +1,8 @@
 import 'package:client_user/uilt/style/button_style/button_style.dart';
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({Key? key}) : super(key: key);
+class SearchBars extends StatelessWidget {
+  const SearchBars({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +15,11 @@ class SearchBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               color: Colors.grey.shade100,
             ),
-            child: Row(
+            child: const Row(
               children: [
                 Flexible(
                   child: Row(
-                    children: const [
+                    children: [
                       Padding(
                         padding: EdgeInsets.all(5),
                         child: Icon(Icons.search, color: Colors.grey),
