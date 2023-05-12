@@ -269,7 +269,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                       SizedBox(
                         child: Column(
                           children: [
-                            if (homeController.totalTable.toInt() > 0)
+                            if (homeController.totalTable.value.toInt() > 0)
                               SizedBox(
                                 child: Column(
                                   children: [
@@ -291,8 +291,9 @@ class _ScreenHomeState extends State<ScreenHome> {
                                               10.0, // khoảng cách giữa các phần tử trong cột
                                           mainAxisSpacing: 10.0,
                                         ),
-                                        itemCount:
-                                            homeController.totalTable.toInt(),
+                                        itemCount: homeController
+                                            .totalTable.value
+                                            .toInt(),
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           return GestureDetector(
