@@ -179,6 +179,8 @@ class _ViewOrderProductsState extends State<ViewOrderProducts> {
                               .cartItems
                               .map((orderDetailLocal) {
                             return OrderDetail(
+                              Id: "",
+                              OrderId: "",
                               IdProduct: orderDetailLocal.products?.Id,
                               NameProduct: orderDetailLocal.products?.Name,
                               Price: orderDetailLocal.products?.Price,
@@ -194,9 +196,9 @@ class _ViewOrderProductsState extends State<ViewOrderProducts> {
                                   convertInputDateTimetoNumber(DateTime.now()),
                               Total: productController.totalPrice,
                               Status: false,
-                              Seller: "minhTam",
-                              OrderDetails: orderDetails);
-                          orderController.addOrderSeller(userId, order);
+                              Seller: "minhTam");
+                          orderController.addOrderSeller(
+                              userId, order, orderDetails);
                           productController.clearCart();
                         },
                         child: Text(

@@ -10,24 +10,18 @@ class Orders {
   double? Total;
   bool? Status;
   String? Seller, TableId, TableName, Id;
-  late List<OrderDetail>? OrderDetails;
 
-  Orders(
-      {this.Id,
-      this.TableId,
-      this.TableName,
-      this.CreateDate,
-      this.Total,
-      this.Status,
-      this.Seller,
-      this.OrderDetails});
+  Orders({
+    this.Id,
+    this.TableId,
+    this.TableName,
+    this.CreateDate,
+    this.Total,
+    this.Status,
+    this.Seller,
+  });
 
   factory Orders.fromJson(Map<String, dynamic> map) {
-    var orderDetailJson = map['OrderDetails'] as List<dynamic>;
-    List<OrderDetail> orderDetail = orderDetailJson
-        .map((imageJson) => OrderDetail.fromJson(imageJson))
-        .toList();
-
     return Orders(
       Id: map['Id'],
       TableId: map['TableId'],
@@ -36,12 +30,10 @@ class Orders {
       Total: map['Total'],
       Status: map['Status'],
       Seller: map['Seller'],
-      OrderDetails: orderDetail,
     );
   }
 
   Map<String, dynamic> toJson() {
-    var oderDetailJson = OrderDetails!.map((image) => image.toJson()).toList();
     return {
       'Id': Id,
       'TableId': TableId,
@@ -50,7 +42,6 @@ class Orders {
       'Total': Total,
       'Status': Status,
       'Seller': Seller,
-      'OrderDetails': oderDetailJson,
     };
   }
 }
@@ -76,18 +67,18 @@ class OrdersSnapshot {
 
   static Future<void> deleteOrder(Orders order, String userId) async {
     await FirebaseFirestore.instance
-        .collection('users')
+        .collection('Users')
         .doc(userId)
-        .collection('orders')
+        .collection('Orders')
         .doc(order.Id)
         .delete();
   }
 
   static Future<void> updateOrder(Orders order, String userId) async {
     await FirebaseFirestore.instance
-        .collection('users')
+        .collection('Users')
         .doc(userId)
-        .collection('orders')
+        .collection('Orders')
         .doc(order.Id)
         .update(order.toJson());
   }
@@ -100,7 +91,9 @@ class OrdersSnapshot {
         .add(order.toJson());
   }
 
-  static Future<void> themMoiAutoId(Orders order, String idUser) async {
+  static Future<void> themMoiAutoId(
+      Orders order, String idUser, List<OrderDetail> details) async {
+    // Add the Order
     CollectionReference usersRef = FirebaseFirestore.instance
         .collection('Users')
         .doc(idUser)
@@ -109,12 +102,23 @@ class OrdersSnapshot {
     order.Id = newDocRef.id;
     await newDocRef.set(order.toJson());
 
+    // Change Status Table
+    updateStatusTableWalting(idUser, order.TableId);
+
+    // Call add Order Details
+    for (var detail in details) {
+      detail.OrderId = newDocRef.id;
+      await OrderDetailSnapshot.themMoiAutoId(detail, idUser, newDocRef.id);
+    }
+  }
+
+  static Future<void> updateStatusTableWalting(idUser, idTable) async {
     CollectionReference tablesRef = FirebaseFirestore.instance
         .collection('Users')
         .doc(idUser)
         .collection('Tables');
     QuerySnapshot tableQuerySnapshot =
-        await tablesRef.where('Id', isEqualTo: order.TableId).get();
+        await tablesRef.where('Id', isEqualTo: idTable).get();
     DocumentSnapshot tableSnapshot = tableQuerySnapshot.docs.first;
     DocumentReference tableDocRef = tablesRef.doc(tableSnapshot.id);
     tableDocRef.update({'Status': 'Walting'});

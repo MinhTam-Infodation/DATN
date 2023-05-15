@@ -1,5 +1,6 @@
 import 'package:client_user/controller/manage_table.dart';
 import 'package:client_user/modal/order.dart';
+import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/screens/home/screen_home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,8 +49,9 @@ class ManagerOrderController extends GetxController {
     }
   }
 
-  void addOrderSeller(String idUser, Orders seller) {
-    OrdersSnapshot.themMoiAutoId(seller, idUser)
+  void addOrderSeller(
+      String idUser, Orders seller, List<OrderDetail> orderDetail) {
+    OrdersSnapshot.themMoiAutoId(seller, idUser, orderDetail)
         .then((_) => {
               Get.snackbar('Success', "Add Order Success",
                   snackPosition: SnackPosition.BOTTOM,
