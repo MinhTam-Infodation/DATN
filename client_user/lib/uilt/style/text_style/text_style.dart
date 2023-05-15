@@ -43,6 +43,12 @@ TextStyle textAppKanit = GoogleFonts.kanit().copyWith(
   color: Colors.black,
 );
 
+TextStyle textAppKanitNormal = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 20,
+  color: Colors.black,
+);
+
 TextStyle textBigQuicksan = GoogleFonts.kanit().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 30,
@@ -68,7 +74,7 @@ TextStyle textXLQuicksanRed = GoogleFonts.quicksand().copyWith(
 );
 
 TextStyle textXLQuicksanBold = GoogleFonts.quicksand().copyWith(
-  fontWeight: FontWeight.w900,
+  fontWeight: FontWeight.bold,
   fontSize: 20,
   color: Colors.black,
 );

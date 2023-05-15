@@ -1,6 +1,7 @@
 import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/modal/products.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +21,14 @@ class ManageProductsController extends GetxController {
   final unit = TextEditingController();
 
   final homeController = Get.put(HomeController());
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (FirebaseAuth.instance.currentUser != null) {
+      getListProduct(FirebaseAuth.instance.currentUser!.uid);
+    }
+  }
 
   // Fun
   getListProduct(String id) async {

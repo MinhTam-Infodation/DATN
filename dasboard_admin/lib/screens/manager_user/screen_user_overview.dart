@@ -127,7 +127,6 @@ class _UserOverviewScreenState extends State<UserOverviewScreen> {
                         },
                       ),
                     ),
-                    const ButtonBottomCustom(),
                   ],
                 )
               ],

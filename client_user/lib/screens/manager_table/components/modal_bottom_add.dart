@@ -122,7 +122,7 @@ class _ModalBottomAddTableState extends State<ModalBottomAddTable> {
                                 final table = Tables(
                                     Id: "",
                                     Name: tableController.name.text,
-                                    Status: false,
+                                    Status: "Normal",
                                     Slot: int.parse(tableController.slot.text));
                                 tableController.addNewTable(userId, table);
                                 // Clear

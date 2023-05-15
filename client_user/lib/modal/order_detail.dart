@@ -1,5 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:client_user/modal/products.dart';
+import 'package:client_user/modal/tables.dart';
+import 'package:get/get.dart';
+
 class OrderDetail {
   String? Unit, IdProduct, NameProduct;
   int? Price, Quantity;
@@ -28,4 +32,27 @@ class OrderDetail {
       'Quantity': Quantity
     };
   }
+}
+
+class OrderDetailLocal {
+  Products? products;
+  RxInt Quantity;
+  Tables? tables;
+
+  OrderDetailLocal({this.products, int Quantity = 0, this.tables})
+      : Quantity = Quantity.obs;
+}
+
+class OrderDetailFireBase {
+  String? Unit, IdProduct, NameProduct;
+  RxInt Quantity;
+  int? Price;
+
+  OrderDetailFireBase(
+      {this.IdProduct,
+      this.NameProduct,
+      this.Price,
+      int Quantity = 0,
+      this.Unit})
+      : Quantity = Quantity.obs;
 }

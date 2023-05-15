@@ -43,17 +43,6 @@ class _ScreenHomeState extends State<ScreenHome> {
   final homeController = Get.put(HomeController());
 
   @override
-  void initState() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      userId = FirebaseAuth.instance.currentUser!.uid;
-    } else {
-      userId = "";
-    }
-    tableController.getListTable(userId);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser != null) {
       userId = FirebaseAuth.instance.currentUser!.uid;
@@ -62,6 +51,7 @@ class _ScreenHomeState extends State<ScreenHome> {
     }
 
     controller.checkData(userId);
+    tableController.getListTable(userId);
     homeController.checkTotalTable(userId);
     homeController.checkTotalSeller(userId);
     homeController.checkTotalProduct(userId);
@@ -278,45 +268,69 @@ class _ScreenHomeState extends State<ScreenHome> {
                                     const SizedBox(
                                       height: sDashboardPadding,
                                     ),
-                                    SizedBox(
-                                      height: 500,
-                                      child: GridView.builder(
-                                        gridDelegate:
-                                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount:
-                                              2, // Số cột trong lưới
-                                          childAspectRatio:
-                                              1, // Tỷ lệ khung hình của mỗi phần tử trong lưới
-                                          crossAxisSpacing:
-                                              10.0, // khoảng cách giữa các phần tử trong cột
-                                          mainAxisSpacing: 10.0,
-                                        ),
-                                        itemCount: homeController
-                                            .totalTable.value
-                                            .toInt(),
-                                        itemBuilder:
-                                            (BuildContext context, int index) {
-                                          return GestureDetector(
-                                            onTap: () => Get.to(() =>
-                                                ScreenOrder(
-                                                    table: tableController
-                                                        .users[index].table!)),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                  color: sparatorColor),
-                                              padding: const EdgeInsets.all(10),
-                                              child: Text(
-                                                " ${tableController.users[index].table!.Name! ?? ""}",
-                                                style: textXLQuicksanBold,
-                                                overflow: TextOverflow.visible,
+                                    Obx(
+                                      () => SizedBox(
+                                        height: 500,
+                                        child: GridView.builder(
+                                          gridDelegate:
+                                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount:
+                                                2, // Số cột trong lưới
+                                            childAspectRatio:
+                                                1, // Tỷ lệ khung hình của mỗi phần tử trong lưới
+                                            crossAxisSpacing:
+                                                10.0, // khoảng cách giữa các phần tử trong cột
+                                            mainAxisSpacing: 10.0,
+                                          ),
+                                          itemCount: homeController
+                                              .totalTable.value
+                                              .toInt(),
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return GestureDetector(
+                                              onTap: () => {
+                                                if (tableController
+                                                        .users[index].table !=
+                                                    null)
+                                                  {
+                                                    Get.to(() => ScreenOrder(
+                                                        table: tableController
+                                                            .users[index]
+                                                            .table!))
+                                                  }
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10),
+                                                    color: tableController
+                                                                .users[index]
+                                                                .table !=
+                                                            null
+                                                        ? tableController
+                                                                    .users[
+                                                                        index]
+                                                                    .table!
+                                                                    .Status ==
+                                                                "Walting"
+                                                            ? sinbad
+                                                            : sparatorColor
+                                                        : Colors.white),
+                                                padding:
+                                                    const EdgeInsets.all(10),
+                                                child: Text(
+                                                  " ${tableController.users[index].table!.Name!} ${tableController.users[index].table!.Status!}",
+                                                  style: textXLQuicksanBold,
+                                                  overflow:
+                                                      TextOverflow.visible,
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                            );
+                                          },
+                                        ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               )

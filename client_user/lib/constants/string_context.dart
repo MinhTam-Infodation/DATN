@@ -103,3 +103,17 @@ const String tForbidentDes =
 
 const String tForbidentTimming = "No more than 5 days";
 const String tButtonFor = "Back to Login!";
+
+/* Payment Order */
+const String tPaymentOrderTitle = "Choose Payment Method";
+const String tPaymentOrderDes =
+    "Select one of the options provided below to initiate payment.";
+
+const String tPaymentQRCodeOption = "QR Code";
+const String tPaymentQRCodeOptionDes = "Payment via QR code";
+
+const String tPaymentCashOption = "Cash";
+const String tPaymentCashOptionDes = "Payment in cash";
+
+const String tPaymentPayPalOption = "PayPal";
+const String tPaymentPayPalOptionDes = "Payment via PayPal";

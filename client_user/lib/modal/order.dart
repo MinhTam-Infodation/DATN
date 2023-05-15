@@ -1,10 +1,13 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'dart:ffi';
+
 import 'package:client_user/modal/order_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Orders {
-  int? CreateDate, Total;
+  int? CreateDate;
+  double? Total;
   bool? Status;
   String? Seller, TableId, TableName, Id;
   late List<OrderDetail>? OrderDetails;
@@ -20,7 +23,7 @@ class Orders {
       this.OrderDetails});
 
   factory Orders.fromJson(Map<String, dynamic> map) {
-    var orderDetailJson = map['Images'] as List<dynamic>;
+    var orderDetailJson = map['OrderDetails'] as List<dynamic>;
     List<OrderDetail> orderDetail = orderDetailJson
         .map((imageJson) => OrderDetail.fromJson(imageJson))
         .toList();
@@ -105,6 +108,16 @@ class OrdersSnapshot {
     DocumentReference newDocRef = usersRef.doc();
     order.Id = newDocRef.id;
     await newDocRef.set(order.toJson());
+
+    CollectionReference tablesRef = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(idUser)
+        .collection('Tables');
+    QuerySnapshot tableQuerySnapshot =
+        await tablesRef.where('Id', isEqualTo: order.TableId).get();
+    DocumentSnapshot tableSnapshot = tableQuerySnapshot.docs.first;
+    DocumentReference tableDocRef = tablesRef.doc(tableSnapshot.id);
+    tableDocRef.update({'Status': 'Walting'});
   }
 
   static Stream<List<OrdersSnapshot>> getListOrder(String idUser) {
@@ -122,6 +135,30 @@ class OrdersSnapshot {
         .toList());
   }
 
+// Trong trường hợp không có dữ liệu, phương thức toList() sẽ trả về một List
+//  rỗng, do đó ta không cần kiểm tra listDocSnap có khác null hay không. Sau đó,
+//   ta sử dụng expand() để biến đổi List<List<OrdersSnapshot>> thành một Stream
+//   <OrdersSnapshot> bằng cách phát ra lần lượt từng phần tử của các List con. C
+//   uối cùng, ta gọi phương thức asBroadcastStream() để tạo một Stream có thể phá
+//   t ra nhiều sự kiện cho nhiều người đăng ký, và gọi phương thức onCancel() để hu
+//   ỷ đăng ký của Stream khi không còn ai quan tâm tới nó.
+  static Stream<OrdersSnapshot> getOrderStream(String userId, String tableId) {
+    Stream<QuerySnapshot> qs = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection("Orders")
+        .where("TableId", isEqualTo: tableId)
+        .snapshots();
+    Stream<List<DocumentSnapshot>> listDocSnap =
+        qs.map((querySn) => querySn.docs);
+    return listDocSnap
+        .map((listDocSnap) => listDocSnap
+            .map((docSnap) => OrdersSnapshot.fromSnapshot(docSnap))
+            .toList())
+        .expand((orders) => orders)
+        .asBroadcastStream(onCancel: (sub) => sub.cancel());
+  }
+
   static Future<List<OrdersSnapshot>> dsUserTuFirebaseOneTime(
       String idUser) async {
     QuerySnapshot qs = await FirebaseFirestore.instance
@@ -132,5 +169,28 @@ class OrdersSnapshot {
     return qs.docs
         .map((docSnap) => OrdersSnapshot.fromSnapshot(docSnap))
         .toList();
+  }
+
+  Future<void> updateOrderDetails(
+      String orderId, List<OrderDetail> orderDetails, String userId) async {
+    // Lấy đối tượng hóa đơn từ Firestore
+    final orderSnapshot = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(userId)
+        .collection("Orders")
+        .doc(orderId)
+        .get();
+    if (!orderSnapshot.exists) {
+      throw Exception('Không tìm thấy hóa đơn với id $orderId');
+    }
+
+    // Tạo danh sách các Map chứa thông tin về OrderDetail
+    final orderDetailMaps =
+        orderDetails.map((orderDetail) => orderDetail.toJson()).toList();
+
+    // Cập nhật trường OrderDetails của hóa đơn với danh sách mới
+    await FirebaseFirestore.instance.collection('orders').doc(orderId).update({
+      'OrderDetails': orderDetailMaps,
+    });
   }
 }

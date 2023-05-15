@@ -56,7 +56,8 @@ class _CartItemProductsState extends State<CartItemProducts> {
                         GFAvatar(
                           shape: GFAvatarShape.circle,
                           child: Image.network(
-                            widget.products.Images![1].image,
+                            widget.products.Images?[0].image ??
+                                "https://w.wallhaven.cc/full/jx/wallhaven-jx1low.jpg",
                             width: 100,
                             height: 100,
                             fit: BoxFit.cover,

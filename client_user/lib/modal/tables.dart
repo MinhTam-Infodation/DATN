@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Tables {
   String? Id, Name;
-  bool? Status;
+  String? Status;
   int? Slot;
 
   Tables({this.Id, this.Name, this.Slot, this.Status});

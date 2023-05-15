@@ -297,21 +297,11 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                 Padding(
                                   padding: const EdgeInsets.all(20),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Indicator(
-                                        color: Colors.greenAccent,
-                                        text: 'Active',
-                                        isSquare: false,
-                                        size: touchedIndex == 0 ? 14 : 12,
-                                        textColor: touchedIndex == 0
-                                            ? Colors.black
-                                            : Colors.grey,
-                                      ),
-                                      Indicator(
                                         color: Colors.blueAccent,
-                                        text: 'Walting',
+                                        text: 'Total',
                                         isSquare: false,
                                         size: touchedIndex == 1 ? 14 : 12,
                                         textColor: touchedIndex == 1

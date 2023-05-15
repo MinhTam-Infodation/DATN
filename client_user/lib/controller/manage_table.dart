@@ -15,6 +15,13 @@ class ManageTableController extends GetxController {
   // Input variable
   final name = TextEditingController();
   final slot = TextEditingController();
+  @override
+  void onInit() {
+    super.onInit();
+    if (FirebaseAuth.instance.currentUser != null) {
+      getListTable(FirebaseAuth.instance.currentUser!.uid);
+    }
+  }
 
   final homeController = Get.put(HomeController());
 
