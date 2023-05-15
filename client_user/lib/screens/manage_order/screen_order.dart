@@ -35,30 +35,6 @@ class _ScreenOrderState extends State<ScreenOrder> {
   late final Orders order;
 
   @override
-  void initState() {
-    if (FirebaseAuth.instance.currentUser != null) {
-      userId = FirebaseAuth.instance.currentUser!.uid;
-    } else {
-      userId = "";
-    }
-    final controllers = Get.put(GetOrderController(widget.table.Id!));
-    if (widget.table.Status == "Walting" &&
-        controllers.order.value.order != null) {
-      // ignore: prefer_is_empty
-      if (orderFbController.cartItems.length > 0) {
-        orderFbController.clearCart();
-      } else {
-        orderFbController
-            .addDefault(controllers.order.value.order!.OrderDetails!);
-        // ignore: prefer_interpolation_to_compose_strings
-        print("Length Default ====== " +
-            orderFbController.cartItems.length.toString());
-      }
-    }
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser != null) {
       userId = FirebaseAuth.instance.currentUser!.uid;
@@ -69,7 +45,9 @@ class _ScreenOrderState extends State<ScreenOrder> {
     managerController.getListOrder(userId);
     orderController.getTotalQuantityOrder();
     final controller = Get.put(GetOrderController(widget.table.Id!));
-    controller.getOrderbyTableId(userId, widget.table.Id!);
+    if (widget.table.Status == "Walting") {
+      controller.getOrderbyTableId(userId, widget.table.Id!);
+    }
 
     return SafeArea(
         child: Scaffold(
@@ -112,52 +90,37 @@ class _ScreenOrderState extends State<ScreenOrder> {
                 child: Column(
                   children: [
                     if (widget.table.Status != "Walting")
-                      SizedBox(
-                        height: size.height - 150,
-                        width: size.width - 40,
-                        child: Obx(
-                          () {
-                            return ListView.separated(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemBuilder: (context, index) => CartItemOrder(
-                                product:
-                                    productController.product[index].products!,
-                                tables: widget.table,
-                              ),
-                              // ignore: invalid_use_of_protected_member
-                              itemCount: productController.product.value.length,
-                              padding: const EdgeInsets.only(bottom: 50 + 16),
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 0),
-                            );
-                          },
-                        ),
-                      )
+                      ListDataOrder(
+                          size: size,
+                          productController: productController,
+                          widget: widget)
                     else
-                      Column(
-                        children: [
-                          Obx(() {
-                            if (controller.order.value.order?.OrderDetails !=
-                                null) {
-                              return SizedBox(
-                                height: 550,
-                                child: ListView.builder(
-                                  itemCount: controller
-                                      .order.value.order?.OrderDetails?.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return CartItemDb(
-                                        order: controller.order.value.order!
-                                            .OrderDetails![index]);
-                                  },
-                                ),
-                              );
-                            } else {
-                              return const CircularProgressIndicator();
-                            }
-                          })
-                        ],
-                      )
+                      Obx(() =>
+                          Text("No Data ${controller.order.value.order!.Id}"))
+                    // Column(
+                    //   children: [
+                    //     Obx(() {
+                    //       if (controller.order.value.order?.OrderDetails !=
+                    //           null) {
+                    //         return SizedBox(
+                    //           height: 550,
+                    //           child: ListView.builder(
+                    //             itemCount: controller
+                    //                 .order.value.order?.OrderDetails?.length,
+                    //             itemBuilder:
+                    //                 (BuildContext context, int index) {
+                    //               return CartItemDb(
+                    //                   order: controller.order.value.order!
+                    //                       .OrderDetails![index]);
+                    //             },
+                    //           ),
+                    //         );
+                    //       } else {
+                    //         return const CircularProgressIndicator();
+                    //       }
+                    //     })
+                    //   ],
+                    // )
                   ],
                 ),
               ),
@@ -293,5 +256,41 @@ class _ScreenOrderState extends State<ScreenOrder> {
                       ),
                     ),
             )));
+  }
+}
+
+class ListDataOrder extends StatelessWidget {
+  const ListDataOrder({
+    super.key,
+    required this.size,
+    required this.productController,
+    required this.widget,
+  });
+
+  final Size size;
+  final ManageProductsController productController;
+  final ScreenOrder widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: size.height - 150,
+      width: size.width - 40,
+      child: Obx(
+        () {
+          return ListView.separated(
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemBuilder: (context, index) => CartItemOrder(
+              product: productController.product[index].products!,
+              tables: widget.table,
+            ),
+            // ignore: invalid_use_of_protected_member
+            itemCount: productController.product.value.length,
+            padding: const EdgeInsets.only(bottom: 50 + 16),
+            separatorBuilder: (context, index) => const SizedBox(height: 0),
+          );
+        },
+      ),
+    );
   }
 }

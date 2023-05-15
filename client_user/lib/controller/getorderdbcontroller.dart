@@ -17,7 +17,6 @@ class GetOrderController extends GetxController {
   }
 
   getOrderbyTableId(String idUser, String idTable) {
-    print("id" + idTable);
     order.bindStream(OrdersSnapshot.getOrderStream(idUser, idTable));
   }
 }

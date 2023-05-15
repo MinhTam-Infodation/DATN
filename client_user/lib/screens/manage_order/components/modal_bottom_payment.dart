@@ -63,35 +63,7 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
               btnIcon: Icons.payment,
               title: tPaymentCashOption,
               subTitle: tPaymentCashOptionDes,
-              onTap: () {
-                DateTime now = DateTime.now();
-                String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-                List<OrderDetail> orderDetails =
-                    widget.order.OrderDetails!.map((orderDetailLocal) {
-                  return OrderDetail(
-                    IdProduct: orderDetailLocal.IdProduct,
-                    NameProduct: orderDetailLocal.NameProduct,
-                    Price: orderDetailLocal.Price,
-                    Quantity: orderDetailLocal.Quantity,
-                    Unit: orderDetailLocal.Unit,
-                  );
-                }).toList();
-
-                final orderHistory = OrdersHistory(
-                    Id: "",
-                    order: Orders(
-                        Id: widget.order.Id,
-                        TableId: widget.order.TableId,
-                        TableName: widget.order.TableName,
-                        CreateDate: widget.order.CreateDate,
-                        Total: widget.order.Total,
-                        Status: true,
-                        Seller: "minhTam",
-                        OrderDetails: orderDetails),
-                    PaymentMenthod: "Cash",
-                    PaymentTime: convertInputDateTimetoNumber(formattedDate));
-                orderHistoryController.addNewOrderHistory(userId, orderHistory);
-              },
+              onTap: () {},
             ),
             const SizedBox(
               height: 20,
