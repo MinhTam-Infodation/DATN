@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, avoid_print
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
@@ -16,6 +16,8 @@ class WaltingUserController extends GetxController {
   final userCountMonth2 = 0.obs;
   final userCountMonth3 = 0.obs;
   final userCountMonth4 = 0.obs;
+  final userCountByMonth = <int, RxInt>{};
+  final numberOfMonths = 12;
 
   @override
   void onInit() {
@@ -41,46 +43,82 @@ class WaltingUserController extends GetxController {
     listUsers.bindStream(UserSnapshot.dsUserTuFirebaseBool(false));
   }
 
+  // void countNewUsers() async {
+  //   final currentDate = DateTime.now();
+  //   final date4MonthsAgo =
+  //       DateTime(currentDate.year, currentDate.month - 4, currentDate.day);
+  //   final snapshot = await FirebaseFirestore.instance
+  //       .collection('Users')
+  //       .where('CreatedAt',
+  //           isGreaterThan: date4MonthsAgo.millisecondsSinceEpoch)
+  //       .get();
+  //   int Month1 = 0;
+  //   int Month2 = 0;
+  //   int Month3 = 0;
+  //   int Month4 = 0;
+  //   for (var doc in snapshot.docs) {
+  //     DateTime date =
+  //         DateTime.fromMillisecondsSinceEpoch(doc.data()['CreatedAt']);
+  //     if (date.isAfter(currentDate.subtract(const Duration(days: 30)))) {
+  //       Month1++;
+  //     } else if (date.isAfter(currentDate.subtract(const Duration(days: 60)))) {
+  //       Month2++;
+  //     } else if (date.isAfter(currentDate.subtract(const Duration(days: 90)))) {
+  //       Month3++;
+  //     } else if (date
+  //         .isAfter(currentDate.subtract(const Duration(days: 120)))) {
+  //       Month4++;
+  //     }
+  //   }
+  //   userCountMonth1(Month1);
+  //   userCountMonth2(Month2);
+  //   userCountMonth3(Month3);
+  //   userCountMonth4(Month4);
+
+  //   print(
+  //       "Month1 ${userCountMonth1.value}Month2 ${userCountMonth2.value}Month3 ${userCountMonth3.value}Month4 ${userCountMonth4.value}");
+  // }
+
   void countNewUsers() async {
     final currentDate = DateTime.now();
-    final date4MonthsAgo =
-        DateTime(currentDate.year, currentDate.month - 4, currentDate.day);
+    final dateNMonthsAgo =
+        currentDate.subtract(Duration(days: numberOfMonths * 30));
+
     final snapshot = await FirebaseFirestore.instance
         .collection('Users')
         .where('CreatedAt',
-            isGreaterThan: date4MonthsAgo.millisecondsSinceEpoch)
+            isGreaterThan: dateNMonthsAgo.millisecondsSinceEpoch)
         .get();
-    int Month1 = 0;
-    int Month2 = 0;
-    int Month3 = 0;
-    int Month4 = 0;
+
+    // Khởi tạo số lượng người đăng ký cho từng tháng
+    for (int i = 1; i <= numberOfMonths; i++) {
+      userCountByMonth[i] = 0.obs;
+    }
+
     for (var doc in snapshot.docs) {
-      DateTime date =
-          DateTime.fromMillisecondsSinceEpoch(doc.data()['CreatedAt']);
-      if (date.isAfter(currentDate.subtract(const Duration(days: 30)))) {
-        Month1++;
-      } else if (date.isAfter(currentDate.subtract(const Duration(days: 60)))) {
-        Month2++;
-      } else if (date.isAfter(currentDate.subtract(const Duration(days: 90)))) {
-        Month3++;
-      } else if (date
-          .isAfter(currentDate.subtract(const Duration(days: 120)))) {
-        Month4++;
+      int createdAt = doc.data()['CreatedAt'];
+
+      // Chuyển giá trị CreatedAt từ số thành DateTime
+      DateTime createdAtDateTime =
+          DateTime.fromMillisecondsSinceEpoch(createdAt);
+
+      // Lấy tháng và năm của createdAtDateTime
+      int month = createdAtDateTime.month;
+      int year = createdAtDateTime.year;
+
+      // Tính toán tháng và tăng số lượng người đăng ký tương ứng
+      int monthDifference = currentDate.month - month;
+      int yearDifference = currentDate.year - year;
+      int monthIndex = numberOfMonths - (yearDifference * 12 + monthDifference);
+      if (monthIndex >= 1 && monthIndex <= numberOfMonths) {
+        userCountByMonth[monthIndex]?.value++;
       }
     }
-    userCountMonth1(Month1);
-    userCountMonth2(Month2);
-    userCountMonth3(Month3);
-    userCountMonth4(Month4);
 
-    print("Month1 " +
-        userCountMonth1.value.toString() +
-        "Month2 " +
-        userCountMonth2.value.toString() +
-        "Month3 " +
-        userCountMonth3.value.toString() +
-        "Month4 " +
-        userCountMonth4.value.toString());
+    // In ra kết quả
+    for (int i = 1; i <= numberOfMonths; i++) {
+      print('Month $i: ${userCountByMonth[i]?.value ?? 0}');
+    }
   }
 
   void searchUser(String keyword) {

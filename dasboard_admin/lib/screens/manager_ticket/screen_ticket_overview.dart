@@ -2,6 +2,7 @@ import 'package:dasboard_admin/controllers/ticket_controller.dart';
 import 'package:dasboard_admin/screens/manager_user/manager_walting/components/cart_item_walting.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:dasboard_admin/widgets/components/button_bottom_custom.dart';
+import 'package:dasboard_admin/widgets/coupon_card/horizontal_cupon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,8 +59,11 @@ class _TicketOverviewScreenState extends State<TicketOverviewScreen> {
                       () {
                         return ListView.separated(
                           physics: const AlwaysScrollableScrollPhysics(),
-                          itemBuilder: (context, index) => CartItemWalting(
-                              tiket: cu.ticketList[index].ticket!),
+                          itemBuilder: (context, index) =>
+                              cu.ticketList[index].ticket != null
+                                  ? HorizontalCouponExample2(
+                                      ticket: cu.ticketList[index].ticket!)
+                                  : const CircularProgressIndicator(),
                           // ignore: invalid_use_of_protected_member
                           itemCount: cu.ticketList.value.length,
                           padding: const EdgeInsets.only(bottom: 50 + 16),
