@@ -73,19 +73,19 @@ class OrderDetailSnapshot {
     await newDocRef.set(order.toJson());
   }
 
-  static Stream<List<OrderDetailSnapshot>> getListOrderDetail(
-      String idUser, String idOrder) {
+  static Stream<List<OrderDetailSnapshot>> getListOrder(
+      String idUser, String orderId) {
     Stream<QuerySnapshot> qs = FirebaseFirestore.instance
         .collection("Users")
         .doc(idUser)
         .collection("Orders")
-        .doc(idOrder)
+        .doc(orderId)
         .collection("OrderDetail")
         .snapshots();
-    // ignore: unnecessary_null_comparison
-    if (qs == null) return const Stream.empty();
+
     Stream<List<DocumentSnapshot>> listDocSnap =
         qs.map((querySn) => querySn.docs);
+
     return listDocSnap.map((listDocSnap) => listDocSnap
         .map((docSnap) => OrderDetailSnapshot.fromSnapshot(docSnap))
         .toList());

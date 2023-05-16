@@ -28,10 +28,6 @@ class ManagerOrderController extends GetxController {
     orderLists.bindStream(OrdersSnapshot.getListOrder(id));
   }
 
-  getOrderbyTableId(String idUser, String idTable) {
-    order.bindStream(OrdersSnapshot.getOrderStream(idUser, idTable));
-  }
-
   checkTotalProduct(id) async {
     if (id != "") {
       // ignore: avoid_print, prefer_interpolation_to_compose_strings

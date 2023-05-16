@@ -12,6 +12,7 @@ import 'package:client_user/screens/home/components/search_bar.dart';
 import 'package:client_user/screens/home/drawer/drawer_header.dart';
 import 'package:client_user/screens/home/set_up/walting_setup.dart';
 import 'package:client_user/screens/manage_order/screen_order.dart';
+import 'package:client_user/screens/manage_order/screen_orderv2.dart';
 import 'package:client_user/screens/manage_product/screen_manager_product.dart';
 import 'package:client_user/screens/manager_seller/screen_manager_seller.dart';
 import 'package:client_user/screens/manager_table/screen_manage_table.dart';
@@ -288,16 +289,16 @@ class _ScreenHomeState extends State<ScreenHome> {
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return GestureDetector(
-                                              onTap: () => {
+                                              onTap: () {
                                                 if (tableController
                                                         .users[index].table !=
-                                                    null)
-                                                  {
-                                                    Get.to(() => ScreenOrder(
+                                                    null) {
+                                                  Get.to(() => ScreenOrderV2(
                                                         table: tableController
                                                             .users[index]
-                                                            .table!))
-                                                  }
+                                                            .table!,
+                                                      ));
+                                                }
                                               },
                                               child: Container(
                                                 decoration: BoxDecoration(

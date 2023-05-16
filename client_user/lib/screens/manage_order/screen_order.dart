@@ -4,11 +4,10 @@ import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/controller/getorderdbcontroller.dart';
 import 'package:client_user/controller/manage_product.dart';
 import 'package:client_user/controller/manager_order.dart';
+import 'package:client_user/controller/order_detail.dart';
 import 'package:client_user/controller/order_local.dart';
-import 'package:client_user/controller/order_second_main.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/tables.dart';
-import 'package:client_user/screens/manage_order/components/cart_item_db.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_order.dart';
 import 'package:client_user/screens/manage_order/components/modal_bottom_payment.dart';
 import 'package:client_user/screens/manage_order/components/view_order_product.dart';
@@ -27,13 +26,41 @@ class ScreenOrder extends StatefulWidget {
 }
 
 class _ScreenOrderState extends State<ScreenOrder> {
+  //*  Controller
   final productController = Get.put(ManageProductsController());
   final orderController = Get.put(OrderLocalController());
   final managerController = Get.put(ManagerOrderController());
-  final orderFbController = Get.put(OrderSecondController());
+  final orderDetailController = Get.put(OrderDetailController());
+  final controller = Get.put(GetOrderController());
+
+  //* Variable
   var userId = "";
   late final Orders order;
 
+  //* Init
+  @override
+  void initState() {
+    super.initState();
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+
+    if (widget.table.Status == "Walting") {
+      controller.getOrderbyTableId(userId, widget.table.Id!);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // if (controller.order.isNotEmpty && controller.order.first.order != null) {
+    //   controller.getOrderDetailById(userId);
+    // }
+  }
+
+  //* Build
   @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -44,10 +71,6 @@ class _ScreenOrderState extends State<ScreenOrder> {
     final size = MediaQuery.of(context).size;
     managerController.getListOrder(userId);
     orderController.getTotalQuantityOrder();
-    final controller = Get.put(GetOrderController(widget.table.Id!));
-    if (widget.table.Status == "Walting") {
-      controller.getOrderbyTableId(userId, widget.table.Id!);
-    }
 
     return SafeArea(
         child: Scaffold(
@@ -95,8 +118,19 @@ class _ScreenOrderState extends State<ScreenOrder> {
                           productController: productController,
                           widget: widget)
                     else
-                      Obx(() =>
-                          Text("No Data ${controller.order.value.order!.Id}"))
+                      Column(
+                        children: [
+                          const Text("data"),
+                          Obx(() => Text(
+                              "${controller.order.isNotEmpty ? controller.order[0].order!.Id : "nOdi"}")),
+                          Obx(() => Text(
+                              controller.orderDetailItems.first.orderDetail !=
+                                      null
+                                  ? controller
+                                      .orderDetailItems.first.orderDetail!.Id!
+                                  : "No"))
+                        ],
+                      )
                     // Column(
                     //   children: [
                     //     Obx(() {
@@ -140,122 +174,149 @@ class _ScreenOrderState extends State<ScreenOrder> {
                 ],
               ),
               child: widget.table.Status != "Walting"
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                elevation: 0,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  side: BorderSide(color: bgBlack, width: 5.0),
-                                ),
-                                foregroundColor: bgWhite,
-                                backgroundColor: bgBlack,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: sButtonHeight)),
-                            onPressed: () {
-                              Get.to(() => ViewOrderProducts(
-                                    table: widget.table,
-                                  ));
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Text(
-                                  "Go to Order",
-                                  style: textNormalQuicksanWhite,
-                                ),
-                                Obx(() => Text(orderController.totalOrder.value
-                                    .toString()))
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
+                  ? BottomBarNormal(
+                      widget: widget, orderController: orderController)
                   // ignore: avoid_unnecessary_containers, sized_box_for_whitespace
-                  : Container(
-                      height: 95,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Obx(
-                                () => Text(
-                                  "Total: ${controller.order.value.order?.Total}",
-                                  style: textNormalKanitBold,
-                                ),
-                              )
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: OutlinedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(
-                                            color: bgBlack, width: 5.0),
-                                      ),
-                                      foregroundColor: bgBlack,
-                                      backgroundColor: bgWhite,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: sButtonHeight)),
-                                  onPressed: () async {},
-                                  child: Text(
-                                    "Export Invoid",
-                                    style: textNormalQuicksanBold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(
-                                            color: bgBlack, width: 5.0),
-                                      ),
-                                      foregroundColor: bgWhite,
-                                      backgroundColor: bgBlack,
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: sButtonHeight)),
-                                  onPressed: () => showModalBottomSheet(
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(50.0),
-                                        topRight: Radius.circular(50.0),
-                                      ),
-                                    ),
-                                    isScrollControlled: true,
-                                    context: context,
-                                    builder: (context) => ModalBottomPayment(
-                                        order: controller.order.value.order!),
-                                  ),
-                                  child: Text(
-                                    "Payment",
-                                    style: textNormalQuicksanWhite,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
+                  : BottomBarWalting(controller: GetOrderController.instance),
             )));
+  }
+}
+
+class BottomBarWalting extends StatelessWidget {
+  const BottomBarWalting({
+    super.key,
+    required this.controller,
+  });
+
+  final GetOrderController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 95,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.start,
+          //   children: [
+          //     Obx(
+          //       () => Text(
+          //         "Total: ${controller.order.value.order?.Total}",
+          //         style: textNormalKanitBold,
+          //       ),
+          //     )
+          //   ],
+          // ),
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        side: BorderSide(color: bgBlack, width: 5.0),
+                      ),
+                      foregroundColor: bgBlack,
+                      backgroundColor: bgWhite,
+                      padding:
+                          const EdgeInsets.symmetric(vertical: sButtonHeight)),
+                  onPressed: () async {},
+                  child: Text(
+                    "Export Invoid",
+                    style: textNormalQuicksanBold,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                        side: BorderSide(color: bgBlack, width: 5.0),
+                      ),
+                      foregroundColor: bgWhite,
+                      backgroundColor: bgBlack,
+                      padding:
+                          const EdgeInsets.symmetric(vertical: sButtonHeight)),
+                  onPressed: () {
+                    // showModalBottomSheet(
+                    //   shape: const RoundedRectangleBorder(
+                    //     borderRadius: BorderRadius.only(
+                    //       topLeft: Radius.circular(50.0),
+                    //       topRight: Radius.circular(50.0),
+                    //     ),
+                    //   ),
+                    //   isScrollControlled: true,
+                    //   context: context,
+                    //   builder: (context) => ModalBottomPayment(
+                    //       order: controller.order.value.order!),
+                    // );
+                  },
+                  child: Text(
+                    "Payment",
+                    style: textNormalQuicksanWhite,
+                  ),
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class BottomBarNormal extends StatelessWidget {
+  const BottomBarNormal({
+    super.key,
+    required this.widget,
+    required this.orderController,
+  });
+
+  final ScreenOrder widget;
+  final OrderLocalController orderController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        Expanded(
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                elevation: 0,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  side: BorderSide(color: bgBlack, width: 5.0),
+                ),
+                foregroundColor: bgWhite,
+                backgroundColor: bgBlack,
+                padding: const EdgeInsets.symmetric(vertical: sButtonHeight)),
+            onPressed: () {
+              Get.to(() => ViewOrderProducts(
+                    table: widget.table,
+                  ));
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Text(
+                  "Go to Order",
+                  style: textNormalQuicksanWhite,
+                ),
+                Obx(() => Text(orderController.totalOrder.value.toString()))
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }
 

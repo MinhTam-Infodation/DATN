@@ -139,14 +139,8 @@ class OrdersSnapshot {
         .toList());
   }
 
-// Trong trường hợp không có dữ liệu, phương thức toList() sẽ trả về một List
-//  rỗng, do đó ta không cần kiểm tra listDocSnap có khác null hay không. Sau đó,
-//   ta sử dụng expand() để biến đổi List<List<OrdersSnapshot>> thành một Stream
-//   <OrdersSnapshot> bằng cách phát ra lần lượt từng phần tử của các List con. C
-//   uối cùng, ta gọi phương thức asBroadcastStream() để tạo một Stream có thể phá
-//   t ra nhiều sự kiện cho nhiều người đăng ký, và gọi phương thức onCancel() để hu
-//   ỷ đăng ký của Stream khi không còn ai quan tâm tới nó.
-  static Stream<OrdersSnapshot> getOrderStream(String userId, String tableId) {
+  static Stream<List<OrdersSnapshot>> getOrderStream(
+      String userId, String tableId) {
     Stream<QuerySnapshot> qs = FirebaseFirestore.instance
         .collection('Users')
         .doc(userId)
@@ -159,7 +153,6 @@ class OrdersSnapshot {
         .map((listDocSnap) => listDocSnap
             .map((docSnap) => OrdersSnapshot.fromSnapshot(docSnap))
             .toList())
-        .expand((orders) => orders)
         .asBroadcastStream(onCancel: (sub) => sub.cancel());
   }
 
