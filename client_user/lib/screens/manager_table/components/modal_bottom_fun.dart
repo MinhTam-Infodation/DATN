@@ -176,7 +176,7 @@ class _ModalBottomFunTableState extends State<ModalBottomFunTable> {
                                 final table = Tables(
                                     Id: widget.table.Id!,
                                     Name: txtName.text,
-                                    Status: "Normal",
+                                    Status: widget.table.Status,
                                     Slot: int.parse(txtSlot.text));
                                 tableController.editTable(
                                     userId, table, widget.table.Id!);

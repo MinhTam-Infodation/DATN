@@ -63,7 +63,7 @@ class _HorizontalCouponExample2State extends State<HorizontalCouponExample2> {
             const Expanded(
               child: Center(
                 child: Text(
-                  'WINTER IS\nHERE',
+                  'EDIT PLANING IS\nHERE',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

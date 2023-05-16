@@ -7,6 +7,7 @@ import 'package:client_user/screens/forget_password/forget_password_otp/screen_o
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -50,6 +51,7 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
                     child: Column(
                   children: [
                     TextFormField(
+                      controller: emailController,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) =>
                           value != null && !EmailValidator.validate(value)
@@ -87,8 +89,16 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
                               padding: const EdgeInsets.symmetric(
                                   vertical: sButtonHeight)),
                           onPressed: () {
-                            Navigator.pop(context);
-                            Get.to(() => const ScreenOTP());
+                            // Navigator.pop(context);
+
+                            FirebaseAuth.instance
+                                .sendPasswordResetEmail(
+                                    email: emailController.text)
+                                .then((value) {
+                              Get.to(() => const ScreenOTP());
+                            }).catchError((err) {
+                              Get.snackbar("Error", err.toString());
+                            });
                           },
                           child: Text(
                             "Next".toUpperCase(),

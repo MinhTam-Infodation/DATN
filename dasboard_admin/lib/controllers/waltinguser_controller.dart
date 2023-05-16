@@ -78,7 +78,6 @@ class WaltingUserController extends GetxController {
   //   print(
   //       "Month1 ${userCountMonth1.value}Month2 ${userCountMonth2.value}Month3 ${userCountMonth3.value}Month4 ${userCountMonth4.value}");
   // }
-
   void countNewUsers() async {
     final currentDate = DateTime.now();
     final dateNMonthsAgo =
@@ -98,11 +97,9 @@ class WaltingUserController extends GetxController {
     for (var doc in snapshot.docs) {
       int createdAt = doc.data()['CreatedAt'];
 
-      // Chuyển giá trị CreatedAt từ số thành DateTime
+      // Tính toán tháng và năm từ giá trị createdAt
       DateTime createdAtDateTime =
           DateTime.fromMillisecondsSinceEpoch(createdAt);
-
-      // Lấy tháng và năm của createdAtDateTime
       int month = createdAtDateTime.month;
       int year = createdAtDateTime.year;
 

@@ -37,23 +37,6 @@ class SearchBars extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(
-          width: 16,
-        ),
-        SizedBox(
-          height: 45,
-          width: 45,
-          child: PrimaryShadowedButton(
-            onPressed: () {},
-            // ignore: sort_child_properties_last
-            child: Center(
-              child: Icon(Icons.menu,
-                  size: 18, color: Theme.of(context).colorScheme.surface),
-            ),
-            borderRadius: 12,
-            color: Colors.black,
-          ),
-        )
       ],
     );
   }

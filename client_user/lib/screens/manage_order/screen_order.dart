@@ -11,6 +11,8 @@ import 'package:client_user/modal/tables.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_order.dart';
 import 'package:client_user/screens/manage_order/components/modal_bottom_payment.dart';
 import 'package:client_user/screens/manage_order/components/view_order_product.dart';
+import 'package:client_user/screens/manage_order/screen_orderv2.dart';
+import 'package:client_user/screens/manage_order/screen_orderv3.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -50,14 +52,6 @@ class _ScreenOrderState extends State<ScreenOrder> {
     if (widget.table.Status == "Walting") {
       controller.getOrderbyTableId(userId, widget.table.Id!);
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // if (controller.order.isNotEmpty && controller.order.first.order != null) {
-    //   controller.getOrderDetailById(userId);
-    // }
   }
 
   //* Build
@@ -112,49 +106,10 @@ class _ScreenOrderState extends State<ScreenOrder> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    if (widget.table.Status != "Walting")
-                      ListDataOrder(
-                          size: size,
-                          productController: productController,
-                          widget: widget)
-                    else
-                      Column(
-                        children: [
-                          const Text("data"),
-                          Obx(() => Text(
-                              "${controller.order.isNotEmpty ? controller.order[0].order!.Id : "nOdi"}")),
-                          Obx(() => Text(
-                              controller.orderDetailItems.first.orderDetail !=
-                                      null
-                                  ? controller
-                                      .orderDetailItems.first.orderDetail!.Id!
-                                  : "No"))
-                        ],
-                      )
-                    // Column(
-                    //   children: [
-                    //     Obx(() {
-                    //       if (controller.order.value.order?.OrderDetails !=
-                    //           null) {
-                    //         return SizedBox(
-                    //           height: 550,
-                    //           child: ListView.builder(
-                    //             itemCount: controller
-                    //                 .order.value.order?.OrderDetails?.length,
-                    //             itemBuilder:
-                    //                 (BuildContext context, int index) {
-                    //               return CartItemDb(
-                    //                   order: controller.order.value.order!
-                    //                       .OrderDetails![index]);
-                    //             },
-                    //           ),
-                    //         );
-                    //       } else {
-                    //         return const CircularProgressIndicator();
-                    //       }
-                    //     })
-                    //   ],
-                    // )
+                    ListDataOrder(
+                        size: size,
+                        productController: productController,
+                        widget: widget)
                   ],
                 ),
               ),
@@ -197,17 +152,6 @@ class BottomBarWalting extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          // Row(
-          //   mainAxisAlignment: MainAxisAlignment.start,
-          //   children: [
-          //     Obx(
-          //       () => Text(
-          //         "Total: ${controller.order.value.order?.Total}",
-          //         style: textNormalKanitBold,
-          //       ),
-          //     )
-          //   ],
-          // ),
           Row(
             children: [
               Expanded(

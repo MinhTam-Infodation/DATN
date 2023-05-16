@@ -11,8 +11,11 @@ import 'package:client_user/screens/home/components/category_catalog.dart';
 import 'package:client_user/screens/home/components/search_bar.dart';
 import 'package:client_user/screens/home/drawer/drawer_header.dart';
 import 'package:client_user/screens/home/set_up/walting_setup.dart';
+import 'package:client_user/screens/manage_order/screen_homev4.dart';
+import 'package:client_user/screens/manage_order/screen_homev5.dart';
 import 'package:client_user/screens/manage_order/screen_order.dart';
 import 'package:client_user/screens/manage_order/screen_orderv2.dart';
+import 'package:client_user/screens/manage_order/screen_orderv3.dart';
 import 'package:client_user/screens/manage_product/screen_manager_product.dart';
 import 'package:client_user/screens/manager_seller/screen_manager_seller.dart';
 import 'package:client_user/screens/manager_table/screen_manage_table.dart';
@@ -293,40 +296,52 @@ class _ScreenHomeState extends State<ScreenHome> {
                                                 if (tableController
                                                         .users[index].table !=
                                                     null) {
-                                                  Get.to(() => ScreenOrderV2(
+                                                  if (tableController
+                                                          .users[index]
+                                                          .table!
+                                                          .Status ==
+                                                      "Walting") {
+                                                    Get.to(() => ExampleScreen(
                                                         table: tableController
                                                             .users[index]
-                                                            .table!,
-                                                      ));
+                                                            .table!));
+                                                  } else {
+                                                    Get.to(() => ScreenOrder(
+                                                        table: tableController
+                                                            .users[index]
+                                                            .table!));
+                                                  }
                                                 }
                                               },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: tableController
-                                                                .users[index]
-                                                                .table !=
-                                                            null
-                                                        ? tableController
+                                              child: Obx(() => Container(
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                        color: tableController
                                                                     .users[
                                                                         index]
-                                                                    .table!
-                                                                    .Status ==
-                                                                "Walting"
-                                                            ? sinbad
-                                                            : sparatorColor
-                                                        : Colors.white),
-                                                padding:
-                                                    const EdgeInsets.all(10),
-                                                child: Text(
-                                                  " ${tableController.users[index].table!.Name!} ${tableController.users[index].table!.Status!}",
-                                                  style: textXLQuicksanBold,
-                                                  overflow:
-                                                      TextOverflow.visible,
-                                                ),
-                                              ),
+                                                                    .table !=
+                                                                null
+                                                            ? tableController
+                                                                        .users[
+                                                                            index]
+                                                                        .table!
+                                                                        .Status ==
+                                                                    "Walting"
+                                                                ? sinbad
+                                                                : sparatorColor
+                                                            : Colors.white),
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            10),
+                                                    child: Text(
+                                                      " ${tableController.users[index].table!.Name!} ${tableController.users[index].table!.Status!}",
+                                                      style: textXLQuicksanBold,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                  )),
                                             );
                                           },
                                         ),
@@ -423,6 +438,7 @@ class _ScreenHomeState extends State<ScreenHome> {
               Get.to(() => const ScreenManageTable());
             } else if (id == 3) {
               currentPage = DrawerSections.seller;
+              Get.to(() => const ScreenManageSeller());
             } else if (id == 4) {
               currentPage = DrawerSections.product;
               Get.to(() => const ScreenManagerProduct());
