@@ -43,6 +43,12 @@ TextStyle textAppKanit = GoogleFonts.kanit().copyWith(
   color: Colors.black,
 );
 
+TextStyle textAppKanitRed = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 25,
+  color: Colors.redAccent,
+);
+
 TextStyle textAppKanitNormal = GoogleFonts.kanit().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 20,

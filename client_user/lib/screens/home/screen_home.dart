@@ -272,79 +272,73 @@ class _ScreenHomeState extends State<ScreenHome> {
                                     const SizedBox(
                                       height: sDashboardPadding,
                                     ),
-                                    Obx(
-                                      () => SizedBox(
-                                        height: 500,
-                                        child: GridView.builder(
-                                          gridDelegate:
-                                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount:
-                                                2, // Số cột trong lưới
-                                            childAspectRatio:
-                                                1, // Tỷ lệ khung hình của mỗi phần tử trong lưới
-                                            crossAxisSpacing:
-                                                10.0, // khoảng cách giữa các phần tử trong cột
-                                            mainAxisSpacing: 10.0,
-                                          ),
-                                          itemCount: homeController
-                                              .totalTable.value
-                                              .toInt(),
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
-                                            return GestureDetector(
-                                              onTap: () {
-                                                if (tableController
-                                                        .users[index].table !=
-                                                    null) {
-                                                  if (tableController
-                                                          .users[index]
-                                                          .table!
-                                                          .Status ==
-                                                      "Walting") {
-                                                    Get.to(() => ExampleScreen(
-                                                        table: tableController
-                                                            .users[index]
-                                                            .table!));
-                                                  } else {
-                                                    Get.to(() => ScreenOrder(
-                                                        table: tableController
-                                                            .users[index]
-                                                            .table!));
-                                                  }
-                                                }
-                                              },
-                                              child: Obx(() => Container(
-                                                    decoration: BoxDecoration(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                        color: tableController
-                                                                    .users[
-                                                                        index]
-                                                                    .table !=
-                                                                null
-                                                            ? tableController
-                                                                        .users[
-                                                                            index]
-                                                                        .table!
-                                                                        .Status ==
-                                                                    "Walting"
-                                                                ? sinbad
-                                                                : sparatorColor
-                                                            : Colors.white),
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            10),
-                                                    child: Text(
-                                                      " ${tableController.users[index].table!.Name!} ${tableController.users[index].table!.Status!}",
-                                                      style: textXLQuicksanBold,
-                                                      overflow:
-                                                          TextOverflow.visible,
-                                                    ),
-                                                  )),
-                                            );
-                                          },
+                                    SizedBox(
+                                      height: 500,
+                                      child: GridView.builder(
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount:
+                                              2, // Số cột trong lưới
+                                          childAspectRatio:
+                                              1, // Tỷ lệ khung hình của mỗi phần tử trong lưới
+                                          crossAxisSpacing:
+                                              10.0, // khoảng cách giữa các phần tử trong cột
+                                          mainAxisSpacing: 10.0,
                                         ),
+                                        itemCount: homeController
+                                            .totalTable.value
+                                            .toInt(),
+                                        itemBuilder:
+                                            (BuildContext context, int index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              if (tableController
+                                                      .users[index].table !=
+                                                  null) {
+                                                if (tableController.users[index]
+                                                        .table!.Status ==
+                                                    "Walting") {
+                                                  Get.to(() => ExampleScreen(
+                                                      table: tableController
+                                                          .users[index]
+                                                          .table!));
+                                                } else {
+                                                  Get.to(() => ScreenOrder(
+                                                      table: tableController
+                                                          .users[index]
+                                                          .table!));
+                                                }
+                                              }
+                                            },
+                                            child: Obx(() => Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                      color: tableController
+                                                                  .users[index]
+                                                                  .table !=
+                                                              null
+                                                          ? tableController
+                                                                      .users[
+                                                                          index]
+                                                                      .table!
+                                                                      .Status ==
+                                                                  "Walting"
+                                                              ? sinbad
+                                                              : sparatorColor
+                                                          : Colors.white),
+                                                  padding:
+                                                      const EdgeInsets.all(10),
+                                                  child: Text(
+                                                    " ${tableController.users[index].table!.Name!} ${tableController.users[index].table!.Status!}",
+                                                    style: textXLQuicksanBold,
+                                                    overflow:
+                                                        TextOverflow.visible,
+                                                  ),
+                                                )),
+                                          );
+                                        },
                                       ),
                                     )
                                   ],
