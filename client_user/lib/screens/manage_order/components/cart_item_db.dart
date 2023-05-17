@@ -1,6 +1,7 @@
 import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class CartItemDb extends StatefulWidget {
   const CartItemDb({super.key, required this.order});
@@ -39,7 +40,7 @@ class _CartItemDbState extends State<CartItemDb> {
                     children: [
                       Text(
                         // ignore: invalid_use_of_protected_member
-                        "Price: ${widget.order.Price.toString()}",
+                        "Price: ${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(widget.order.Price)}VND",
                         style: textSmallQuicksanBold,
                       ),
                     ],
