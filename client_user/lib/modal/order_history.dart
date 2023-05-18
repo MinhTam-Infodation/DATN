@@ -1,36 +1,49 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:client_user/modal/order.dart';
+import 'package:client_user/modal/order_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrdersHistory {
   String? Id, PaymentMenthod;
   Orders? order;
+  List<OrderDetail>? orderDetail;
   int? PaymentTime;
 
   OrdersHistory({
     this.Id,
     this.order,
     this.PaymentMenthod,
+    this.orderDetail,
     this.PaymentTime,
   });
 
-  factory OrdersHistory.fromJson(Map<String, dynamic> map) {
+  factory OrdersHistory.fromJson(Map<String, dynamic> json) {
     return OrdersHistory(
-      Id: map['Id'],
-      order: map['order'] != null ? Orders.fromJson(map['order']) : null,
-      PaymentMenthod: map['PaymentMenthod'],
-      PaymentTime: map['PaymentTime'],
+      Id: json['Id'],
+      PaymentMenthod: json['PaymentMethod'],
+      order: Orders.fromJson(json['order']),
+      orderDetail: parseOrderDetails(json['orderDetail']),
+      PaymentTime: json['PaymentTime'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'Id': Id,
+      'PaymentMethod': PaymentMenthod,
       'order': order?.toJson(),
-      'PaymentMenthod': PaymentMenthod,
+      'orderDetail': orderDetail?.map((detail) => detail.toJson()).toList(),
       'PaymentTime': PaymentTime,
     };
+  }
+
+  static List<OrderDetail>? parseOrderDetails(orderDetailsJson) {
+    if (orderDetailsJson != null) {
+      var list = orderDetailsJson as List;
+      return list.map((detail) => OrderDetail.fromJson(detail)).toList();
+    }
+    return null;
   }
 }
 
