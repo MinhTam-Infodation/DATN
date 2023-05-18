@@ -47,6 +47,10 @@ class ManageTableController extends GetxController {
     users.bindStream(TableSnapshot.dsUserTuFirebase(id));
   }
 
+  getListTableByStatus(String id, String status) {
+    users.bindStream(TableSnapshot.dsUserTuFirebaseFilter(id, status));
+  }
+
   void deleteTable(String id, String tableId) async {
     await tablesRef
         .doc(id)

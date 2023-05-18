@@ -67,6 +67,7 @@ class TableSnapshot {
         .collection("Users")
         .doc(idUser)
         .collection("Tables")
+        .orderBy("Status")
         .snapshots();
     // ignore: unnecessary_null_comparison
     if (qs == null) return const Stream.empty();
@@ -87,5 +88,33 @@ class TableSnapshot {
     return qs.docs
         .map((docSnap) => TableSnapshot.fromSnapshot(docSnap))
         .toList();
+  }
+
+  static Stream<List<TableSnapshot>> dsUserTuFirebaseFilter(
+      String idUser, String statusFilter) {
+    Stream<QuerySnapshot> qs = FirebaseFirestore.instance
+        .collection("Users")
+        .doc(idUser)
+        .collection("Tables")
+        .orderBy("Status")
+        .snapshots();
+    // ignore: unnecessary_null_comparison
+    if (qs == null) return const Stream.empty();
+    Stream<List<DocumentSnapshot>> listDocSnap =
+        qs.map((querySn) => querySn.docs);
+
+    return listDocSnap.map((listDocSnap) {
+      List<TableSnapshot> tableList = listDocSnap
+          .map((docSnap) => TableSnapshot.fromSnapshot(docSnap))
+          .toList();
+
+      if (statusFilter != null) {
+        tableList = tableList
+            .where((table) => table.table!.Status == statusFilter.toString())
+            .toList();
+      }
+
+      return tableList;
+    });
   }
 }

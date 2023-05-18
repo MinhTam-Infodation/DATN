@@ -1,8 +1,10 @@
 // ignore_for_file: avoid_unnecessary_containers
 
+import 'package:client_user/controller/manage_orderv3controller.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class CartOrder extends StatefulWidget {
@@ -14,6 +16,7 @@ class CartOrder extends StatefulWidget {
 }
 
 class _CartOrderState extends State<CartOrder> {
+  final OrderV2sController orderController = Get.put(OrderV2sController());
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -100,10 +103,10 @@ class _CartOrderState extends State<CartOrder> {
                         "BALANCE",
                         style: textNormalKanit,
                       ),
-                      Text(
-                        "${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(widget.order.Total)}VND",
-                        style: textAppKanitRed,
-                      )
+                      Obx(() => Text(
+                            "${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(orderController.totalPrice)}VND",
+                            style: textAppKanitRed,
+                          ))
                     ],
                   ),
                 ),

@@ -1,5 +1,10 @@
+// ignore_for_file: avoid_print
+
+import 'package:client_user/controller/manage_table.dart';
 import 'package:client_user/uilt/style/button_style/button_style.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CategoriesCatalog extends StatefulWidget {
   const CategoriesCatalog({Key? key}) : super(key: key);
@@ -10,6 +15,7 @@ class CategoriesCatalog extends StatefulWidget {
 }
 
 class _CategoriesCatalogState extends State<CategoriesCatalog> {
+  final tableController = Get.put(ManageTableController());
   List<Icon> iconArray = const [
     Icon(Icons.home),
     Icon(Icons.settings),
@@ -22,8 +28,15 @@ class _CategoriesCatalogState extends State<CategoriesCatalog> {
     "Còn Trống",
   ];
   int _selectedCategory = 1;
+  String userId = "";
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+
     return SizedBox(
       width: double.infinity,
       height: 80,
@@ -75,6 +88,7 @@ class _CategoriesCatalogState extends State<CategoriesCatalog> {
                                   onPressed: () {
                                     setState(() {
                                       _selectedCategory = index;
+                                      print("Tab Sellect $_selectedCategory");
                                     });
                                   },
                                   borderRadius: 80,
@@ -87,6 +101,20 @@ class _CategoriesCatalogState extends State<CategoriesCatalog> {
                           updateCategory: () {
                             setState(() {
                               _selectedCategory = index;
+                              print("Tab Sellect $_selectedCategory");
+                              switch (_selectedCategory) {
+                                case 2:
+                                  tableController.getListTableByStatus(
+                                      userId, "Walting");
+                                  break;
+                                case 3:
+                                  tableController.getListTableByStatus(
+                                      userId, "Normal");
+                                  break;
+                                default:
+                                  tableController.getListTable(userId);
+                                  break;
+                              }
                             });
                           },
                         ),

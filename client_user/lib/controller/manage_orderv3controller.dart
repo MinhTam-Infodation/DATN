@@ -34,6 +34,9 @@ class OrderV2sController extends GetxController {
     _orderDetailList.bindStream(_orderDetailStream(userId));
   }
 
+  double get totalPrice => orderDetailList.fold(
+      0, (sum, item) => sum + (item.Price! * item.Quantity!));
+
   Stream<List<OrderDetail>> _orderDetailStream(String userId) {
     return _order.map((order) {
       if (order != null) {
@@ -61,5 +64,63 @@ class OrderV2sController extends GetxController {
         },
       ),
     );
+  }
+
+  Future<void> addOrUpdateOrderDetailOnFirestore(
+      OrderDetail orderDetail, String userId, String orderId) async {
+    final orderDetailsRef = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('Orders')
+        .doc(orderId)
+        .collection('OrderDetail');
+
+    final existingOrderDetailsSnapshot = await orderDetailsRef
+        .where('NameProduct', isEqualTo: orderDetail.NameProduct)
+        .get();
+
+    if (existingOrderDetailsSnapshot.docs.isNotEmpty) {
+      // Nếu đã tồn tại orderDetail với NameProduct tương tự, thực hiện cập nhật Quantity
+      final existingOrderDetailDoc = existingOrderDetailsSnapshot.docs.first;
+      final existingQuantity = existingOrderDetailDoc.data()['Quantity'] as int;
+      final newQuantity = existingQuantity + 1;
+
+      await existingOrderDetailDoc.reference.update({'Quantity': newQuantity});
+    } else {
+      // Nếu không tồn tại orderDetail với NameProduct tương tự, thực hiện thêm mới
+      OrderDetailSnapshot.themMoiAutoId(orderDetail, userId, orderId);
+    }
+  }
+
+  void updateOrderDetail(
+      OrderDetail orderDetail, String userId, String orderId) {
+    // Update the existing order detail in the Firestore collection
+    if (orderDetail.Quantity == 0) {
+      deleteOrderDetail(orderDetail, userId, orderId);
+    } else {
+      final orderDetailsRef = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Orders')
+          .doc(order!.Id)
+          .collection('OrderDetail')
+          .doc(orderDetail.Id);
+
+      orderDetailsRef.update(orderDetail.toJson());
+    }
+  }
+
+  void deleteOrderDetail(
+      OrderDetail orderDetail, String idUser, String idOrder) {
+    // Delete the order detail from the Firestore collection
+    final orderDetailsRef = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(idUser)
+        .collection('Orders')
+        .doc(idOrder)
+        .collection('OrderDetail')
+        .doc(orderDetail.Id);
+
+    orderDetailsRef.delete();
   }
 }

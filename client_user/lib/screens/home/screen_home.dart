@@ -285,9 +285,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                                               10.0, // khoảng cách giữa các phần tử trong cột
                                           mainAxisSpacing: 10.0,
                                         ),
-                                        itemCount: homeController
-                                            .totalTable.value
-                                            .toInt(),
+                                        itemCount: tableController.users.length,
                                         itemBuilder:
                                             (BuildContext context, int index) {
                                           return GestureDetector(
@@ -429,13 +427,16 @@ class _ScreenHomeState extends State<ScreenHome> {
               currentPage = DrawerSections.dashboard;
             } else if (id == 2) {
               currentPage = DrawerSections.table;
-              Get.to(() => const ScreenManageTable());
+              Get.to(() => const ScreenManageTable())!
+                  .then((_) => currentPage = DrawerSections.dashboard);
             } else if (id == 3) {
               currentPage = DrawerSections.seller;
-              Get.to(() => const ScreenManageSeller());
+              Get.to(() => const ScreenManageSeller())!
+                  .then((_) => currentPage = DrawerSections.dashboard);
             } else if (id == 4) {
               currentPage = DrawerSections.product;
-              Get.to(() => const ScreenManagerProduct());
+              Get.to(() => const ScreenManagerProduct())!
+                  .then((_) => currentPage = DrawerSections.dashboard);
             } else if (id == 5) {
               currentPage = DrawerSections.order;
             } else if (id == 6) {
