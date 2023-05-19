@@ -61,9 +61,9 @@ TextStyle textBigQuicksan = GoogleFonts.kanit().copyWith(
   color: Colors.black,
 );
 
-TextStyle textBigQuicksanGray = GoogleFonts.kanit().copyWith(
+TextStyle textQuicksanGray = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.bold,
-  fontSize: 30,
+  fontSize: 16,
   color: Colors.grey.withOpacity(0.5),
 );
 
@@ -107,6 +107,18 @@ TextStyle textNormalQuicksanBold = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 18,
   color: Colors.black,
+);
+
+TextStyle textNormalQuicksanBoldWhite = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 18,
+  color: Colors.white,
+);
+
+TextStyle textNormalQuicksanBoldGray = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 18,
+  color: Colors.grey,
 );
 
 TextStyle textSmallQuicksan = GoogleFonts.quicksand().copyWith(
