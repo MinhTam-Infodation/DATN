@@ -25,6 +25,21 @@ class ManageTableController extends GetxController {
 
   final homeController = Get.put(HomeController());
 
+  void searchTableByName(String tableName, String userId) {
+    List<TableSnapshot> searchedTables = users
+        .where((table) =>
+            table.table!.Name!.toLowerCase().contains(tableName.toLowerCase()))
+        .toList();
+    users.value = searchedTables;
+  }
+
+  void searchTableByNamev2(String tableName, String userId) {
+    RegExp regExp = RegExp(tableName, caseSensitive: false);
+    List<TableSnapshot> searchedTables =
+        users.where((table) => regExp.hasMatch(table.table!.Name!)).toList();
+    users.value = searchedTables;
+  }
+
   void addNewTable(String id, Tables table) {
     TableSnapshot.themMoiAutoId(table, id)
         .then((_) => {

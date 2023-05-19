@@ -67,6 +67,8 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^21.2.3
   firebase_messaging: ^14.6.1
   flutter_local_notifications: ^14.0.0+2
+  flutter_zalopay_sdk: ^0.1.13
+  vnpay_flutter: ^1.0.1
 
 dev_dependencies:
   flutter_test:

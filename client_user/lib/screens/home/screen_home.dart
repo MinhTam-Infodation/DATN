@@ -267,7 +267,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                               SizedBox(
                                 child: Column(
                                   children: [
-                                    const SearchBars(),
+                                    SearchBars(),
                                     const CategoriesCatalog(),
                                     const SizedBox(
                                       height: sDashboardPadding,

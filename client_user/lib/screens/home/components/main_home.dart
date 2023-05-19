@@ -61,7 +61,7 @@ class _MainHomeState extends State<MainHome> {
                 children: [
                   Text(
                     tHomeSearch,
-                    style: textBigQuicksanGray,
+                    style: textBigQuicksan,
                   ),
                   const Icon(
                     Icons.mic,

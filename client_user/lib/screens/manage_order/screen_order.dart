@@ -70,7 +70,13 @@ class _ScreenOrderState extends State<ScreenOrder> {
         child: Scaffold(
             appBar: AppBar(
               leading: IconButton(
-                  onPressed: () => Get.back(),
+                  onPressed: () {
+                    if (orderController.totalOrder.value == 0) {
+                      Get.back();
+                    } else {
+                      showDialogWithCustomUI(context);
+                    }
+                  },
                   icon: const Icon(Icons.close, color: Colors.black)),
               title: Text(
                 widget.table.Name!,
@@ -298,4 +304,83 @@ class ListDataOrder extends StatelessWidget {
       ),
     );
   }
+}
+
+void showDialogWithCustomUI(BuildContext context) {
+  Get.dialog(
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(16.0), // Đặt border radius tại đây
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Confirmation",
+                  style: textNormalKanitBold,
+                ),
+              ),
+              const SizedBox(height: 7.0),
+              Text(
+                "Do you want to cancel the current menu selection?\n",
+                style: textSmallQuicksan,
+              ),
+              const SizedBox(height: 5.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shadowColor: Colors.white,
+                      backgroundColor: Colors.grey.withOpacity(0.2),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                            8.0), // Góc bo tròn với giá trị 8.0
+                      ),
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: textNormalQuicksanBoldGray,
+                    ),
+                    onPressed: () {
+                      // Navigator.pop(context);
+                      print("Back");
+                    },
+                  )),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                      child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              8.0), // Góc bo tròn với giá trị 8.0
+                        )),
+                    child: Text(
+                      "Confirm",
+                      style: textNormalQuicksanBoldWhite,
+                    ),
+                    onPressed: () {
+                      Get.back(
+                          result:
+                              true); // Trả về kết quả false khi người dùng nhấn Cancel
+                    },
+                  )),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: false);
 }
