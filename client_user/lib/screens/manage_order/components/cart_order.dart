@@ -66,7 +66,8 @@ class _CartOrderState extends State<CartOrder> {
                           width: 230,
                           child: Tooltip(
                             message: widget.order.Id,
-                            child: Text("Order #${widget.order.Id}",
+                            child: Text(
+                                "Order #${widget.order.Id ?? "No Data"}",
                                 style: textNormalKanitBold,
                                 overflow: TextOverflow.ellipsis),
                           ),
@@ -76,7 +77,7 @@ class _CartOrderState extends State<CartOrder> {
                         ),
                         SizedBox(
                           width: 230,
-                          child: Text(widget.order.TableName!,
+                          child: Text(widget.order.TableName ?? "No Data",
                               style: textNormalQuicksan,
                               overflow: TextOverflow.ellipsis),
                         ),

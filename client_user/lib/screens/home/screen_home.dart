@@ -438,13 +438,11 @@ class _ScreenHomeState extends State<ScreenHome> {
               Get.to(() => const ScreenManagerProduct())!
                   .then((_) => currentPage = DrawerSections.dashboard);
             } else if (id == 5) {
-              currentPage = DrawerSections.order;
-            } else if (id == 6) {
               currentPage = DrawerSections.history;
-            } else if (id == 7) {
+            } else if (id == 6) {
               currentPage = DrawerSections.profile;
               Get.to(() => const ScreenProfile());
-            } else if (id == 8) {
+            } else if (id == 7) {
               currentPage = DrawerSections.logout;
               controller.logout();
             }
@@ -489,14 +487,12 @@ class _ScreenHomeState extends State<ScreenHome> {
               currentPage == DrawerSections.seller ? true : false, () {}),
           menuItem(4, Icons.production_quantity_limits, "Product",
               currentPage == DrawerSections.product ? true : false, () {}),
-          menuItem(5, Icons.blinds_outlined, "Order",
-              currentPage == DrawerSections.order ? true : false, () {}),
           const Divider(
             thickness: 2,
           ),
-          menuItem(6, Icons.blinds_closed, "History",
+          menuItem(5, Icons.blinds_closed, "History",
               currentPage == DrawerSections.history ? true : false, () {}),
-          menuItem(7, Icons.person_pin_sharp, "Profile",
+          menuItem(6, Icons.person_pin_sharp, "Profile",
               currentPage == DrawerSections.profile ? true : false, () {
             Get.to(() => const ScreenProfile());
           }),
@@ -513,7 +509,6 @@ enum DrawerSections {
   table,
   seller,
   product,
-  order,
   history,
   profile,
   logout

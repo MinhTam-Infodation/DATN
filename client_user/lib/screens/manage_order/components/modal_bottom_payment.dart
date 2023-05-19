@@ -8,13 +8,13 @@ import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class ModalBottomPayment extends StatefulWidget {
-  ModalBottomPayment({super.key, required this.order});
+  ModalBottomPayment({super.key, required this.order, required this.listOrder});
 
   Orders order;
+  final List<OrderDetail> listOrder;
 
   @override
   State<ModalBottomPayment> createState() => _ModalBottomPaymentState();
@@ -63,7 +63,15 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
               btnIcon: Icons.payment,
               title: tPaymentCashOption,
               subTitle: tPaymentCashOptionDes,
-              onTap: () {},
+              onTap: () {
+                final order = OrdersHistory(
+                    Id: "",
+                    order: widget.order,
+                    PaymentMenthod: "Cash",
+                    orderDetail: widget.listOrder,
+                    PaymentTime: convertInputDateTimetoNumber(DateTime.now()));
+                orderHistoryController.addNewOrderHistory(userId, order);
+              },
             ),
             const SizedBox(
               height: 20,
@@ -81,10 +89,7 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
   }
 }
 
-convertInputDateTimetoNumber(String tiem) {
-  String activeDate = tiem; // giá trị ngày tháng dưới dạng chuỗi
-  DateTime dateTime =
-      DateTime.parse(activeDate); // chuyển đổi thành đối tượng DateTime
-  int timestamp = dateTime.millisecondsSinceEpoch; // chuyển đổi thành số
+convertInputDateTimetoNumber(DateTime tiem) {
+  int timestamp = tiem.millisecondsSinceEpoch;
   return timestamp;
 }

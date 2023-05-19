@@ -104,6 +104,32 @@ class OrderHistorySnapshot {
     }
   }
 
+  static Future<void> deleteCollectionAndSubcollections(
+      String collectionPath) async {
+    final CollectionReference collectionRef =
+        FirebaseFirestore.instance.collection(collectionPath);
+
+    final QuerySnapshot subCollectionSnapshot =
+        await collectionRef.get(); // Lấy tất cả các document trong collection
+
+    // Xóa tất cả các document trong sub-collection
+    final List<Future<void>> deleteFutures = [];
+    // ignore: avoid_function_literals_in_foreach_calls
+    subCollectionSnapshot.docs.forEach((doc) {
+      final DocumentReference docRef = collectionRef.doc(doc
+          .id); // Đối tượng DocumentReference của document trong sub-collection
+      final CollectionReference subCollectionRef = docRef.collection(
+          'OrderDetail'); // Thay 'OrderDetail' bằng tên của sub-collection của bạn
+      deleteFutures.add(subCollectionRef.doc().delete());
+    });
+
+    // Đợi cho tất cả các tác vụ xóa trong sub-collection hoàn thành
+    await Future.wait(deleteFutures);
+
+    // Xóa collection chính
+    await collectionRef.doc().delete();
+  }
+
   static Stream<List<OrderHistorySnapshot>> getListOrderHistory(String idUser) {
     Stream<QuerySnapshot> qs = FirebaseFirestore.instance
         .collection("Users")

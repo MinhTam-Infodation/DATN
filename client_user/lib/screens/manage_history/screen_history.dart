@@ -5,9 +5,9 @@ class ScreenHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("History"),
+    return SafeArea(
+      child: Scaffold(
+        body: Text("History"),
       ),
     );
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:client_user/modal/order.dart';
@@ -66,6 +68,39 @@ class OrderV2sController extends GetxController {
     );
   }
 
+  void recalculateOrderTotal(String userId, String orderId) {
+    print("Cập nhật");
+    final orderDetailsRef = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .collection('Orders')
+        .doc(orderId)
+        .collection('OrderDetail');
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      QuerySnapshot orderDetailSnapshot = await orderDetailsRef.get();
+
+      double totalPrice = orderDetailSnapshot.docs.fold(
+        0,
+        (total, orderDetailDoc) {
+          Map<String, dynamic> orderDetailData =
+              orderDetailDoc.data() as Map<String, dynamic>;
+          int price = orderDetailData['Price'];
+          int quantity = orderDetailData['Quantity'];
+          return total + (price.toDouble() * quantity.toDouble());
+        },
+      );
+
+      final orderRef = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .collection('Orders')
+          .doc(orderId);
+
+      transaction.update(orderRef, {'Total': totalPrice.toDouble()});
+    });
+  }
+
   Future<void> addOrUpdateOrderDetailOnFirestore(
       OrderDetail orderDetail, String userId, String orderId) async {
     final orderDetailsRef = FirebaseFirestore.instance
@@ -90,6 +125,8 @@ class OrderV2sController extends GetxController {
       // Nếu không tồn tại orderDetail với NameProduct tương tự, thực hiện thêm mới
       OrderDetailSnapshot.themMoiAutoId(orderDetail, userId, orderId);
     }
+
+    recalculateOrderTotal(userId, orderId);
   }
 
   void updateOrderDetail(
@@ -106,7 +143,9 @@ class OrderV2sController extends GetxController {
           .collection('OrderDetail')
           .doc(orderDetail.Id);
 
-      orderDetailsRef.update(orderDetail.toJson());
+      orderDetailsRef
+          .update(orderDetail.toJson())
+          .whenComplete(() => recalculateOrderTotal(userId, orderId));
     }
   }
 
@@ -122,5 +161,6 @@ class OrderV2sController extends GetxController {
         .doc(orderDetail.Id);
 
     orderDetailsRef.delete();
+    recalculateOrderTotal(idUser, idOrder); // Tín
   }
 }

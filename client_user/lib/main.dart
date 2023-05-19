@@ -16,18 +16,18 @@ void main() async {
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
       .then((value) => Get.put(AuthenticationRepository));
   await GetStorage.init();
-  try {
-    if (GetPlatform.isMobile) {
-      final RemoteMessage? remoteMessage =
-          await FirebaseMessaging.instance.getInitialMessage();
-      if (remoteMessage != null) {
-        final _orderId = remoteMessage.notification?.titleLocKey != null
-            ? int.parse(remoteMessage.notification!.titleLocKey!)
-            : null;
-      }
-      await HelperNotification
-    }
-  } catch (e) {}
+  // try {
+  //   if (GetPlatform.isMobile) {
+  //     final RemoteMessage? remoteMessage =
+  //         await FirebaseMessaging.instance.getInitialMessage();
+  //     if (remoteMessage != null) {
+  //       final _orderId = remoteMessage.notification?.titleLocKey != null
+  //           ? int.parse(remoteMessage.notification!.titleLocKey!)
+  //           : null;
+  //     }
+  //     await HelperNotification
+  //   }
+  // } catch (e) {}
   runApp(const MyApp());
 }
 

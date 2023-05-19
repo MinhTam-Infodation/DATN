@@ -8,6 +8,7 @@ import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/modal/tables.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_db.dart';
 import 'package:client_user/screens/manage_order/components/cart_order.dart';
+import 'package:client_user/screens/manage_order/components/modal_bottom_payment.dart';
 import 'package:client_user/screens/manage_order/screen_order.dart';
 import 'package:client_user/screens/manage_order/screen_update_order.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
@@ -177,7 +178,22 @@ class _ExampleScreenState extends State<ExampleScreen> {
                           backgroundColor: bgBlack,
                           padding: const EdgeInsets.symmetric(
                               vertical: sButtonHeight)),
-                      onPressed: () {},
+                      onPressed: () {
+                        showModalBottomSheet(
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(50.0),
+                              topRight: Radius.circular(50.0),
+                            ),
+                          ),
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (context) => ModalBottomPayment(
+                            order: orderController.order!,
+                            listOrder: orderController.orderDetailList,
+                          ),
+                        );
+                      },
                       child: Text(
                         "Payment",
                         style: textNormalQuicksanWhite,
