@@ -33,11 +33,8 @@ class _ScreenManageTableState extends State<ScreenManageTable> {
       userId = "";
     }
     homeController.checkTotalTable(userId);
+    tableController.getListTable(userId);
     final size = MediaQuery.of(context).size;
-
-    if (homeController.totalTable > 0) {
-      tableController.getListTable(userId);
-    }
 
     //! Build
     return SafeArea(
@@ -58,12 +55,12 @@ class _ScreenManageTableState extends State<ScreenManageTable> {
         body: SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.all(20),
-              child: Obx(
-                () => Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (homeController.totalTable.toInt() == 0)
-                      SizedBox(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(() {
+                    if (tableController.users.isEmpty) {
+                      return SizedBox(
                         child: Column(
                           children: [
                             Column(
@@ -123,9 +120,9 @@ class _ScreenManageTableState extends State<ScreenManageTable> {
                             )
                           ],
                         ),
-                      )
-                    else
-                      SizedBox(
+                      );
+                    } else {
+                      return SizedBox(
                         child: Stack(
                           children: [
                             SizedBox(
@@ -169,9 +166,10 @@ class _ScreenManageTableState extends State<ScreenManageTable> {
                                     )),
                           ],
                         ),
-                      ),
-                  ],
-                ),
+                      );
+                    }
+                  })
+                ],
               )),
         ),
       ),

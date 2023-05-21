@@ -11,14 +11,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // Variables
   RxList<UserSnapshot> usersnapshot = RxList<UserSnapshot>();
   final user = Users().obs;
+  final users = UserSnapshot(user: Users(), documentReference: null).obs;
   final box = GetStorage();
   final _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
@@ -30,14 +33,67 @@ class AuthenticationRepository extends GetxController {
     Future.delayed(const Duration(seconds: 6));
     firebaseUser = Rx<User?>(_auth.currentUser);
     firebaseUser.bindStream(_auth.userChanges());
-    // ever(firebaseUser, _setInitialScreen);
+    if (_auth.currentUser!.uid.isNotEmpty) {
+      bindingUser(_auth.currentUser!.uid);
+    }
   }
 
-  // _setInitialScreen(User? user) {
-  //   user == null
-  //       ? Get.offAll(() => const ScreenLogin())
-  //       : Get.offAll(() => const ScreenHome());
-  // }
+  void bindingUser(id) {
+    users.bindStream(UserSnapshot.getUser(id));
+  }
+
+  Future<void> login(String email, String password) async {
+    try {
+      if (email != "" && password != "") {
+        // Check Login
+        final userCredential = await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+        // ignore: unnecessary_null_comparison
+        if (userCredential != null) {
+          final userDoc = await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(userCredential.user!.uid)
+              .get();
+
+          if (userDoc.exists) {
+            final userData = userDoc.data();
+            if (userData != null) {
+              if (userData['Status'] == false) {
+                Get.to(() => const ScreenFobident());
+              }
+              if (userData['Status'] == true) {
+                Get.to(() => const ScreenHome());
+              }
+            }
+          }
+
+          Get.snackbar('Suceess', "Login To Success",
+              snackPosition: SnackPosition.BOTTOM,
+              backgroundColor: Colors.greenAccent.withOpacity(0.1),
+              colorText: Colors.black);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setBool('isLoggedIn', true);
+        }
+      } else {
+        Get.snackbar('Error', "Data Invalid",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent.withOpacity(0.1),
+            colorText: Colors.black);
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString(),
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
+          colorText: Colors.black);
+    }
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      // ignore: avoid_print, prefer_interpolation_to_compose_strings
+      print("ID: " + currentUser.uid);
+    }
+  }
 
   void updateUser(Users newUser) {
     user.update((val) {
@@ -61,12 +117,12 @@ class AuthenticationRepository extends GetxController {
       // Check User Credential
       final userCredential = await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .whenComplete(() => {
-                Get.snackbar('Success', "Create Account Success",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.greenAccent.withOpacity(0.1),
-                    colorText: Colors.black),
-              });
+          .whenComplete(
+            () => Get.snackbar('Success', "Create Account Success",
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.greenAccent.withOpacity(0.1),
+                colorText: Colors.black),
+          );
       // Check and Save UID
       if (userCredential.user!.uid != "") {
         box.write('idCredential', userCredential.user!.uid);
@@ -97,12 +153,12 @@ class AuthenticationRepository extends GetxController {
             'ActiveAt': 0,
             'CreatedAt': timestampNumber,
           })
-          .whenComplete(() => {
-                Get.snackbar('Success', "Create Profile Success",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.greenAccent.withOpacity(0.1),
-                    colorText: Colors.black),
-              })
+          .whenComplete(
+            () => Get.snackbar('Success', "Create Profile Success",
+                snackPosition: SnackPosition.BOTTOM,
+                backgroundColor: Colors.greenAccent.withOpacity(0.1),
+                colorText: Colors.black),
+          )
           .catchError((e) => {
                 Get.snackbar('Error', "Create Profile Fail",
                     snackPosition: SnackPosition.BOTTOM,
@@ -169,56 +225,98 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  Future<void> login(String email, String password) async {
+  Future<void> loginWithGoogle() async {
     try {
-      if (email != "" && password != "") {
-        // Check Login
-        final userCredential = await _auth.signInWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-        // ignore: unnecessary_null_comparison
-        if (userCredential != null) {
-          final userDoc = await FirebaseFirestore.instance
-              .collection('Users')
-              .doc(userCredential.user!.uid)
-              .get();
+      final GoogleSignInAccount? googleSignInAccount =
+          await _googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
 
-          if (userDoc.exists) {
-            final userData = userDoc.data();
-            if (userData != null) {
-              if (userData['Status'] == false) {
-                Get.to(() => const ScreenFobident());
-              }
-              if (userData['Status'] == true) {
-                Get.to(() => const ScreenHome());
-              }
-            }
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      // Thực hiện đăng nhập vào Firebase với credential của Google
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential);
+
+      final users = userCredential.user;
+      if (users != null) {
+        // Kiểm tra xem người dùng đã tồn tại trong danh sách xác thực trên Firebase chưa
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          // Người dùng mới, thực hiện thêm thông tin người dùng vào Firestore
+          final newUser = Users(
+            Id: users.uid,
+            Name: users.displayName,
+            Email: users.email,
+            Avatar: users.photoURL,
+            Status: false,
+            CreateAt: DateTime.now().millisecondsSinceEpoch,
+            PackageType: "",
+            Password: "GG",
+            Address: "",
+            ActiveAt: 0,
+            Phone: "32522353",
+          );
+          await _firestore
+              .collection('Users')
+              .doc(users.uid)
+              .set(newUser.toJson());
+
+          // Binding vào đối tượng user
+          user.update((val) {
+            val!.Id = users.uid;
+            val.Name = users.displayName;
+            val.Email = users.email;
+            val.Avatar = users.photoURL;
+            val.Status = false;
+            val.CreateAt = DateTime.now().millisecondsSinceEpoch;
+            val.PackageType = "";
+            val.Password = "GG";
+            val.Address = "";
+            val.ActiveAt = 0;
+            val.Phone = "32522353";
+          });
+
+          final currentUser = FirebaseAuth.instance.currentUser;
+          if (currentUser != null) {
+            // ignore: avoid_print, prefer_interpolation_to_compose_strings
+            print("ID: " + currentUser.uid);
           }
 
-          Get.snackbar('Suceess', "Login To Success",
-              snackPosition: SnackPosition.BOTTOM,
-              backgroundColor: Colors.greenAccent.withOpacity(0.1),
-              colorText: Colors.black);
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          prefs.setBool('isLoggedIn', true);
+          // Chuyển hướng đến trang đăng nhập
+          Get.off(() => const ScreenLogin());
+          Get.snackbar(
+            'Success',
+            "Create Account GG Success",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.greenAccent.withOpacity(0.1),
+            colorText: Colors.black,
+          );
+        } else {
+          // Người dùng đã tồn tại, chuyển hướng đến trang chính
+          Get.off(() => const ScreenLogin());
         }
       } else {
-        Get.snackbar('Error', "Data Invalid",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent.withOpacity(0.1),
-            colorText: Colors.black);
+        // Đăng nhập thất bại hoặc không có người dùng
+        Get.snackbar(
+          'Error',
+          "Login Account GG Fail",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.greenAccent.withOpacity(0.1),
+          colorText: Colors.black,
+        );
       }
     } catch (e) {
-      Get.snackbar('Error', e.toString(),
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.redAccent.withOpacity(0.1),
-          colorText: Colors.black);
-    }
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser != null) {
-      // ignore: avoid_print
-      print("ID: " + currentUser.uid);
+      // Xử lý lỗi
+      Get.snackbar(
+        'Error',
+        "Create Account GG Fail",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent.withOpacity(0.1),
+        colorText: Colors.black,
+      );
     }
   }
 

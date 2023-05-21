@@ -60,9 +60,9 @@ const String tForgetMailSubTitle =
     "Enter your registered E-Mail to receive OTP.";
 
 /* OTP */
-const String tOtpTitle = "CO\nDE";
+const String tOtpTitle = "LO\nGIN";
 const String tOtpSubTitle = "Verification";
-const String tOptMessage = "Enter the verification code sent at ";
+const String tOptMessage = "Login with new Password now! ";
 
 /* Confim more Info */
 const String tConfirmMoreInfo = " Confirm Info";

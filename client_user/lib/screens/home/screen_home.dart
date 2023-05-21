@@ -11,13 +11,12 @@ import 'package:client_user/screens/home/components/category_catalog.dart';
 import 'package:client_user/screens/home/components/search_bar.dart';
 import 'package:client_user/screens/home/drawer/drawer_header.dart';
 import 'package:client_user/screens/home/set_up/walting_setup.dart';
-import 'package:client_user/screens/manage_order/screen_homev4.dart';
+import 'package:client_user/screens/manage_history/screen_history.dart';
 import 'package:client_user/screens/manage_order/screen_homev5.dart';
 import 'package:client_user/screens/manage_order/screen_order.dart';
-import 'package:client_user/screens/manage_order/screen_orderv2.dart';
-import 'package:client_user/screens/manage_order/screen_orderv3.dart';
 import 'package:client_user/screens/manage_product/screen_manager_product.dart';
 import 'package:client_user/screens/manager_seller/screen_manager_seller.dart';
+import 'package:client_user/screens/manager_statistical/screen_manage_statistical.dart';
 import 'package:client_user/screens/manager_table/screen_manage_table.dart';
 import 'package:client_user/screens/profile/screen_profile.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
@@ -55,6 +54,8 @@ class _ScreenHomeState extends State<ScreenHome> {
     }
 
     controller.checkData(userId);
+    controller.bindingUser(userId);
+
     tableController.getListTable(userId);
     homeController.checkTotalTable(userId);
     homeController.checkTotalSeller(userId);
@@ -143,7 +144,7 @@ class _ScreenHomeState extends State<ScreenHome> {
               child: IconButton(
                 onPressed: () {},
                 icon: Obx(() {
-                  final user = controller.user.value;
+                  final user = controller.users.value.user;
                   if (user == null) {
                     return Image.asset(iHomeProfileTemp2);
                   } else if (user.Avatar == null || user.Avatar == "") {
@@ -164,9 +165,9 @@ class _ScreenHomeState extends State<ScreenHome> {
             child: Container(
               child: Column(
                 children: [
-                  MyHeaderDrawer(
-                    user: controller.user.value,
-                  ),
+                  Obx(() => MyHeaderDrawer(
+                        user: controller.users.value.user,
+                      )),
                   MyDrawerList()
                 ],
               ),
@@ -180,7 +181,8 @@ class _ScreenHomeState extends State<ScreenHome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        tHomeTitle + controller.user.value.Email.toString(),
+                        tHomeTitle +
+                            controller.users.value.user!.Email.toString(),
                         style: textXLQuicksan,
                       ),
                       if (homeController.totalProduct.value.toInt() > 0 &&
@@ -439,10 +441,14 @@ class _ScreenHomeState extends State<ScreenHome> {
                   .then((_) => currentPage = DrawerSections.dashboard);
             } else if (id == 5) {
               currentPage = DrawerSections.history;
+              Get.to(() => const ScreenHistory());
             } else if (id == 6) {
+              currentPage = DrawerSections.statistical;
+              Get.to(() => const ScreenManageStatistical());
+            } else if (id == 7) {
               currentPage = DrawerSections.profile;
               Get.to(() => const ScreenProfile());
-            } else if (id == 7) {
+            } else if (id == 8) {
               currentPage = DrawerSections.logout;
               controller.logout();
             }
@@ -492,10 +498,10 @@ class _ScreenHomeState extends State<ScreenHome> {
           ),
           menuItem(5, Icons.blinds_closed, "History",
               currentPage == DrawerSections.history ? true : false, () {}),
-          menuItem(6, Icons.person_pin_sharp, "Profile",
-              currentPage == DrawerSections.profile ? true : false, () {
-            Get.to(() => const ScreenProfile());
-          }),
+          menuItem(6, Icons.bar_chart_outlined, "Statistical",
+              currentPage == DrawerSections.statistical ? true : false, () {}),
+          menuItem(7, Icons.person_pin_sharp, "Profile",
+              currentPage == DrawerSections.profile ? true : false, () {}),
           menuItem(8, Icons.logout, "LogOut",
               currentPage == DrawerSections.logout ? true : false, () {}),
         ],
@@ -510,6 +516,7 @@ enum DrawerSections {
   seller,
   product,
   history,
+  statistical,
   profile,
   logout
 }

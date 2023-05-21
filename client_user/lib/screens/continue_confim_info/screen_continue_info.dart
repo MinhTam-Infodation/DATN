@@ -110,8 +110,8 @@ class _ScreenContinueInfoState extends State<ScreenContinueInfo> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Text(FirebaseAuth.instance.currentUser!.uid),
-                        Text(box.read('idCredential')),
+                        // Text(FirebaseAuth.instance.currentUser!.uid),
+                        // Text(box.read('idCredential')),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(

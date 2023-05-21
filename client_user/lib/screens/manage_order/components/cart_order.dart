@@ -17,11 +17,14 @@ class CartOrder extends StatefulWidget {
 
 class _CartOrderState extends State<CartOrder> {
   final OrderV2sController orderController = Get.put(OrderV2sController());
+  late DateTime tsdate;
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    DateTime tsdate =
-        DateTime.fromMillisecondsSinceEpoch(widget.order.CreateDate!);
+    if (widget.order.CreateDate != null) {
+      tsdate = DateTime.fromMillisecondsSinceEpoch(widget.order.CreateDate!);
+    } else {
+      tsdate = DateTime.fromMillisecondsSinceEpoch(100);
+    }
 
     return Container(
       margin: const EdgeInsets.all(20),
@@ -64,13 +67,9 @@ class _CartOrderState extends State<CartOrder> {
                       children: [
                         SizedBox(
                           width: 230,
-                          child: Tooltip(
-                            message: widget.order.Id,
-                            child: Text(
-                                "Order #${widget.order.Id ?? "No Data"}",
-                                style: textNormalKanitBold,
-                                overflow: TextOverflow.ellipsis),
-                          ),
+                          child: Text("Order #${widget.order.Id ?? "No Data"}",
+                              style: textNormalKanitBold,
+                              overflow: TextOverflow.ellipsis),
                         ),
                         const SizedBox(
                           height: 5,

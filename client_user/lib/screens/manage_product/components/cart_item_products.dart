@@ -1,8 +1,10 @@
 import 'package:client_user/modal/products.dart';
+import 'package:client_user/screens/manage_product/components/modal_bottom_fun.dart';
+import 'package:client_user/screens/manage_product/components/page_view_product.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:getwidget/components/avatar/gf_avatar.dart';
+import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:intl/intl.dart';
 
@@ -30,7 +32,21 @@ class _CartItemProductsState extends State<CartItemProducts> {
         motion: const ScrollMotion(),
         children: [
           SlidableAction(
-            onPressed: (context) {},
+            onPressed: (context) {
+              showModalBottomSheet(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(50.0),
+                    topRight: Radius.circular(50.0),
+                  ),
+                ),
+                isScrollControlled: true,
+                context: context,
+                builder: (context) => ModalBottomFunProducts(
+                  products: widget.products,
+                ),
+              );
+            },
             foregroundColor: Colors.black,
             icon: Icons.edit,
             label: 'Edit',
@@ -132,7 +148,11 @@ class _CartItemProductsState extends State<CartItemProducts> {
                       width: 50,
                     ),
                     OutlinedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(() => ViewProduct(
+                                product: widget.products,
+                              ));
+                        },
                         child: Text(
                           "View Products",
                           style: textXLNunitoBold,

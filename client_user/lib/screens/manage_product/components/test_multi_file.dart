@@ -2,10 +2,12 @@
 
 import 'dart:io';
 
+import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/controller/productimage_controller.dart';
 import 'package:client_user/modal/product_image.dart';
 import 'package:client_user/screens/manage_product/components/cart_item_productimage.dart';
+import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -65,79 +67,107 @@ class _TestMultiPickerState extends State<TestMultiPicker> {
           elevation: 0,
           backgroundColor: Colors.transparent,
         ),
-        body: Column(
-          children: [
-            widget.pickMode
-                ? Expanded(
-                    child: GridView.count(
-                    crossAxisCount: 3,
-                    children: List.generate(_imageList.length, (index) {
-                      return Stack(
-                        children: [
-                          Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: FileImage(File(_imageList[index].path)),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              widget.pickMode
+                  ? Expanded(
+                      child: GridView.count(
+                      crossAxisCount: 3,
+                      children: List.generate(_imageList.length, (index) {
+                        return Stack(
+                          children: [
+                            Container(
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image:
+                                      FileImage(File(_imageList[index].path)),
+                                ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: IconButton(
-                              icon: const Icon(Icons.delete),
-                              onPressed: () {
-                                setState(() {
-                                  _imageList.removeAt(index);
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-                  ))
-                : Expanded(
-                    child: GridView.count(
-                    crossAxisCount: 3,
-                    children: List.generate(
-                        // ignore: invalid_use_of_protected_member
-                        sellerController.product.value.length, (index) {
-                      return Stack(
-                        children: [
-                          Container(
-                            width: 150,
-                            height: 150,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: NetworkImage(
-                                    sellerController.product[index].image),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  setState(() {
+                                    _imageList.removeAt(index);
+                                  });
+                                },
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }),
-                  )),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _pickImages,
-              child: const Text('Add Images'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                uploadImages(_imageList);
-              },
-              child: const Text('Upload Images'),
-            ),
-          ],
+                          ],
+                        );
+                      }),
+                    ))
+                  : Expanded(
+                      child: GridView.count(
+                      crossAxisCount: 3,
+                      children: List.generate(
+                          // ignore: invalid_use_of_protected_member
+                          sellerController.product.value.length, (index) {
+                        return Stack(
+                          children: [
+                            Container(
+                              width: 150,
+                              height: 150,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                      sellerController.product[index].image),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    )),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _pickImages,
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      foregroundColor: bgBlack,
+                      backgroundColor: padua,
+                      padding: const EdgeInsets.symmetric(vertical: 15)),
+                  child: Text(
+                    'Add Images',
+                    style: textNormalQuicksanBold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      foregroundColor: bgBlack,
+                      backgroundColor: padua,
+                      padding: const EdgeInsets.symmetric(vertical: 15)),
+                  onPressed: () {
+                    uploadImages(_imageList);
+                  },
+                  child: Text(
+                    'Upload Images',
+                    style: textNormalQuicksanBold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -192,6 +222,10 @@ Future<void> uploadImages(List<XFile> imagesList) async {
     productImage.add(productItem);
   }
   sellerController.addListProductImage(productImage);
+  Get.snackbar('Success', "Upload Image Success",
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.greenAccent.withOpacity(0.1),
+      colorText: Colors.black);
 }
 
 convertInputDateTimetoNumber(DateTime tiem) {

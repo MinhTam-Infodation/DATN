@@ -38,12 +38,19 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
     } else {
       userId = "";
     }
+
+    if (value.isNotEmpty) {
+      productController.searchProductByName(value, userId);
+    } else {
+      productController.getListProduct(userId);
+    }
   }
 
   void _onClearPressed() {
     setState(() {
       _searchController.clear();
       _isClearVisible = false;
+      productController.getListProduct(userId);
     });
   }
 
@@ -56,7 +63,7 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
     }
     final homeController = Get.put(HomeController());
     homeController.checkTotalProduct(userId);
-    productController.getListProduct(userId);
+    // productController.getListProduct(userId);
     final size = MediaQuery.of(context).size;
 
     return SafeArea(
@@ -211,8 +218,8 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
                                                 .product[index].products!,
                                           ),
                                           // ignore: invalid_use_of_protected_member
-                                          itemCount: productController
-                                              .product.value.length,
+                                          itemCount:
+                                              productController.product.length,
                                           padding: const EdgeInsets.only(
                                               bottom: 50 + 16),
                                           separatorBuilder: (context, index) =>

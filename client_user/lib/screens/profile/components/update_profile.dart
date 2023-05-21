@@ -5,6 +5,7 @@ import 'package:client_user/controller/profile_controller.dart';
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
   final _formKey = GlobalKey<FormState>();
   bool _imageChange = false;
   XFile? _xImage;
+  var userId = "";
 
   late TextEditingController txtName;
   late TextEditingController txtEmail;
@@ -37,18 +39,24 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
   @override
   void initState() {
     super.initState();
-    DateTime tsdatecreate =
-        DateTime.fromMillisecondsSinceEpoch(controller.user.value.CreateAt!);
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+    controller.bindingUser(userId);
+    DateTime tsdatecreate = DateTime.fromMillisecondsSinceEpoch(
+        controller.users.value.user!.CreateAt!);
     txtName = TextEditingController();
     txtEmail = TextEditingController();
     txtPhone = TextEditingController();
     txtPassword = TextEditingController();
     txtCreateDate = TextEditingController();
 
-    txtName.text = controller.user.value.Name!;
-    txtEmail.text = controller.user.value.Email!;
-    txtPhone.text = controller.user.value.Phone!;
-    txtPassword.text = controller.user.value.Password!;
+    txtName.text = controller.users.value.user!.Name!;
+    txtEmail.text = controller.users.value.user!.Email!;
+    txtPhone.text = controller.users.value.user!.Phone!;
+    txtPassword.text = controller.users.value.user!.Password!;
     txtCreateDate.text = DateFormat('dd-MM-yyyy').format(tsdatecreate);
   }
 
@@ -64,6 +72,13 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
 
   @override
   Widget build(BuildContext context) {
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+
+    controller.bindingUser(userId);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -97,7 +112,7 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
                                     fit: BoxFit.cover,
                                   )
                                 : Image.network(
-                                    controller.user.value.Avatar!,
+                                    controller.users.value.user!.Avatar!,
                                     fit: BoxFit.cover,
                                   ))),
                     Positioned(
@@ -236,7 +251,7 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
                                       .ref()
                                       .child("images")
                                       .child(
-                                          "anh_${controller.user.value.Id!}");
+                                          "anh_${controller.users.value.user!.Id!}");
 
                                   UploadTask uploadTask =
                                       await _uploadTask(reference, _xImage!);
@@ -244,7 +259,7 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
                                     final avatar =
                                         await reference.getDownloadURL();
                                     profilecontroller.updateUserData(
-                                        controller.user.value.Id!,
+                                        controller.users.value.user!.Id!,
                                         txtName.text,
                                         txtEmail.text,
                                         txtPassword.text,
@@ -253,12 +268,12 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
                                   });
                                 } else {
                                   profilecontroller.updateUserData(
-                                      controller.user.value.Id!,
+                                      controller.users.value.user!.Id!,
                                       txtName.text,
                                       txtEmail.text,
                                       txtPassword.text,
                                       txtPhone.text,
-                                      controller.user.value.Avatar!);
+                                      controller.users.value.user!.Avatar!);
                                 }
                               },
                               style: ElevatedButton.styleFrom(

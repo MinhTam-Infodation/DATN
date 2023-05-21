@@ -95,7 +95,9 @@ class _ForgetPasswordMailScreenState extends State<ForgetPasswordMailScreen> {
                                 .sendPasswordResetEmail(
                                     email: emailController.text)
                                 .then((value) {
-                              Get.to(() => const ScreenOTP());
+                              Get.to(() => ScreenOTPEmail(
+                                    email: emailController.text,
+                                  ));
                             }).catchError((err) {
                               Get.snackbar("Error", err.toString());
                             });

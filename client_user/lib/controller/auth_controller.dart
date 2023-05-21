@@ -1,11 +1,17 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+
 import 'package:client_user/modal/users.dart';
 import 'package:client_user/screens/home/screen_home.dart';
+import 'package:client_user/screens/login/screen_login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -130,21 +136,56 @@ class AuthController extends GetxController {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      // Lấy thông tin user từ UserCredential và lưu vào collection
-      final userc = userCredential.user;
-      final newUser = Users(
-        Id: userc!.uid,
-        Name: userc.displayName,
-        Email: userc.email,
-        Avatar: userc.photoURL,
-        Status: false,
-        CreateAt: DateTime.now().millisecondsSinceEpoch,
-      );
-      await _firestore.collection('users').doc(userc.uid).set(newUser.toJson());
+      final user = userCredential.user;
+      if (user != null) {
+        // Kiểm tra xem người dùng đã tồn tại trong danh sách xác thực trên Firebase chưa
+        if (userCredential.additionalUserInfo!.isNewUser) {
+          // Người dùng mới, thực hiện thêm thông tin người dùng vào Firestore
+          final newUser = Users(
+            Id: user.uid,
+            Name: user.displayName,
+            Email: user.email,
+            Avatar: user.photoURL,
+            Status: false,
+            CreateAt: DateTime.now().millisecondsSinceEpoch,
+            PackageType: "",
+            Password: "GG",
+            Address: "",
+            ActiveAt: 0,
+            Phone: "32522353",
+          );
+          await _firestore
+              .collection('Users')
+              .doc(user.uid)
+              .set(newUser.toJson());
+
+          // Chuyển hướng đến trang đăng nhập
+          Get.off(() => const ScreenLogin());
+          Get.snackbar(
+            'Success',
+            "Create Account GG Success",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.greenAccent.withOpacity(0.1),
+            colorText: Colors.black,
+          );
+        } else {
+          // Người dùng đã tồn tại, chuyển hướng đến trang chính
+          Get.off(() => const ScreenHome());
+        }
+      } else {
+        // Đăng nhập thất bại hoặc không có người dùng
+        print('Google sign-in failed');
+      }
     } catch (e) {
-      // Handle lỗi nếu có
-      // ignore: avoid_print
-      print(e);
+      // Xử lý lỗi
+      print('Error signing in with Google: $e');
+      Get.snackbar(
+        'Error',
+        "Create Account GG Fail",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent.withOpacity(0.1),
+        colorText: Colors.black,
+      );
     }
   }
 
@@ -228,6 +269,31 @@ class AuthController extends GetxController {
     }
   }
 
+  Future sendEmail(
+      String subject, String obj, String mess, String userEmail) async {
+    final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+    const serviceId = "service_4kiay1s";
+    const templateId = "template_330zzss";
+    const userId = "user_KdpP8j3RIJaFLpvop";
+    final response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: json.encode({
+          "service_id": serviceId,
+          "template_id": templateId,
+          "user_id": userId,
+          "template_params": {
+            'subject': subject,
+            'object': obj,
+            'from_name': 'System Amager',
+            'message': mess,
+            'user_email': userEmail,
+          }
+        }));
+
+    return response.statusCode;
+  }
   /*
     final data = {'status': 'active'};
     await updateUser(userId, data);

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.client_user">
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="Amager"
         android:name="${applicationName}"
@@ -26,7 +27,24 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-        </activity>
+            <!-- Neww -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="demozpdk"
+                    android:host="app" />
+            </intent-filter>
+             <meta-data
+            android:name="com.vng.zalo.sdk.APP_ID"
+            android:value="1532834980593423769" />
+            <meta-data
+            android:name="com.vng.zalo.sdk.URI_SCHEME"
+            android:value="demozpdk://app" />
+            <meta-data
+            android:name="com.vng.zalo.sdk.ENVIRONMENT"
+            android:value="SANDBOX" />
+              </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

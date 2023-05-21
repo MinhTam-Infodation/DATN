@@ -56,6 +56,7 @@ class ManageTableController extends GetxController {
             });
 
     homeController.checkTotalTable(id);
+    getListTable(id);
   }
 
   getListTable(String id) async {
@@ -85,6 +86,7 @@ class ManageTableController extends GetxController {
                   colorText: Colors.black)
             });
     homeController.checkTotalTable(id);
+    getListTable(id);
   }
 
   void editTable(String userid, Tables tables, String tableId) async {

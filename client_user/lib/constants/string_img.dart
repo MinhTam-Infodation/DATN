@@ -24,6 +24,7 @@ const String iInprotext = "assets/img/inprogress/inpro_text.gif";
 const String iWelcom1 = "assets/img/welcome/wel1.gif";
 const String iWelcom2 = "assets/img/welcome/wel2.gif";
 const String iWelcom3 = "assets/img/welcome/wel3.gif";
+const String iWelcom4 = "assets/img/welcome/wel4.png";
 
 /* -- Login -- */
 const String iLogin = "assets/img/login/login.png";

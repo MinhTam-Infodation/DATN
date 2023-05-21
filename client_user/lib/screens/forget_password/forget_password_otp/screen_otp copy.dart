@@ -11,15 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ScreenOTPEmail extends StatefulWidget {
-  const ScreenOTPEmail({super.key, required this.email});
+class ScreenOTPPhone extends StatefulWidget {
+  const ScreenOTPPhone({super.key, required this.email});
   final String email;
 
   @override
-  State<ScreenOTPEmail> createState() => _ScreenOTPEmailState();
+  State<ScreenOTPPhone> createState() => _ScreenOTPPhoneState();
 }
 
-class _ScreenOTPEmailState extends State<ScreenOTPEmail> {
+class _ScreenOTPPhoneState extends State<ScreenOTPPhone> {
   final GlobalKey _formKey = GlobalKey<FormState>();
   TextEditingController txtPass = TextEditingController();
 

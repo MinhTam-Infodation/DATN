@@ -2,9 +2,11 @@ import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
+import 'package:client_user/controller/auth_controller.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class LoginFooterWidget extends StatelessWidget {
   const LoginFooterWidget({
@@ -13,6 +15,7 @@ class LoginFooterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Get.put(AuthController());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -40,7 +43,9 @@ class LoginFooterWidget extends StatelessWidget {
                 iLoginGG,
                 width: 20.0,
               ),
-              onPressed: () {},
+              onPressed: () {
+                auth.loginWithGoogle();
+              },
               label: Text(
                 tButtonSigninGG,
                 style: textSmallQuicksan,

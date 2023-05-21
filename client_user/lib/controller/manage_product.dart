@@ -35,6 +35,15 @@ class ManageProductsController extends GetxController {
     product.bindStream(ProductsSnapshot.dsUserTuFirebase(id));
   }
 
+  void searchProductByName(String productName, String userId) {
+    List<ProductsSnapshot> searchedTables = product
+        .where((table) => table.products!.Name!
+            .toLowerCase()
+            .contains(productName.toLowerCase()))
+        .toList();
+    product.value = searchedTables;
+  }
+
   void searchProducts(String keyword) {
     final dataSearch = FirebaseFirestore.instance
         .collection('products')
@@ -67,12 +76,12 @@ class ManageProductsController extends GetxController {
     homeController.checkTotalProduct(id);
   }
 
-  void editTable(String userid, Products tables, String tableId) async {
+  void editProduct(String userid, Products products, String productId) async {
     await productRef
         .doc(userid)
         .collection("Products")
-        .doc(tableId)
-        .update(tables.toJson())
+        .doc(productId)
+        .update(products.toJson())
         .then((_) => {
               Get.snackbar('Success', "Edit Product Success",
                   snackPosition: SnackPosition.BOTTOM,
@@ -88,14 +97,14 @@ class ManageProductsController extends GetxController {
     getListProduct(userid);
   }
 
-  void deleteSeller(String id, String tableId) async {
+  void deleteProducts(String id, String productiD) async {
     await productRef
         .doc(id)
         .collection("Products")
-        .doc(tableId)
+        .doc(productiD)
         .delete()
         .then((_) => {
-              Get.snackbar('Success', "Remove Seller Success",
+              Get.snackbar('Success', "Remove Product Success",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.greenAccent.withOpacity(0.1),
                   colorText: Colors.black)

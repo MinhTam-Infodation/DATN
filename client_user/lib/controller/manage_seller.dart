@@ -35,6 +35,15 @@ class ManageSellerController extends GetxController {
     users.bindStream(SellerSnapshot.dsSellerTuFirebase(id));
   }
 
+  void searchSellerByName(String productName, String userId) {
+    List<SellerSnapshot> searchedTables = users
+        .where((table) => table.seller!.Name!
+            .toLowerCase()
+            .contains(productName.toLowerCase()))
+        .toList();
+    users.value = searchedTables;
+  }
+
   void searchProducts(String keyword, String userId) {
     final dataSearch = tablesRef
         .doc(userId)
@@ -86,6 +95,18 @@ class ManageSellerController extends GetxController {
                   colorText: Colors.black)
             });
     homeController.checkTotalTable(id);
+  }
+
+  double calculateTotalSalary() {
+    double totalSalary = 0;
+
+    for (var sellerSnapshot in users) {
+      double salary =
+          double.tryParse(sellerSnapshot.seller!.Salary ?? '0') ?? 0;
+      totalSalary += salary;
+    }
+
+    return totalSalary;
   }
 
   void editSeller(String userid, Seller seller, String sellerId) async {

@@ -3,10 +3,12 @@ import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
+import 'package:client_user/controller/auth_controller.dart';
 import 'package:client_user/screens/signup/components/signup_form_widget.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ScreenSignup extends StatefulWidget {
   const ScreenSignup({super.key});
@@ -16,6 +18,7 @@ class ScreenSignup extends StatefulWidget {
 }
 
 class _ScreenSignupState extends State<ScreenSignup> {
+  final controller = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -56,7 +59,9 @@ class _ScreenSignupState extends State<ScreenSignup> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: sButtonHeight),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            controller.loginWithGoogle();
+                          },
                           icon: Image.asset(
                             iLoginGG,
                             width: 20.0,

@@ -47,7 +47,7 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
     }
 
     if (value.isNotEmpty) {
-      sellerController.searchProducts(keyword, userId);
+      sellerController.searchSellerByName(keyword, userId);
     } else {
       sellerController.getListSeller(userId);
     }
@@ -57,6 +57,7 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
     setState(() {
       _searchController.clear();
       _isClearVisible = false;
+      sellerController.getListSeller(userId);
     });
   }
 
@@ -71,9 +72,7 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
     homeController.checkTotalSeller(userId);
     final size = MediaQuery.of(context).size;
 
-    if (homeController.totalTable > 0) {
-      sellerController.getListSeller(userId);
-    }
+    sellerController.getListSeller(userId);
 
     //! Build
     return SafeArea(
@@ -106,12 +105,12 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
         body: SingleChildScrollView(
           child: Container(
               padding: const EdgeInsets.all(20),
-              child: Obx(
-                () => Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if (homeController.totalSeller.toInt() == 0)
-                      SizedBox(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Obx(() {
+                    if (sellerController.users.isEmpty) {
+                      return SizedBox(
                         child: Column(
                           children: [
                             Column(
@@ -171,9 +170,9 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
                             )
                           ],
                         ),
-                      )
-                    else
-                      SizedBox(
+                      );
+                    } else {
+                      return SizedBox(
                         child: Column(
                           children: [
                             Container(
@@ -251,8 +250,7 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
                                           // ignore: invalid_use_of_protected_member
                                           itemCount:
                                               // ignore: invalid_use_of_protected_member
-                                              sellerController
-                                                  .users.value.length,
+                                              sellerController.users.length,
                                           padding: const EdgeInsets.only(
                                               bottom: 50 + 16),
                                           separatorBuilder: (context, index) =>
@@ -279,9 +277,10 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
                               ),
                           ],
                         ),
-                      ),
-                  ],
-                ),
+                      );
+                    }
+                  })
+                ],
               )),
         ),
       ),

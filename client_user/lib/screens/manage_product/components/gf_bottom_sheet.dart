@@ -47,9 +47,9 @@ class GfBottomSheet extends StatelessWidget {
         ),
         stickyFooter: Container(
           color: GFColors.SUCCESS,
-          child: Row(
+          child: const Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
+            children: [
               Text(
                 'Get in touch',
                 style: TextStyle(

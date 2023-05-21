@@ -120,6 +120,7 @@ class ProductsSnapshot {
         .collection("Users")
         .doc(idUser)
         .collection("Products")
+        .orderBy("Sale")
         .snapshots();
     // ignore: unnecessary_null_comparison
     if (qs == null) return const Stream.empty();

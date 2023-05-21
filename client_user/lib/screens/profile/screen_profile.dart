@@ -5,15 +5,31 @@ import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/screens/profile/components/update_profile.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ScreenProfile extends StatelessWidget {
+class ScreenProfile extends StatefulWidget {
   const ScreenProfile({super.key});
+
+  @override
+  State<ScreenProfile> createState() => _ScreenProfileState();
+}
+
+class _ScreenProfileState extends State<ScreenProfile> {
+  var userId = "";
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AuthenticationRepository());
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+
+    controller.bindingUser(userId);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -31,9 +47,15 @@ class ScreenProfile extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Container(
+            width: double.infinity,
             padding: const EdgeInsets.all(20),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(
+                  height: 40,
+                ),
                 Stack(
                   children: [
                     SizedBox(
@@ -41,7 +63,8 @@ class ScreenProfile extends StatelessWidget {
                       height: 120,
                       child: ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child: Image.network(controller.user.value.Avatar!)),
+                          child: Image.network(
+                              controller.users.value.user!.Avatar!)),
                     ),
                     Positioned(
                       bottom: 0,
@@ -65,11 +88,11 @@ class ScreenProfile extends StatelessWidget {
                   height: 10,
                 ),
                 Text(
-                  controller.user.value.Email!,
+                  controller.users.value.user!.Email!,
                   style: textAppKanit,
                 ),
                 Text(
-                  controller.user.value.Name!,
+                  controller.users.value.user!.Name!,
                   style: textXLQuicksan,
                 ),
                 const SizedBox(
@@ -92,45 +115,6 @@ class ScreenProfile extends StatelessWidget {
                         style: textXLQuicksanBold,
                       )),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
-                const Divider(),
-                const SizedBox(
-                  height: 10,
-                ),
-                ProfileMenuWidget(
-                  title: 'Setting',
-                  icon: Icons.settings,
-                  onPress: () {},
-                ),
-                ProfileMenuWidget(
-                  title: "BillDetail",
-                  icon: Icons.wallet,
-                  onPress: () {},
-                ),
-                ProfileMenuWidget(
-                  title: "UserManager",
-                  icon: Icons.person,
-                  onPress: () {},
-                ),
-                const Divider(
-                  color: Colors.grey,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                ProfileMenuWidget(
-                  title: "Infomation",
-                  icon: Icons.info,
-                  onPress: () {},
-                ),
-                ProfileMenuWidget(
-                  title: "LogOut",
-                  icon: Icons.logout,
-                  onPress: () {},
-                  textColor: Colors.redAccent,
-                )
               ],
             ),
           ),

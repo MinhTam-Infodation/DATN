@@ -89,7 +89,6 @@ class _ForgetPasswordPhoneScreenState extends State<ForgetPasswordPhoneScreen> {
                                 // Navigator.pop(context);
                                 SignUpController.instance.phoneAuthentication(
                                     phoneController.text.trim());
-                                Get.to(() => const ScreenOTP());
                               },
                               child: Text(
                                 "Next".toUpperCase(),

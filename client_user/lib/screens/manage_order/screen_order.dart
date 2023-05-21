@@ -9,10 +9,7 @@ import 'package:client_user/controller/order_local.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/tables.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_order.dart';
-import 'package:client_user/screens/manage_order/components/modal_bottom_payment.dart';
 import 'package:client_user/screens/manage_order/components/view_order_product.dart';
-import 'package:client_user/screens/manage_order/screen_orderv2.dart';
-import 'package:client_user/screens/manage_order/screen_orderv3.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -307,8 +304,11 @@ class ListDataOrder extends StatelessWidget {
 }
 
 void showDialogWithCustomUI(BuildContext context) {
-  Get.dialog(
-      Dialog(
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius:
               BorderRadius.circular(16.0), // Đặt border radius tại đây
@@ -351,8 +351,7 @@ void showDialogWithCustomUI(BuildContext context) {
                       style: textNormalQuicksanBoldGray,
                     ),
                     onPressed: () {
-                      // Navigator.pop(context);
-                      print("Back");
+                      Navigator.of(context).pop(); // Đóng dialog
                     },
                   )),
                   const SizedBox(
@@ -371,9 +370,8 @@ void showDialogWithCustomUI(BuildContext context) {
                       style: textNormalQuicksanBoldWhite,
                     ),
                     onPressed: () {
-                      Get.back(
-                          result:
-                              true); // Trả về kết quả false khi người dùng nhấn Cancel
+                      Get.back(canPop: false);
+                      Navigator.of(context).pop();
                     },
                   )),
                 ],
@@ -381,6 +379,7 @@ void showDialogWithCustomUI(BuildContext context) {
             ],
           ),
         ),
-      ),
-      barrierDismissible: false);
+      );
+    },
+  );
 }

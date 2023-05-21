@@ -49,6 +49,12 @@ TextStyle textAppKanitRed = GoogleFonts.kanit().copyWith(
   color: Colors.redAccent,
 );
 
+TextStyle textAppSmailKanitRed = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 16,
+  color: Colors.redAccent,
+);
+
 TextStyle textAppKanitNormal = GoogleFonts.kanit().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 20,
@@ -66,6 +72,18 @@ TextStyle textQuicksanGray = GoogleFonts.quicksand().copyWith(
   fontSize: 16,
   color: Colors.grey.withOpacity(0.5),
 );
+
+TextStyle textQuicksanGrayItatic = GoogleFonts.quicksand().copyWith(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+    color: Colors.grey.withOpacity(0.5),
+    fontStyle: FontStyle.italic);
+
+TextStyle textQuicksanItaticBold = GoogleFonts.quicksand().copyWith(
+    fontWeight: FontWeight.bold,
+    fontSize: 16,
+    color: Colors.black.withOpacity(0.7),
+    fontStyle: FontStyle.italic);
 
 TextStyle textXLQuicksan = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.w500,
@@ -97,6 +115,11 @@ TextStyle textNormalQuicksan = GoogleFonts.quicksand().copyWith(
   color: Colors.black,
 );
 
+TextStyle textNormalQuicksanNoColor = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.w500,
+  fontSize: 18,
+);
+
 TextStyle textNormalQuicksanRed = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 14,
@@ -118,6 +141,12 @@ TextStyle textNormalQuicksanBoldWhite = GoogleFonts.quicksand().copyWith(
 TextStyle textNormalQuicksanBoldGray = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 18,
+  color: Colors.grey,
+);
+
+TextStyle textSmailQuicksanBoldGray = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 16,
   color: Colors.grey,
 );
 
@@ -154,6 +183,11 @@ TextStyle textSmallQuicksanWhite = GoogleFonts.quicksand().copyWith(
 TextStyle textCouterKanit = GoogleFonts.kanit().copyWith(
   fontWeight: FontWeight.bold,
   fontSize: 20,
+  color: Colors.black,
+);
+TextStyle textCouterKanitSmail = GoogleFonts.kanit().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 16,
   color: Colors.black,
 );
 

@@ -149,7 +149,7 @@ class _ModalBootomAddProductsState extends State<ModalBootomAddProducts> {
                     decoration: InputDecoration(
                         labelStyle: textSmallQuicksan,
                         prefixIcon: const Icon(Icons.abc),
-                        labelText: tInputNameSeller,
+                        labelText: tInputNameProducts,
                         border: const OutlineInputBorder()),
                   ),
                   const SizedBox(

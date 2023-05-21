@@ -135,4 +135,12 @@ class UserSnapshot {
         .map((docSnap) => UserSnapshot.fromSnapshot(docSnap))
         .toList();
   }
+
+  static Stream<UserSnapshot> getUser(String idUser) {
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .doc(idUser)
+        .snapshots()
+        .map((docSnapshot) => UserSnapshot.fromSnapshot(docSnapshot));
+  }
 }

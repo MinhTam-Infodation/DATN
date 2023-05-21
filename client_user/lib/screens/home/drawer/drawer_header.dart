@@ -28,6 +28,7 @@ class MyHeaderDrawer extends StatelessWidget {
           Text(
             user!.Email!,
             style: textAppKanit,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(
             height: 5,
@@ -35,6 +36,7 @@ class MyHeaderDrawer extends StatelessWidget {
           Text(
             user!.Name!,
             style: textXLQuicksan,
+            overflow: TextOverflow.ellipsis,
           )
         ],
       ),

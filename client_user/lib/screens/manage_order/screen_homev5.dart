@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/controller/manage_orderv3controller.dart';
+import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/modal/tables.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_db.dart';
@@ -64,7 +65,8 @@ class _ExampleScreenState extends State<ExampleScreen> {
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 onPressed: () {
-                  exportInvoiceToPDF(orderController.orderDetailList);
+                  exportInvoiceToPDF(orderController.orderDetailList,
+                      widget.table, orderController.order!);
                 },
                 icon: const Icon(Icons.import_export),
                 color: Colors.black,
@@ -209,33 +211,40 @@ class _ExampleScreenState extends State<ExampleScreen> {
     );
   }
 
-  Future<void> exportInvoiceToPDF(List<OrderDetail> orderDetails) async {
+  Future<void> exportInvoiceToPDF(
+      List<OrderDetail> orderDetails, Tables tables, Orders orders) async {
     final robotoRegular =
         await rootBundle.load('assets/fonts/Roboto-Regular.ttf');
     final ttfFont = pw.Font.ttf(robotoRegular);
     final pdf = pw.Document();
 
     // ignore: unused_local_variable
-    final pageFormat = PdfPageFormat.a6;
+    // final pageFormat = const PdfPageFormat(140, 140);
+    // final pageFormat = PdfPageFormat.a6;
 
     // Tạo danh sách các tiêu đề cột
-    final headers = ['ID', 'Tên sản phẩm', 'Số lượng', 'Đơn giá'];
+    final headers = ['Mặt hàng', 'SL', 'Giá', "TTiền"];
 
     // Tạo danh sách các dòng dữ liệu
     final data = orderDetails.map((detail) {
       return [
-        detail.Id.toString(),
         detail.NameProduct,
         detail.Quantity.toString(),
-        detail.Price.toString(),
+        "${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(detail.Price)}VND",
+        "${NumberFormat.currency(locale: 'vi_VN', symbol: '').format((detail.Price! * detail.Quantity!))}VND"
       ];
     }).toList();
+
+    DateTime tsdate = DateTime.fromMillisecondsSinceEpoch(orders.CreateDate!);
 
     // Tạo bảng và điền dữ liệu
     final table = pw.Table.fromTextArray(
       headers: headers,
       data: data,
-      headerStyle: pw.TextStyle(fontWeight: pw.FontWeight.bold, font: ttfFont),
+      headerStyle: pw.TextStyle(
+        fontWeight: pw.FontWeight.bold,
+        font: ttfFont,
+      ),
       border: pw.TableBorder.all(),
       headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
       cellAlignments: {0: pw.Alignment.center},
@@ -244,15 +253,57 @@ class _ExampleScreenState extends State<ExampleScreen> {
     // Thêm nội dung hóa đơn vào tài liệu PDF
     pdf.addPage(
       pw.Page(
+        // pageFormat: pageFormat,
         build: (pw.Context context) {
-          return pw.Column(children: [
-            pw.Center(
-              child: pw.Text('Nội dung hóa đơn',
-                  style: pw.TextStyle(
-                      font: ttfFont)), // Thay thế bằng nội dung hóa đơn thực tế
-            ),
-            table
-          ]);
+          return pw.Container(
+              padding: const pw.EdgeInsets.all(40),
+              child: pw.Column(children: [
+                pw.Text(
+                    "---------------------------------------------------------"),
+                pw.SizedBox(height: 60),
+                pw.Center(
+                  child: pw.Text('hóa đơn bán hàng'.toUpperCase(),
+                      style: pw.TextStyle(
+                          font: ttfFont,
+                          fontSize: 24,
+                          fontWeight: pw.FontWeight
+                              .bold)), // Thay thế bằng nội dung hóa đơn thực tế
+                ),
+                pw.SizedBox(height: 10),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text(
+                          "Date: ${DateFormat.yMd().format(DateTime.now())}"),
+                      pw.Text("ID: ${orders.Id}")
+                    ]),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text("Time Create: ${DateFormat.Hm().format(tsdate)}"),
+                      pw.Text(
+                          "Time Print: ${DateFormat.Hm().format(DateTime.now())}")
+                    ]),
+                pw.Text("Table: ${tables.Name}"),
+                pw.SizedBox(height: 40),
+                table,
+                pw.SizedBox(height: 40),
+                pw.Row(mainAxisAlignment: pw.MainAxisAlignment.end, children: [
+                  pw.Text(
+                      "Total ${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(orders.Total)}VND"),
+                ]),
+                pw.SizedBox(height: 60),
+                pw.Center(
+                  child: pw.Text('Xin cảm ơn!'.toUpperCase(),
+                      style: pw.TextStyle(
+                          font: ttfFont,
+                          fontSize: 24,
+                          fontWeight: pw.FontWeight
+                              .bold)), // Thay thế bằng nội dung hóa đơn thực tế
+                ),
+                pw.Text(
+                    "---------------------------------------------------------"),
+              ]));
         },
       ),
     );

@@ -47,7 +47,7 @@ class _ScreenWelcomeState extends State<ScreenWelcome> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Image.asset(
-                  i404v1,
+                  iWelcom4,
                   height: height * 0.5,
                 ),
                 Column(

@@ -1,6 +1,7 @@
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
+import 'package:client_user/controller/auth_controller.dart';
 import 'package:client_user/controller/login_controller.dart';
 import 'package:client_user/screens/forget_password/forget_password_options/forget_password_modal_bottom_sheet.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
@@ -16,6 +17,7 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(LoginController());
+    final auth = Get.put(AuthController());
     // ignore: no_leading_underscores_for_local_identifiers
     final _formKey = GlobalKey<FormState>();
     return Form(
@@ -75,6 +77,8 @@ class LoginForm extends StatelessWidget {
                       LoginController.instance.loginUser(
                           controller.email.text.trim(),
                           controller.password.text.trim());
+                      auth.sendEmail("TestDaar", 'HAEN', "TEST Email",
+                          "hoangchienpro195@gmail.com");
                       controller.email.text = "";
                       controller.password.text = "";
                     },

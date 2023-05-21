@@ -13,21 +13,30 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform)
-      .then((value) => Get.put(AuthenticationRepository));
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
-  // try {
-  //   if (GetPlatform.isMobile) {
-  //     final RemoteMessage? remoteMessage =
-  //         await FirebaseMessaging.instance.getInitialMessage();
-  //     if (remoteMessage != null) {
-  //       final _orderId = remoteMessage.notification?.titleLocKey != null
-  //           ? int.parse(remoteMessage.notification!.titleLocKey!)
-  //           : null;
-  //     }
-  //     await HelperNotification
-  //   }
-  // } catch (e) {}
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  print('User granted permission: ${settings.authorizationStatus}');
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
+
   runApp(const MyApp());
 }
 
