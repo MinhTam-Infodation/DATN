@@ -1,6 +1,7 @@
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
+import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/screens/login/screen_login.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
@@ -12,6 +13,7 @@ class ScreenFobident extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(AuthenticationRepository());
     Size size = MediaQuery.of(context).size;
     return SafeArea(
         child: Scaffold(
@@ -42,7 +44,10 @@ class ScreenFobident extends StatelessWidget {
                   SizedBox(
                     width: size.width - 80,
                     child: ElevatedButton(
-                        onPressed: () => Get.to(() => const ScreenLogin()),
+                        onPressed: () {
+                          Get.to(() => const ScreenLogin());
+                          controller.logout();
+                        },
                         style: ElevatedButton.styleFrom(
                             elevation: 0,
                             shape: const StadiumBorder(),

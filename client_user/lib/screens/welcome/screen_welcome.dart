@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, await_only_futures
+
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';

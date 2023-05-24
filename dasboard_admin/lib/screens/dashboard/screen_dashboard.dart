@@ -60,7 +60,6 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
     wail.countMyDocuments();
     wail.countMyDocumentsWithStatusFalse();
     wail.countMyDocumentsWithStatusTrue();
-    wail.countNewUsers();
 
     Size size = MediaQuery.of(context).size;
     return SafeArea(
@@ -318,100 +317,96 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                   height: 150,
                                   child: AspectRatio(
                                       aspectRatio: 2,
-                                      child: Obx(
-                                        () => BarChart(BarChartData(
-                                            barGroups: [
-                                              generateGroupData(
-                                                  1,
-                                                  wail.userCountByMonth[1]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  2,
-                                                  wail.userCountByMonth[2]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  3,
-                                                  wail.userCountByMonth[3]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  4,
-                                                  wail.userCountByMonth[4]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  5,
-                                                  wail.userCountByMonth[5]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  6,
-                                                  wail.userCountByMonth[6]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  7,
-                                                  wail.userCountByMonth[7]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  8,
-                                                  wail.userCountByMonth[8]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  9,
-                                                  wail.userCountByMonth[9]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  10,
-                                                  wail.userCountByMonth[10]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  11,
-                                                  wail.userCountByMonth[11]
-                                                          ?.value ??
-                                                      0),
-                                              generateGroupData(
-                                                  12,
-                                                  wail.userCountByMonth[12]
-                                                          ?.value ??
-                                                      0),
-                                            ],
-                                            barTouchData: BarTouchData(
-                                                enabled: true,
-                                                handleBuiltInTouches: false,
-                                                touchCallback:
-                                                    (event, response) {
-                                                  if (response != null &&
-                                                      response.spot != null &&
-                                                      event is FlTapUpEvent) {
-                                                    setState(() {
-                                                      final x = response.spot!
-                                                          .touchedBarGroup.x;
-                                                      final isShowing =
-                                                          showingTooltip == x;
-                                                      if (isShowing) {
-                                                        showingTooltip = -1;
-                                                      } else {
-                                                        showingTooltip = x;
-                                                      }
-                                                    });
-                                                  }
-                                                },
-                                                mouseCursorResolver:
-                                                    (event, response) {
-                                                  return response == null ||
-                                                          response.spot == null
-                                                      ? MouseCursor.defer
-                                                      : SystemMouseCursors
-                                                          .click;
-                                                }))),
-                                      )),
+                                      child: BarChart(BarChartData(
+                                          barGroups: [
+                                            generateGroupData(
+                                                1,
+                                                wail.userCountByMonth[0]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                2,
+                                                wail.userCountByMonth[1]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                3,
+                                                wail.userCountByMonth[2]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                4,
+                                                wail.userCountByMonth[3]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                5,
+                                                wail.userCountByMonth[4]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                6,
+                                                wail.userCountByMonth[5]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                7,
+                                                wail.userCountByMonth[6]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                8,
+                                                wail.userCountByMonth[7]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                9,
+                                                wail.userCountByMonth[8]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                10,
+                                                wail.userCountByMonth[9]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                11,
+                                                wail.userCountByMonth[10]
+                                                        ?.value ??
+                                                    0),
+                                            generateGroupData(
+                                                12,
+                                                wail.userCountByMonth[11]
+                                                        ?.value ??
+                                                    0),
+                                          ],
+                                          barTouchData: BarTouchData(
+                                              enabled: true,
+                                              handleBuiltInTouches: false,
+                                              touchCallback: (event, response) {
+                                                if (response != null &&
+                                                    response.spot != null &&
+                                                    event is FlTapUpEvent) {
+                                                  setState(() {
+                                                    final x = response.spot!
+                                                        .touchedBarGroup.x;
+                                                    final isShowing =
+                                                        showingTooltip == x;
+                                                    if (isShowing) {
+                                                      showingTooltip = -1;
+                                                    } else {
+                                                      showingTooltip = x;
+                                                    }
+                                                  });
+                                                }
+                                              },
+                                              mouseCursorResolver:
+                                                  (event, response) {
+                                                return response == null ||
+                                                        response.spot == null
+                                                    ? MouseCursor.defer
+                                                    : SystemMouseCursors.click;
+                                              })))),
                                 ),
                                 const SizedBox(
                                   height: 20,

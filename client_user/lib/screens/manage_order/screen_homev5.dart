@@ -68,7 +68,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
                   exportInvoiceToPDF(orderController.orderDetailList,
                       widget.table, orderController.order!);
                 },
-                icon: const Icon(Icons.import_export),
+                icon: const Icon(Icons.receipt_long_rounded),
                 color: Colors.black,
               ),
             )

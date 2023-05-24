@@ -1,37 +1,27 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class Users {
-  // ignore: non_constant_identifier_names
-  String? Address, Avatar, Name, Email, PackageType, Password, Phone;
-  // ignore: non_constant_identifier_names
-  bool? Status;
-  // ignore: non_constant_identifier_names
+  String? Address, Avatar, Name, Email, PackageType, Password, Phone, Token;
+  bool? Status, isAdmin;
   int? ActiveAt, CreateAt;
-  // ignore: non_constant_identifier_names
   String? Id;
   Users(
-      // ignore: non_constant_identifier_names
       {this.Address,
-      // ignore: non_constant_identifier_names
       this.Avatar,
-      // ignore: non_constant_identifier_names
       this.Name,
-      // ignore: non_constant_identifier_names
       this.Email,
-      // ignore: non_constant_identifier_names
       this.PackageType,
-      // ignore: non_constant_identifier_names
       this.Phone,
-      // ignore: non_constant_identifier_names
       this.Password,
-      // ignore: non_constant_identifier_names
       this.Status,
-      // ignore: non_constant_identifier_names
       this.ActiveAt,
-      // ignore: non_constant_identifier_names
       this.Id,
-      // ignore: non_constant_identifier_names
-      this.CreateAt});
+      this.CreateAt,
+      this.isAdmin,
+      this.Token});
 
   Map<String, dynamic> toJson() {
     return {
@@ -45,24 +35,27 @@ class Users {
       'Password': Password,
       'Status': Status,
       'ActiveAt': ActiveAt,
-      'CreateAt': CreateAt
+      'CreateAt': CreateAt,
+      'isAdmin': isAdmin,
+      'Token': Token
     };
   }
 
   factory Users.fromJson(Map<String, dynamic> map) {
     return Users(
-      Id: map['Id'],
-      Address: map['Address'],
-      Avatar: map['Avatar'],
-      Name: map['Name'],
-      Email: map['Email'],
-      PackageType: map['PackageType'],
-      Phone: map['Phone'],
-      Password: map['Password'],
-      Status: map['Status'],
-      ActiveAt: map['ActiveAt'],
-      CreateAt: map['CreateAt'],
-    );
+        Id: map['Id'],
+        Address: map['Address'],
+        Avatar: map['Avatar'],
+        Name: map['Name'],
+        Email: map['Email'],
+        PackageType: map['PackageType'],
+        Phone: map['Phone'],
+        Password: map['Password'],
+        Status: map['Status'],
+        ActiveAt: map['ActiveAt'],
+        CreateAt: map['CreateAt'],
+        isAdmin: map['isAdmin'],
+        Token: map['Token']);
   }
 }
 
@@ -97,6 +90,7 @@ class UserSnapshot {
         FirebaseFirestore.instance.collection('Users');
     DocumentReference newDocRef = usersRef.doc();
     sv.Id = newDocRef.id;
+    sv.Token = await FirebaseMessaging.instance.getToken();
     await newDocRef.set(sv.toJson());
   }
 
@@ -124,6 +118,7 @@ class UserSnapshot {
     if (querySnapshot.docs.isNotEmpty) {
       var documentSnapshot = querySnapshot.docs.first;
       user = Users.fromJson(documentSnapshot.data());
+      user.Token = await FirebaseMessaging.instance.getToken();
     }
     return user!;
   }

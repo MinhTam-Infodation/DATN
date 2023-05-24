@@ -95,7 +95,7 @@ class _CartItemProductsState extends State<CartItemProducts> {
                                   widget.products.Name!,
                                   style: textXLNunitoBold),
                               Text(
-                                "${widget.products.Price.toString()} VND",
+                                "${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(widget.products.Price)}VND",
                                 style: textXLNunitoBold,
                               )
                             ],

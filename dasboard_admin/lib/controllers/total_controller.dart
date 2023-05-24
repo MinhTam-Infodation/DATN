@@ -47,6 +47,20 @@ class TotalController extends GetxController {
     walt.countMyDocumentsWithStatusTrue();
   }
 
+  int countUsersByMonth(int month) {
+    int count = 0;
+
+    for (var user in users) {
+      DateTime orderTime =
+          DateTime.fromMillisecondsSinceEpoch(user.user!.CreatedAt!);
+      if (orderTime.month == month) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
   int countMyDocuments(RxList<UserSnapshot> documents) {
     return documents.length;
   }

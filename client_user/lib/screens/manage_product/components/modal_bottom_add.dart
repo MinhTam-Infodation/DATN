@@ -80,6 +80,7 @@ class _ModalBootomAddProductsState extends State<ModalBootomAddProducts> {
                   IconButton(
                       onPressed: () {
                         Navigator.pop(context);
+                        productimageController.clearListImage();
                       },
                       icon: const Icon(
                         Icons.close,
@@ -295,6 +296,7 @@ class _ModalBootomAddProductsState extends State<ModalBootomAddProducts> {
                         sellerController.addNewProduct(userId, product);
 
                         // Clear
+                        productimageController.clearListImage();
                         sellerController.name.clear();
                         sellerController.description.clear();
                         sellerController.type.clear();

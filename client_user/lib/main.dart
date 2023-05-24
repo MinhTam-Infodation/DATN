@@ -1,5 +1,7 @@
-import 'package:client_user/repository/auth_repository/auth_repository.dart';
-import 'package:client_user/screens/home/screen_home.dart';
+// ignore_for_file: avoid_print
+
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:client_user/controller/fcm_controller.dart';
 import 'package:client_user/screens/init_firebase/screen_err404.dart';
 import 'package:client_user/screens/init_firebase/screen_inprogress.dart';
 import 'package:client_user/screens/welcome/screen_welcome.dart';
@@ -15,6 +17,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await GetStorage.init();
+
+  FirebaseMessagingService firebaseMessagingService =
+      FirebaseMessagingService();
+  await firebaseMessagingService.initializeFirebaseMessaging();
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+
+  AwesomeNotifications().initialize(null, [
+    NotificationChannel(
+        channelKey: "notification_chanel",
+        channelName: "Notification Chanel",
+        channelDescription: "Chanel is Notification",
+        defaultColor: Colors.redAccent,
+        ledColor: Colors.white,
+        importance: NotificationImportance.Max,
+        channelShowBadge: true,
+        locked: true,
+        defaultRingtoneType: DefaultRingtoneType.Notification)
+  ]);
+
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationSettings settings = await messaging.requestPermission(
@@ -36,6 +57,9 @@ void main() async {
       print('Message also contained a notification: ${message.notification}');
     }
   });
+
+  final fcmToken = await FirebaseMessaging.instance.getToken();
+  print("Token: $fcmToken ==========================");
 
   runApp(const MyApp());
 }
@@ -78,4 +102,25 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool?> showExitConfirmationDialog(BuildContext context) async {
+  return await showDialog<bool?>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Confirm Exit'),
+          content: const Text('Are you sure you want to exit?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false), // Không thoát
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true), // Thoát
+              child: const Text('Exit'),
+            ),
+          ],
+        ),
+      ) ??
+      false; // Mặc định không thoát
 }

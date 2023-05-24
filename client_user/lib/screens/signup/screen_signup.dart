@@ -4,6 +4,7 @@ import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
 import 'package:client_user/controller/auth_controller.dart';
+import 'package:client_user/screens/login/screen_login.dart';
 import 'package:client_user/screens/signup/components/signup_form_widget.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
@@ -36,48 +37,50 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 const SignupFormWidget(),
 
                 // Section 3
-                Column(
-                  children: [
-                    Text(
-                      "OR",
-                      style: textSmallQuicksan,
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                              side: BorderSide(color: bgBlack, width: 5.0),
-                            ),
-                            foregroundColor: bgBlack,
-                            backgroundColor: bgWhite,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: sButtonHeight),
-                          ),
-                          onPressed: () {
-                            controller.loginWithGoogle();
-                          },
-                          icon: Image.asset(
-                            iLoginGG,
-                            width: 20.0,
-                          ),
-                          label: Text(
-                            tButtonSigninGG,
-                            style: textSmallQuicksan,
-                          )),
-                    )
-                  ],
-                ),
+                // Column(
+                //   children: [
+                //     Text(
+                //       "OR",
+                //       style: textSmallQuicksan,
+                //     ),
+                //     const SizedBox(
+                //       height: 5,
+                //     ),
+                //     SizedBox(
+                //       width: double.infinity,
+                //       child: OutlinedButton.icon(
+                //           style: ElevatedButton.styleFrom(
+                //             elevation: 0,
+                //             shape: RoundedRectangleBorder(
+                //               borderRadius: BorderRadius.circular(5.0),
+                //               side: BorderSide(color: bgBlack, width: 5.0),
+                //             ),
+                //             foregroundColor: bgBlack,
+                //             backgroundColor: bgWhite,
+                //             padding: const EdgeInsets.symmetric(
+                //                 vertical: sButtonHeight),
+                //           ),
+                //           onPressed: () {
+                //             controller.loginWithGoogle();
+                //           },
+                //           icon: Image.asset(
+                //             iLoginGG,
+                //             width: 20.0,
+                //           ),
+                //           label: Text(
+                //             tButtonSigninGG,
+                //             style: textSmallQuicksan,
+                //           )),
+                //     )
+                //   ],
+                // ),
                 const SizedBox(
                   height: 10,
                 ),
                 TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.to(() => const ScreenLogin());
+                    },
                     child: Text.rich(TextSpan(
                         text: tAlreadySignup,
                         style: textSmallQuicksan,

@@ -43,24 +43,6 @@ class CartItemUser extends StatelessWidget {
           ),
         ],
       ),
-      // endActionPane: ActionPane(
-      //   motion: const ScrollMotion(),
-      //   dismissible:
-      //       DismissiblePane(onDismissed: () => {cu.deleteUser(user.Id!)}),
-      //   children: [
-      //     SlidableAction(
-      //       onPressed: (context) => _dialogBuilder(
-      //           parentContext, "Delete", "Are you sure you want to delete?",
-      //           () {
-      //         cu.deleteUser(user.Id!);
-      //       }),
-      //       backgroundColor: bgColor,
-      //       foregroundColor: Colors.black,
-      //       icon: Icons.save,
-      //       label: 'Delete',
-      //     ),
-      //   ],
-      // ),
       child: GestureDetector(
         onTap: () {
           showModalBottomSheet(

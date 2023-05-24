@@ -43,50 +43,14 @@ class WaltingUserController extends GetxController {
     listUsers.bindStream(UserSnapshot.dsUserTuFirebaseBool(false));
   }
 
-  // void countNewUsers() async {
-  //   final currentDate = DateTime.now();
-  //   final date4MonthsAgo =
-  //       DateTime(currentDate.year, currentDate.month - 4, currentDate.day);
-  //   final snapshot = await FirebaseFirestore.instance
-  //       .collection('Users')
-  //       .where('CreatedAt',
-  //           isGreaterThan: date4MonthsAgo.millisecondsSinceEpoch)
-  //       .get();
-  //   int Month1 = 0;
-  //   int Month2 = 0;
-  //   int Month3 = 0;
-  //   int Month4 = 0;
-  //   for (var doc in snapshot.docs) {
-  //     DateTime date =
-  //         DateTime.fromMillisecondsSinceEpoch(doc.data()['CreatedAt']);
-  //     if (date.isAfter(currentDate.subtract(const Duration(days: 30)))) {
-  //       Month1++;
-  //     } else if (date.isAfter(currentDate.subtract(const Duration(days: 60)))) {
-  //       Month2++;
-  //     } else if (date.isAfter(currentDate.subtract(const Duration(days: 90)))) {
-  //       Month3++;
-  //     } else if (date
-  //         .isAfter(currentDate.subtract(const Duration(days: 120)))) {
-  //       Month4++;
-  //     }
-  //   }
-  //   userCountMonth1(Month1);
-  //   userCountMonth2(Month2);
-  //   userCountMonth3(Month3);
-  //   userCountMonth4(Month4);
-
-  //   print(
-  //       "Month1 ${userCountMonth1.value}Month2 ${userCountMonth2.value}Month3 ${userCountMonth3.value}Month4 ${userCountMonth4.value}");
-  // }
-  void countNewUsers() async {
+  Future<void> countNewUsers() async {
     final currentDate = DateTime.now();
     final dateNMonthsAgo =
         currentDate.subtract(Duration(days: numberOfMonths * 30));
 
     final snapshot = await FirebaseFirestore.instance
         .collection('Users')
-        .where('CreatedAt',
-            isGreaterThan: dateNMonthsAgo.millisecondsSinceEpoch)
+        .where('CreatedAt', isGreaterThan: Timestamp.fromDate(dateNMonthsAgo))
         .get();
 
     // Khởi tạo số lượng người đăng ký cho từng tháng
@@ -95,26 +59,16 @@ class WaltingUserController extends GetxController {
     }
 
     for (var doc in snapshot.docs) {
-      int createdAt = doc.data()['CreatedAt'];
+      Timestamp createdAtTimestamp = doc.data()['CreatedAt'];
+      DateTime createdAt = createdAtTimestamp.toDate();
 
       // Tính toán tháng và năm từ giá trị createdAt
-      DateTime createdAtDateTime =
-          DateTime.fromMillisecondsSinceEpoch(createdAt);
-      int month = createdAtDateTime.month;
-      int year = createdAtDateTime.year;
-
-      // Tính toán tháng và tăng số lượng người đăng ký tương ứng
-      int monthDifference = currentDate.month - month;
-      int yearDifference = currentDate.year - year;
+      int monthDifference = currentDate.month - createdAt.month;
+      int yearDifference = currentDate.year - createdAt.year;
       int monthIndex = numberOfMonths - (yearDifference * 12 + monthDifference);
       if (monthIndex >= 1 && monthIndex <= numberOfMonths) {
         userCountByMonth[monthIndex]?.value++;
       }
-    }
-
-    // In ra kết quả
-    for (int i = 1; i <= numberOfMonths; i++) {
-      print('Month $i: ${userCountByMonth[i]?.value ?? 0}');
     }
   }
 
@@ -136,7 +90,7 @@ class WaltingUserController extends GetxController {
         .where('Status', isEqualTo: true)
         .get();
     totalActive(snapshot.docs.length);
-    print("Active " + totalActive.value.toString());
+    print("Active ${totalActive.value}");
   }
 
   void countMyDocumentsWithStatusFalse() async {
@@ -145,13 +99,12 @@ class WaltingUserController extends GetxController {
         .where('Status', isEqualTo: false)
         .get();
     totalWalting(snapshot.docs.length);
-    print("Walting " + totalWalting.value.toString());
+    print("Walting ${totalWalting.value}");
   }
 
   void countMyDocuments() async {
     final snapshot = await FirebaseFirestore.instance.collection('Users').get();
     totalAll(snapshot.docs.length);
-    // ignore: avoid_print
-    print("All " + totalAll.value.toString());
+    print("All ${totalAll.value}");
   }
 }

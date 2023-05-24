@@ -144,7 +144,14 @@ class _ModalBottomFunTableState extends State<ModalBottomFunTable> {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () {
-                                if (_formKey.currentState!.validate()) {
+                                if (widget.table.Status == "Walting") {
+                                  Get.snackbar('Delete Error',
+                                      "This table is waiting to be paid",
+                                      snackPosition: SnackPosition.BOTTOM,
+                                      backgroundColor:
+                                          Colors.greenAccent.withOpacity(0.1),
+                                      colorText: Colors.black);
+                                } else {
                                   tableController.deleteTable(
                                       userId, widget.table.Id!);
                                   // Back

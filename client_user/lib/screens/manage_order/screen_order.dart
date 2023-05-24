@@ -32,9 +32,38 @@ class _ScreenOrderState extends State<ScreenOrder> {
   final orderDetailController = Get.put(OrderDetailController());
   final controller = Get.put(GetOrderController());
 
+  void _onSearchTextChanged(String value) {
+    setState(() {
+      _isClearVisible = value.isNotEmpty;
+    });
+
+    // Get UserId
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+
+    if (value.isNotEmpty) {
+      productController.searchProductByName(value, userId);
+    } else {
+      productController.getListProduct(userId);
+    }
+  }
+
+  void _onClearPressed() {
+    setState(() {
+      _searchController.clear();
+      _isClearVisible = false;
+      productController.getListProduct(userId);
+    });
+  }
+
   //* Variable
   var userId = "";
   late final Orders order;
+  final TextEditingController _searchController = TextEditingController();
+  bool _isClearVisible = false;
 
   //* Init
   @override
@@ -88,17 +117,7 @@ class _ScreenOrderState extends State<ScreenOrder> {
                       BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   child: IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.add),
-                    color: Colors.black,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(right: 5, top: 7),
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.search),
+                    icon: const Icon(Icons.filter),
                     color: Colors.black,
                   ),
                 )
@@ -109,6 +128,39 @@ class _ScreenOrderState extends State<ScreenOrder> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 2,
+                        ),
+                      ),
+                      padding: const EdgeInsets.only(
+                          top: 2, bottom: 2, right: 10, left: 10),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.search),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: TextField(
+                              controller: _searchController,
+                              onChanged: _onSearchTextChanged,
+                              decoration: const InputDecoration(
+                                  hintText: 'Search...',
+                                  border: InputBorder.none),
+                            ),
+                          ),
+                          Visibility(
+                            visible: _isClearVisible,
+                            child: IconButton(
+                              icon: const Icon(Icons.clear),
+                              onPressed: _onClearPressed,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                     ListDataOrder(
                         size: size,
                         productController: productController,

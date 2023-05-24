@@ -2,7 +2,8 @@ import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
-import 'package:client_user/controller/auth_controller.dart';
+import 'package:client_user/repository/auth_repository/auth_repository.dart';
+import 'package:client_user/screens/signup/screen_signup.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class LoginFooterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Get.put(AuthController());
+    final auth = Get.put(AuthenticationRepository());
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -55,7 +56,9 @@ class LoginFooterWidget extends StatelessWidget {
           height: 20,
         ),
         TextButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(() => const ScreenSignup());
+            },
             child: Text.rich(TextSpan(
                 text: tAlready,
                 style: textSmallQuicksan,

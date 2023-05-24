@@ -8,6 +8,7 @@ import 'package:client_user/screens/login/screen_login.dart';
 import 'package:client_user/screens/welcome/screen_welcome.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -33,13 +34,31 @@ class AuthenticationRepository extends GetxController {
     Future.delayed(const Duration(seconds: 6));
     firebaseUser = Rx<User?>(_auth.currentUser);
     firebaseUser.bindStream(_auth.userChanges());
-    if (_auth.currentUser!.uid.isNotEmpty) {
+    if (_auth.currentUser != null) {
       bindingUser(_auth.currentUser!.uid);
     }
   }
 
   void bindingUser(id) {
     users.bindStream(UserSnapshot.getUser(id));
+
+    users.listen((snapshotList) {
+      if (snapshotList.user != null) {
+        final UserSnapshot snapshot = snapshotList.first;
+        final Users user = snapshot.user!;
+
+        updateTokenIfNeeded(user);
+      }
+    });
+  }
+
+  void updateTokenIfNeeded(Users user) async {
+    String? currentToken = await FirebaseMessaging.instance.getToken();
+    if (currentToken != user.Token) {
+      user.Token = currentToken;
+
+      UserSnapshot(user: user, documentReference: null).capNhat(user);
+    }
   }
 
   Future<void> login(String email, String password) async {
@@ -225,32 +244,138 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
+  // Future<void> loginWithGoogle() async {
+  //   try {
+  //     final GoogleSignInAccount? googleSignInAccount =
+  //         await _googleSignIn.signIn();
+  //     final GoogleSignInAuthentication googleSignInAuthentication =
+  //         await googleSignInAccount!.authentication;
+
+  //     final AuthCredential credential = GoogleAuthProvider.credential(
+  //       accessToken: googleSignInAuthentication.accessToken,
+  //       idToken: googleSignInAuthentication.idToken,
+  //     );
+
+  //     // Thực hiện đăng nhập vào Firebase với credential của Google
+  //     final UserCredential userCredential =
+  //         await _auth.signInWithCredential(credential);
+
+  //     final users = userCredential.user;
+  //     if (users != null) {
+  //       // Kiểm tra xem người dùng đã tồn tại trong danh sách xác thực trên Firebase chưa
+  //       if (userCredential.additionalUserInfo!.isNewUser) {
+  //         // Người dùng mới, thực hiện thêm thông tin người dùng vào Firestore
+  //         final newUser = Users(
+  //           Id: users.uid,
+  //           Name: users.displayName,
+  //           Email: users.email,
+  //           Avatar: users.photoURL,
+  //           Status: false,
+  //           CreateAt: DateTime.now().millisecondsSinceEpoch,
+  //           PackageType: "",
+  //           Password: "GG",
+  //           Address: "",
+  //           ActiveAt: 0,
+  //           Phone: "32522353",
+  //         );
+  //         await _firestore
+  //             .collection('Users')
+  //             .doc(users.uid)
+  //             .set(newUser.toJson());
+
+  //         // Binding vào đối tượng user
+  //         user.update((val) {
+  //           val!.Id = users.uid;
+  //           val.Name = users.displayName;
+  //           val.Email = users.email;
+  //           val.Avatar = users.photoURL;
+  //           val.Status = false;
+  //           val.CreateAt = DateTime.now().millisecondsSinceEpoch;
+  //           val.PackageType = "";
+  //           val.Password = "GG";
+  //           val.Address = "";
+  //           val.ActiveAt = 0;
+  //           val.Phone = "32522353";
+  //         });
+
+  //         // Chuyển hướng đến trang đăng nhập
+  //         Get.off(() => const ScreenLogin());
+  //         Get.snackbar(
+  //           'Success',
+  //           "Create Account GG Success",
+  //           snackPosition: SnackPosition.BOTTOM,
+  //           backgroundColor: Colors.greenAccent.withOpacity(0.1),
+  //           colorText: Colors.black,
+  //         );
+  //       } else {
+  //         // Người dùng đã tồn tại, chuyển hướng đến trang chính
+  //         Get.off(() => const ScreenLogin());
+  //       }
+  //     } else {
+  //       // Đăng nhập thất bại hoặc không có người dùng
+  //       Get.snackbar(
+  //         'Error',
+  //         "Login Account GG Fail",
+  //         snackPosition: SnackPosition.BOTTOM,
+  //         backgroundColor: Colors.greenAccent.withOpacity(0.1),
+  //         colorText: Colors.black,
+  //       );
+  //     }
+  //   } catch (e) {
+  //     // Xử lý lỗi
+  //     Get.snackbar(
+  //       'Error',
+  //       "Create Account GG Fail",
+  //       snackPosition: SnackPosition.BOTTOM,
+  //       backgroundColor: Colors.redAccent.withOpacity(0.1),
+  //       colorText: Colors.black,
+  //     );
+  //   }
+  // }
+
   Future<void> loginWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
           await _googleSignIn.signIn();
+
+      if (googleSignInAccount == null) {
+        return;
+      }
+
       final GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
+          await googleSignInAccount.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
 
-      // Thực hiện đăng nhập vào Firebase với credential của Google
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
+      final User? usersk = userCredential.user;
 
-      final users = userCredential.user;
-      if (users != null) {
-        // Kiểm tra xem người dùng đã tồn tại trong danh sách xác thực trên Firebase chưa
-        if (userCredential.additionalUserInfo!.isNewUser) {
-          // Người dùng mới, thực hiện thêm thông tin người dùng vào Firestore
+      if (usersk != null) {
+        final DocumentSnapshot userSnapshot =
+            await _firestore.collection('Users').doc(usersk.uid).get();
+
+        if (userSnapshot.exists) {
+          // Người dùng đã tồn tại trong Firestore
+          // Cập nhật thông tin người dùng=
+          if (userSnapshot['Status'] == false) {
+            // Người dùng chưa được chấp nhận, chuyển đến trang "walting"
+            Get.off(() => const ScreenFobident());
+          } else {
+            // Người dùng đã được chấp nhận, chuyển đến trang chính
+            Get.off(() => const ScreenHome());
+          }
+        } else {
+          // Người dùng không tồn tại trong Firestore
+          // Thêm thông tin người dùng vào Firestore
           final newUser = Users(
-            Id: users.uid,
-            Name: users.displayName,
-            Email: users.email,
-            Avatar: users.photoURL,
+            Id: usersk.uid,
+            Name: usersk.displayName,
+            Email: usersk.email,
+            Avatar: usersk.photoURL,
             Status: false,
             CreateAt: DateTime.now().millisecondsSinceEpoch,
             PackageType: "",
@@ -259,44 +384,29 @@ class AuthenticationRepository extends GetxController {
             ActiveAt: 0,
             Phone: "32522353",
           );
+
           await _firestore
               .collection('Users')
-              .doc(users.uid)
+              .doc(usersk.uid)
               .set(newUser.toJson());
 
-          // Binding vào đối tượng user
+          // Cập nhật thông tin người dùng
           user.update((val) {
-            val!.Id = users.uid;
-            val.Name = users.displayName;
-            val.Email = users.email;
-            val.Avatar = users.photoURL;
-            val.Status = false;
-            val.CreateAt = DateTime.now().millisecondsSinceEpoch;
-            val.PackageType = "";
-            val.Password = "GG";
-            val.Address = "";
-            val.ActiveAt = 0;
-            val.Phone = "32522353";
+            val!.Id = newUser.Id;
+            val.Name = newUser.Name;
+            val.Email = newUser.Email;
+            val.Avatar = newUser.Avatar;
+            val.Status = newUser.Status;
+            val.CreateAt = newUser.CreateAt;
+            val.PackageType = newUser.PackageType;
+            val.Password = newUser.Password;
+            val.Address = newUser.Address;
+            val.ActiveAt = newUser.ActiveAt;
+            val.Phone = newUser.Phone;
           });
 
-          final currentUser = FirebaseAuth.instance.currentUser;
-          if (currentUser != null) {
-            // ignore: avoid_print, prefer_interpolation_to_compose_strings
-            print("ID: " + currentUser.uid);
-          }
-
-          // Chuyển hướng đến trang đăng nhập
-          Get.off(() => const ScreenLogin());
-          Get.snackbar(
-            'Success',
-            "Create Account GG Success",
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.greenAccent.withOpacity(0.1),
-            colorText: Colors.black,
-          );
-        } else {
-          // Người dùng đã tồn tại, chuyển hướng đến trang chính
-          Get.off(() => const ScreenLogin());
+          // Chuyển đến trang "walting"
+          Get.off(() => const ScreenFobident());
         }
       } else {
         // Đăng nhập thất bại hoặc không có người dùng
@@ -304,7 +414,7 @@ class AuthenticationRepository extends GetxController {
           'Error',
           "Login Account GG Fail",
           snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.greenAccent.withOpacity(0.1),
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
           colorText: Colors.black,
         );
       }
@@ -312,7 +422,7 @@ class AuthenticationRepository extends GetxController {
       // Xử lý lỗi
       Get.snackbar(
         'Error',
-        "Create Account GG Fail",
+        "Login Account GG Fail",
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.redAccent.withOpacity(0.1),
         colorText: Colors.black,
@@ -321,35 +431,51 @@ class AuthenticationRepository extends GetxController {
   }
 
   Future<void> logout() async {
-    await _auth
-        .signOut()
-        .whenComplete(() => {
-              Get.snackbar("Success", "Log out in Scuccess",
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.greenAccent.withOpacity(0.1),
-                  colorText: Colors.black),
-              Get.to(() => const ScreenWelcome()),
-              box.remove("idCredential"),
-            })
-        .catchError((e) => {
-              Get.snackbar("Erorr", "Can not Logout",
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.redAccent.withOpacity(0.1),
-                  colorText: Colors.black)
-            });
-
-    //! Code Replace
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool('isLoggedIn', true);
-    final currentUser = FirebaseAuth.instance.currentUser;
-    if (currentUser == null) {
-      Get.delete<HomeController>(); // xóa instance cũ để tránh xung đột
+    try {
+      await _googleSignIn.signOut(); // Đăng xuất khỏi Google
+      await _auth.signOut(); // Đăng xuất khỏi Firebase
+      // Đặt các giá trị khởi tạo hoặc xóa thông tin người dùng
+      user.update((val) {
+        val!.Id = "";
+        val.Name = "";
+        val.Email = "";
+        val.Avatar = "";
+        val.Status = false;
+        val.CreateAt = 0;
+        val.PackageType = "";
+        val.Password = "";
+        val.Address = "";
+        val.ActiveAt = 0;
+        val.Phone = "";
+      });
+      Get.offAll(() => const ScreenLogin()); // Chuyển hướng đến trang đăng nhập
+      Get.snackbar(
+        'Success',
+        "Logout Success",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.greenAccent.withOpacity(0.1),
+        colorText: Colors.black,
+      );
+    } catch (e) {
+      // Xử lý lỗi
+      Get.snackbar(
+        'Error',
+        "Logout Failed",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent.withOpacity(0.1),
+        colorText: Colors.black,
+      );
     }
-
-    //! New
-    // SharedPreferences prefs = await SharedPreferences.getInstance();
-    // prefs.setBool('isLoggedIn', false);
   }
+
+  //   //! Code Replace
+  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  //   prefs.setBool('isLoggedIn', true);
+  //   final currentUser = FirebaseAuth.instance.currentUser;
+  //   if (currentUser == null) {
+  //     Get.delete<HomeController>(); // xóa instance cũ để tránh xung đột
+  //   }
+  // }
 
   checkData(id) async {
     if (id != "") {

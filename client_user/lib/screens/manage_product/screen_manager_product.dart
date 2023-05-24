@@ -5,6 +5,7 @@ import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/controller/manage_product.dart';
 import 'package:client_user/screens/manage_product/components/cart_item_products.dart';
 import 'package:client_user/screens/manage_product/components/modal_bottom_add.dart';
+import 'package:client_user/screens/manage_product/components/modal_filter.dart';
 import 'package:client_user/screens/manage_product/components/test_multi_file.dart';
 import 'package:client_user/uilt/style/button_style/button_style.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
@@ -85,7 +86,17 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
               decoration:
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: IconButton(
-                onPressed: () {},
+                onPressed: () => showModalBottomSheet(
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50.0),
+                      topRight: Radius.circular(50.0),
+                    ),
+                  ),
+                  isScrollControlled: true,
+                  context: context,
+                  builder: (context) => const Modal_Filter(),
+                ),
                 icon: const Icon(Icons.filter_alt),
                 color: Colors.black,
               ),
