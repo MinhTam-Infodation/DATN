@@ -42,12 +42,15 @@ class AuthenticationRepository extends GetxController {
   void bindingUser(id) {
     users.bindStream(UserSnapshot.getUser(id));
 
-    users.listen((snapshotList) {
-      if (snapshotList.user != null) {
-        final UserSnapshot snapshot = snapshotList.first;
-        final Users user = snapshot.user!;
+    users.listen((snapshotList) async {
+      String? currentToken = await FirebaseMessaging.instance.getToken();
+      if (currentToken != users.value.user!.Token) {
+        if (snapshotList.user != null) {
+          final UserSnapshot snapshot = snapshotList;
+          final Users user = snapshot.user!;
 
-        updateTokenIfNeeded(user);
+          updateTokenIfNeededS(user);
+        }
       }
     });
   }
@@ -58,6 +61,48 @@ class AuthenticationRepository extends GetxController {
       user.Token = currentToken;
 
       UserSnapshot(user: user, documentReference: null).capNhat(user);
+    }
+  }
+
+  Future<void> updateUserData(String userId, Users newUser) async {
+    try {
+      final userDoc = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .get();
+
+      if (userDoc.exists) {
+        final snapshot = UserSnapshot(
+          user: newUser,
+          documentReference: userDoc.reference,
+        );
+
+        await snapshot.capNhat(newUser);
+
+        Get.snackbar(
+          'Success',
+          'User data updated successfully',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.greenAccent.withOpacity(0.1),
+          colorText: Colors.black,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'User document not found',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
+          colorText: Colors.black,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString(),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent.withOpacity(0.1),
+        colorText: Colors.black,
+      );
     }
   }
 
@@ -639,5 +684,31 @@ class AuthenticationRepository extends GetxController {
         Get.offAll(() => const ScreenLogin());
       }
     });
+  }
+
+  //!NOTE FCM
+  void updateTokenIfNeededS(Users user) async {
+    String? currentToken = await FirebaseMessaging.instance.getToken();
+    if (currentToken != user.Token) {
+      user.Token = currentToken;
+
+      updateUserInfo(user.Id!, user);
+    }
+  }
+
+  void updateUserInfo(String userId, Users updatedUser) async {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('Id', isEqualTo: userId)
+        .limit(1)
+        .get();
+
+    if (querySnapshot.docs.isNotEmpty) {
+      DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+      UserSnapshot userSnapshot = UserSnapshot.fromSnapshot(documentSnapshot);
+      userSnapshot.user = updatedUser;
+
+      await userSnapshot.capNhat(updatedUser);
+    }
   }
 }
