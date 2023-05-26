@@ -1,8 +1,10 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: avoid_print, avoid_unnecessary_containers
 
+import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:http/http.dart' as http;
@@ -17,6 +19,7 @@ class ScreenUserWalting extends StatefulWidget {
 
 class _ScreenUserWaltingState extends State<ScreenUserWalting> {
   final cu = Get.put(WaltingUserController());
+  final total = Get.put(TotalController());
 
   final TextEditingController _searchController = TextEditingController();
   bool _isClearVisible = false;
@@ -122,35 +125,79 @@ class _ScreenUserWaltingState extends State<ScreenUserWalting> {
                         () {
                           return ListView.separated(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            itemBuilder: (context, index) => GFCheckboxListTile(
-                              margin: const EdgeInsets.symmetric(
-                                  vertical: 7, horizontal: 5),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 20, horizontal: 10),
-                              color: Colors.white,
-                              customBgColor: Colors.white,
-                              activeBorderColor: Colors.white,
-                              inactiveBgColor: Colors.white,
-                              titleText: cu.listUsers[index].user!.Name,
-                              subTitleText: cu.listUsers[index].user!.Email,
-                              size: 25,
-                              activeBgColor: Colors.green,
-                              type: GFCheckboxType.circle,
-                              activeIcon: const Icon(
-                                Icons.check,
-                                size: 15,
-                                color: Colors.white,
+                            itemBuilder: (context, index) => Container(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(15),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                cu.listUsers[index].user!.Name!,
+                                                style: textNormalLatoBold,
+                                              ),
+                                              const SizedBox(
+                                                height: 5,
+                                              ),
+                                              Text(
+                                                cu.listUsers[index].user!
+                                                    .Email!,
+                                                style: textNormalQuicksanGrey,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        FSwitch(
+                                          open: false,
+                                          onChanged: (v) {
+                                            // Update Status User
+                                            cu.updateUserStatus(
+                                                cu.listUsers[index].user!.Id!);
+
+                                            // Send Notifications To User
+                                            total.sendNotificationToUser(
+                                                cu.listUsers[index].user!
+                                                    .Token!,
+                                                "Access Pemission",
+                                                "Your Account Can Access In Amager");
+                                            Get.snackbar('Success',
+                                                "Access Account To Success",
+                                                snackPosition:
+                                                    SnackPosition.BOTTOM,
+                                                backgroundColor: Colors
+                                                    .redAccent
+                                                    .withOpacity(0.1),
+                                                colorText: Colors.black);
+                                          },
+                                          closeChild: const Icon(
+                                            Icons.close,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                          openChild: const Icon(
+                                            Icons.check,
+                                            size: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(
+                                    height: 2,
+                                    color: Colors.black.withOpacity(0.5),
+                                  )
+                                ],
                               ),
-                              onChanged: (value) {
-                                // cu.updateUserStatus(
-                                //     cu.listUsers[index].user!.Id!);
-                                sendNotificationToUser(
-                                    cu.listUsers[index].user!.Token!,
-                                    "Active Account Success",
-                                    "Account to you can access to Amager");
-                              },
-                              inactiveIcon: null,
-                              value: cu.listUsers[index].user!.Status!,
                             ),
 
                             // ignore: invalid_use_of_protected_member

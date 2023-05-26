@@ -184,7 +184,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                               child: ListTileCustom(
                                 bgColor: blueLight,
                                 pathIcon: "eyes.svg",
-                                title: "REPORT",
+                                title: "NEWS",
                                 subTitle: "1",
                               ),
                             ),
@@ -204,85 +204,85 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                         const SizedBox(
                           height: 20,
                         ),
-                        CardCustom(
-                            mLeft: 0,
-                            mRight: 0,
-                            width: size.width - 40,
-                            height: 235,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceEvenly,
-                                    children: <Widget>[
-                                      Indicator(
-                                        color: Colors.greenAccent,
-                                        text: 'Active',
-                                        isSquare: false,
-                                        size: touchedIndex == 0 ? 14 : 12,
-                                        textColor: touchedIndex == 0
-                                            ? Colors.black
-                                            : Colors.grey,
-                                      ),
-                                      Indicator(
-                                        color: Colors.blueAccent,
-                                        text: 'Walting',
-                                        isSquare: false,
-                                        size: touchedIndex == 1 ? 14 : 12,
-                                        textColor: touchedIndex == 1
-                                            ? Colors.black
-                                            : Colors.grey,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                // Bar Cusstom
-                                SizedBox(
-                                  width: 200,
-                                  height: 150,
-                                  child: PieChart(
-                                    PieChartData(
-                                      pieTouchData: PieTouchData(
-                                        touchCallback: (FlTouchEvent event,
-                                            pieTouchResponse) {
-                                          setState(() {
-                                            if (!event
-                                                    .isInterestedForInteractions ||
-                                                pieTouchResponse == null ||
-                                                pieTouchResponse
-                                                        .touchedSection ==
-                                                    null) {
-                                              touchedIndex = -1;
-                                              return;
-                                            }
-                                            touchedIndex = pieTouchResponse
-                                                .touchedSection!
-                                                .touchedSectionIndex;
-                                          });
-                                        },
-                                      ),
-                                      startDegreeOffset: 180,
-                                      borderData: FlBorderData(
-                                        show: false,
-                                      ),
-                                      sectionsSpace: 10,
-                                      centerSpaceRadius: 0,
-                                      sections: showingSections(),
-                                    ),
-                                    swapAnimationDuration: const Duration(
-                                        milliseconds: 150), // Optional
-                                    swapAnimationCurve:
-                                        Curves.linear, // Optional
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                )
-                              ],
-                            )),
+                        // CardCustom(
+                        //     mLeft: 0,
+                        //     mRight: 0,
+                        //     width: size.width - 40,
+                        //     height: 235,
+                        //     child: Column(
+                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //       children: [
+                        //         Padding(
+                        //           padding: const EdgeInsets.all(20),
+                        //           child: Row(
+                        //             mainAxisAlignment:
+                        //                 MainAxisAlignment.spaceEvenly,
+                        //             children: <Widget>[
+                        //               Indicator(
+                        //                 color: Colors.greenAccent,
+                        //                 text: 'Active',
+                        //                 isSquare: false,
+                        //                 size: touchedIndex == 0 ? 14 : 12,
+                        //                 textColor: touchedIndex == 0
+                        //                     ? Colors.black
+                        //                     : Colors.grey,
+                        //               ),
+                        //               Indicator(
+                        //                 color: Colors.blueAccent,
+                        //                 text: 'Walting',
+                        //                 isSquare: false,
+                        //                 size: touchedIndex == 1 ? 14 : 12,
+                        //                 textColor: touchedIndex == 1
+                        //                     ? Colors.black
+                        //                     : Colors.grey,
+                        //               ),
+                        //             ],
+                        //           ),
+                        //         ),
+                        //         // Bar Cusstom
+                        //         SizedBox(
+                        //           width: 200,
+                        //           height: 150,
+                        //           child: PieChart(
+                        //             PieChartData(
+                        //               pieTouchData: PieTouchData(
+                        //                 touchCallback: (FlTouchEvent event,
+                        //                     pieTouchResponse) {
+                        //                   setState(() {
+                        //                     if (!event
+                        //                             .isInterestedForInteractions ||
+                        //                         pieTouchResponse == null ||
+                        //                         pieTouchResponse
+                        //                                 .touchedSection ==
+                        //                             null) {
+                        //                       touchedIndex = -1;
+                        //                       return;
+                        //                     }
+                        //                     touchedIndex = pieTouchResponse
+                        //                         .touchedSection!
+                        //                         .touchedSectionIndex;
+                        //                   });
+                        //                 },
+                        //               ),
+                        //               startDegreeOffset: 180,
+                        //               borderData: FlBorderData(
+                        //                 show: false,
+                        //               ),
+                        //               sectionsSpace: 10,
+                        //               centerSpaceRadius: 0,
+                        //               sections: showingSections(),
+                        //             ),
+                        //             swapAnimationDuration: const Duration(
+                        //                 milliseconds: 150), // Optional
+                        //             swapAnimationCurve:
+                        //                 Curves.linear, // Optional
+                        //           ),
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 20,
+                        //         )
+                        //       ],
+                        //     )),
                         const SizedBox(
                           height: 20,
                         ),
@@ -457,43 +457,43 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
         ),
       );
   //* Pie Data
-  List<PieChartSectionData> showingSections() {
-    final wail = Get.put(WaltingUserController());
-    return List.generate(
-      2,
-      (i) {
-        final isTouched = i == touchedIndex;
-        const color0 = Colors.greenAccent;
-        const color1 = Colors.blueAccent;
-        switch (i) {
-          case 0:
-            return PieChartSectionData(
-              color: color0,
-              value: double.parse(wail.totalActive.value.toString()),
-              title:
-                  '${((double.parse(wail.totalActive.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
-              radius: 80,
-              titlePositionPercentageOffset: 0.55,
-              borderSide: isTouched
-                  ? const BorderSide(color: Colors.white, width: 6)
-                  : BorderSide(color: Colors.white.withOpacity(0)),
-            );
-          case 1:
-            return PieChartSectionData(
-              color: color1,
-              value: double.parse(wail.totalWalting.value.toString()),
-              title:
-                  '${((double.parse(wail.totalWalting.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
-              radius: 65,
-              titlePositionPercentageOffset: 0.55,
-              borderSide: isTouched
-                  ? const BorderSide(color: Colors.white, width: 6)
-                  : BorderSide(color: Colors.white.withOpacity(0)),
-            );
-          default:
-            throw Error();
-        }
-      },
-    );
-  }
+  // List<PieChartSectionData> showingSections() {
+  //   final wail = Get.put(WaltingUserController());
+  //   return List.generate(
+  //     2,
+  //     (i) {
+  //       final isTouched = i == touchedIndex;
+  //       const color0 = Colors.greenAccent;
+  //       const color1 = Colors.blueAccent;
+  //       switch (i) {
+  //         case 0:
+  //           return PieChartSectionData(
+  //             color: color0,
+  //             value: double.parse(wail.totalActive.value.toString()),
+  //             title:
+  //                 '${((double.parse(wail.totalActive.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
+  //             radius: 80,
+  //             titlePositionPercentageOffset: 0.55,
+  //             borderSide: isTouched
+  //                 ? const BorderSide(color: Colors.white, width: 6)
+  //                 : BorderSide(color: Colors.white.withOpacity(0)),
+  //           );
+  //         case 1:
+  //           return PieChartSectionData(
+  //             color: color1,
+  //             value: double.parse(wail.totalWalting.value.toString()),
+  //             title:
+  //                 '${((double.parse(wail.totalWalting.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
+  //             radius: 65,
+  //             titlePositionPercentageOffset: 0.55,
+  //             borderSide: isTouched
+  //                 ? const BorderSide(color: Colors.white, width: 6)
+  //                 : BorderSide(color: Colors.white.withOpacity(0)),
+  //           );
+  //         default:
+  //           throw Error();
+  //       }
+  //     },
+  //   );
+  // }
 }

@@ -57,6 +57,7 @@ dependencies:
   awesome_notifications: ^0.7.4+1
   http: ^0.13.6
   flutter_local_notifications: ^14.1.0
+  fswitch_nullsafety: ^2.0.2
 
 dev_dependencies:
   flutter_test:

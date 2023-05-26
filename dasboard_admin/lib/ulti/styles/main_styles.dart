@@ -147,6 +147,18 @@ TextStyle textNormalQuicksanBold = GoogleFonts.quicksand().copyWith(
   color: Colors.black,
 );
 
+TextStyle textNormalQuicksanGrey = GoogleFonts.quicksand().copyWith(
+  fontWeight: FontWeight.w700,
+  fontSize: 14,
+  color: Colors.grey,
+);
+
+TextStyle textNormalLatoBold = GoogleFonts.lato().copyWith(
+  fontWeight: FontWeight.bold,
+  fontSize: 20,
+  color: Colors.black,
+);
+
 TextStyle textSmallQuicksan = GoogleFonts.quicksand().copyWith(
   fontWeight: FontWeight.w500,
   fontSize: 16,
