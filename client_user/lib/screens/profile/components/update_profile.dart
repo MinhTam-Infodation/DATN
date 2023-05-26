@@ -46,7 +46,7 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
     }
     controller.bindingUser(userId);
     DateTime tsdatecreate = DateTime.fromMillisecondsSinceEpoch(
-        controller.users.value.user!.CreateAt!);
+        controller.users.value.user!.CreatedAt ?? 0);
     txtName = TextEditingController();
     txtEmail = TextEditingController();
     txtPhone = TextEditingController();

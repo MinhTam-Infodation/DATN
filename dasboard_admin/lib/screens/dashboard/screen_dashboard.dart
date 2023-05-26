@@ -243,40 +243,40 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                 SizedBox(
                                   width: 200,
                                   height: 150,
-                                  child: Obx(() => PieChart(
-                                        PieChartData(
-                                          pieTouchData: PieTouchData(
-                                            touchCallback: (FlTouchEvent event,
-                                                pieTouchResponse) {
-                                              setState(() {
-                                                if (!event
-                                                        .isInterestedForInteractions ||
-                                                    pieTouchResponse == null ||
-                                                    pieTouchResponse
-                                                            .touchedSection ==
-                                                        null) {
-                                                  touchedIndex = -1;
-                                                  return;
-                                                }
-                                                touchedIndex = pieTouchResponse
-                                                    .touchedSection!
-                                                    .touchedSectionIndex;
-                                              });
-                                            },
-                                          ),
-                                          startDegreeOffset: 180,
-                                          borderData: FlBorderData(
-                                            show: false,
-                                          ),
-                                          sectionsSpace: 10,
-                                          centerSpaceRadius: 0,
-                                          sections: showingSections(),
-                                        ),
-                                        swapAnimationDuration: const Duration(
-                                            milliseconds: 150), // Optional
-                                        swapAnimationCurve:
-                                            Curves.linear, // Optional
-                                      )),
+                                  child: PieChart(
+                                    PieChartData(
+                                      pieTouchData: PieTouchData(
+                                        touchCallback: (FlTouchEvent event,
+                                            pieTouchResponse) {
+                                          setState(() {
+                                            if (!event
+                                                    .isInterestedForInteractions ||
+                                                pieTouchResponse == null ||
+                                                pieTouchResponse
+                                                        .touchedSection ==
+                                                    null) {
+                                              touchedIndex = -1;
+                                              return;
+                                            }
+                                            touchedIndex = pieTouchResponse
+                                                .touchedSection!
+                                                .touchedSectionIndex;
+                                          });
+                                        },
+                                      ),
+                                      startDegreeOffset: 180,
+                                      borderData: FlBorderData(
+                                        show: false,
+                                      ),
+                                      sectionsSpace: 10,
+                                      centerSpaceRadius: 0,
+                                      sections: showingSections(),
+                                    ),
+                                    swapAnimationDuration: const Duration(
+                                        milliseconds: 150), // Optional
+                                    swapAnimationCurve:
+                                        Curves.linear, // Optional
+                                  ),
                                 ),
                                 const SizedBox(
                                   height: 20,

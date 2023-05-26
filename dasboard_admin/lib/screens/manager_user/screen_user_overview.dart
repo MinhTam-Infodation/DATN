@@ -26,12 +26,18 @@ class _UserOverviewScreenState extends State<UserOverviewScreen> {
     setState(() {
       _isClearVisible = value.isNotEmpty;
     });
+    if (value.isNotEmpty) {
+      cu.searchProductByName(value);
+    } else {
+      cu.getListUser();
+    }
   }
 
   void _onClearPressed() {
     setState(() {
       _searchController.clear();
       _isClearVisible = false;
+      cu.getListUser();
     });
   }
 

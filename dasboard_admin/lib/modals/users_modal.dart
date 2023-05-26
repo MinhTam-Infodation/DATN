@@ -1,36 +1,26 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
-  // ignore: non_constant_identifier_names
-  String? Address, Avatar, Name, Email, PackageType, Password, Phone;
-  // ignore: non_constant_identifier_names
-  bool? Status;
-  // ignore: non_constant_identifier_names
+  String? Address, Avatar, Name, Email, PackageType, Password, Phone, Token;
+  bool? Status, isAdmin;
   int? ActiveAt, CreatedAt;
   String? Id;
   User(
-      // ignore: non_constant_identifier_names
       {this.Address,
-      // ignore: non_constant_identifier_names
       this.Avatar,
-      // ignore: non_constant_identifier_names
       this.Name,
-      // ignore: non_constant_identifier_names
       this.Email,
-      // ignore: non_constant_identifier_names
       this.PackageType,
-      // ignore: non_constant_identifier_names
       this.Phone,
-      // ignore: non_constant_identifier_names
       this.Password,
-      // ignore: non_constant_identifier_names
       this.Status,
-      // ignore: non_constant_identifier_names
       this.ActiveAt,
-      // ignore: non_constant_identifier_names
       this.Id,
-      // ignore: non_constant_identifier_names
-      this.CreatedAt});
+      this.CreatedAt,
+      this.isAdmin,
+      this.Token});
 
   Map<String, dynamic> toJson() {
     return {
@@ -44,24 +34,27 @@ class User {
       'Password': Password,
       'Status': Status,
       'ActiveAt': ActiveAt,
-      'CreatedAt': CreatedAt
+      'CreatedAt': CreatedAt,
+      'isAdmin': isAdmin,
+      'Token': Token
     };
   }
 
   factory User.fromJson(Map<String, dynamic> map) {
     return User(
-      Id: map['Id'],
-      Address: map['Address'],
-      Avatar: map['Avatar'],
-      Name: map['Name'],
-      Email: map['Email'],
-      PackageType: map['PackageType'],
-      Phone: map['Phone'],
-      Password: map['Password'],
-      Status: map['Status'],
-      ActiveAt: map['ActiveAt'],
-      CreatedAt: map['CreatedAt'],
-    );
+        Id: map['Id'],
+        Address: map['Address'],
+        Avatar: map['Avatar'],
+        Name: map['Name'],
+        Email: map['Email'],
+        PackageType: map['PackageType'],
+        Phone: map['Phone'],
+        Password: map['Password'],
+        Status: map['Status'],
+        ActiveAt: map['ActiveAt'],
+        CreatedAt: map['CreatedAt'],
+        isAdmin: map['isAdmin'],
+        Token: map['Token']);
   }
 }
 
@@ -100,8 +93,11 @@ class UserSnapshot {
   }
 
   static Stream<List<UserSnapshot>> dsUserTuFirebase() {
-    Stream<QuerySnapshot> qs =
-        FirebaseFirestore.instance.collection("Users").snapshots();
+    Stream<QuerySnapshot> qs = FirebaseFirestore.instance
+        .collection("Users")
+        .orderBy("CreatedAt")
+        .orderBy("Status")
+        .snapshots();
     // ignore: unnecessary_null_comparison
     if (qs == null) return const Stream.empty();
     Stream<List<DocumentSnapshot>> listDocSnap =

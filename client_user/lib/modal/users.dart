@@ -6,7 +6,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 class Users {
   String? Address, Avatar, Name, Email, PackageType, Password, Phone, Token;
   bool? Status, isAdmin;
-  int? ActiveAt, CreateAt;
+  int? ActiveAt, CreatedAt;
   String? Id;
   Users(
       {this.Address,
@@ -19,7 +19,7 @@ class Users {
       this.Status,
       this.ActiveAt,
       this.Id,
-      this.CreateAt,
+      this.CreatedAt,
       this.isAdmin,
       this.Token});
 
@@ -35,7 +35,7 @@ class Users {
       'Password': Password,
       'Status': Status,
       'ActiveAt': ActiveAt,
-      'CreateAt': CreateAt,
+      'CreatedAt': CreatedAt,
       'isAdmin': isAdmin,
       'Token': Token
     };
@@ -53,7 +53,7 @@ class Users {
         Password: map['Password'],
         Status: map['Status'],
         ActiveAt: map['ActiveAt'],
-        CreateAt: map['CreateAt'],
+        CreatedAt: map['CreatedAt'],
         isAdmin: map['isAdmin'],
         Token: map['Token']);
   }

@@ -25,7 +25,7 @@ class ProfileController extends GetxController {
         Password: password,
         Status: authControl.user.value.Status,
         ActiveAt: authControl.user.value.ActiveAt,
-        CreateAt: authControl.user.value.CreateAt);
+        CreatedAt: authControl.user.value.CreatedAt);
     authControl
         .updateUserData(id, user)
         .then((_) => {

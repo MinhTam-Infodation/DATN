@@ -43,7 +43,7 @@ class AuthenticationRepository extends GetxController {
     users.bindStream(UserSnapshot.getUser(id));
 
     users.listen((snapshotList) async {
-      String? currentToken = await FirebaseMessaging.instance.getToken();
+      final currentToken = await FirebaseMessaging.instance.getToken();
       if (currentToken != users.value.user!.Token) {
         if (snapshotList.user != null) {
           final UserSnapshot snapshot = snapshotList;
@@ -171,7 +171,7 @@ class AuthenticationRepository extends GetxController {
       val.Password = newUser.Password;
       val.Status = newUser.Status;
       val.ActiveAt = newUser.ActiveAt;
-      val.CreateAt = newUser.CreateAt;
+      val.CreatedAt = newUser.CreatedAt;
     });
   }
 
@@ -289,95 +289,6 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  // Future<void> loginWithGoogle() async {
-  //   try {
-  //     final GoogleSignInAccount? googleSignInAccount =
-  //         await _googleSignIn.signIn();
-  //     final GoogleSignInAuthentication googleSignInAuthentication =
-  //         await googleSignInAccount!.authentication;
-
-  //     final AuthCredential credential = GoogleAuthProvider.credential(
-  //       accessToken: googleSignInAuthentication.accessToken,
-  //       idToken: googleSignInAuthentication.idToken,
-  //     );
-
-  //     // Thực hiện đăng nhập vào Firebase với credential của Google
-  //     final UserCredential userCredential =
-  //         await _auth.signInWithCredential(credential);
-
-  //     final users = userCredential.user;
-  //     if (users != null) {
-  //       // Kiểm tra xem người dùng đã tồn tại trong danh sách xác thực trên Firebase chưa
-  //       if (userCredential.additionalUserInfo!.isNewUser) {
-  //         // Người dùng mới, thực hiện thêm thông tin người dùng vào Firestore
-  //         final newUser = Users(
-  //           Id: users.uid,
-  //           Name: users.displayName,
-  //           Email: users.email,
-  //           Avatar: users.photoURL,
-  //           Status: false,
-  //           CreateAt: DateTime.now().millisecondsSinceEpoch,
-  //           PackageType: "",
-  //           Password: "GG",
-  //           Address: "",
-  //           ActiveAt: 0,
-  //           Phone: "32522353",
-  //         );
-  //         await _firestore
-  //             .collection('Users')
-  //             .doc(users.uid)
-  //             .set(newUser.toJson());
-
-  //         // Binding vào đối tượng user
-  //         user.update((val) {
-  //           val!.Id = users.uid;
-  //           val.Name = users.displayName;
-  //           val.Email = users.email;
-  //           val.Avatar = users.photoURL;
-  //           val.Status = false;
-  //           val.CreateAt = DateTime.now().millisecondsSinceEpoch;
-  //           val.PackageType = "";
-  //           val.Password = "GG";
-  //           val.Address = "";
-  //           val.ActiveAt = 0;
-  //           val.Phone = "32522353";
-  //         });
-
-  //         // Chuyển hướng đến trang đăng nhập
-  //         Get.off(() => const ScreenLogin());
-  //         Get.snackbar(
-  //           'Success',
-  //           "Create Account GG Success",
-  //           snackPosition: SnackPosition.BOTTOM,
-  //           backgroundColor: Colors.greenAccent.withOpacity(0.1),
-  //           colorText: Colors.black,
-  //         );
-  //       } else {
-  //         // Người dùng đã tồn tại, chuyển hướng đến trang chính
-  //         Get.off(() => const ScreenLogin());
-  //       }
-  //     } else {
-  //       // Đăng nhập thất bại hoặc không có người dùng
-  //       Get.snackbar(
-  //         'Error',
-  //         "Login Account GG Fail",
-  //         snackPosition: SnackPosition.BOTTOM,
-  //         backgroundColor: Colors.greenAccent.withOpacity(0.1),
-  //         colorText: Colors.black,
-  //       );
-  //     }
-  //   } catch (e) {
-  //     // Xử lý lỗi
-  //     Get.snackbar(
-  //       'Error',
-  //       "Create Account GG Fail",
-  //       snackPosition: SnackPosition.BOTTOM,
-  //       backgroundColor: Colors.redAccent.withOpacity(0.1),
-  //       colorText: Colors.black,
-  //     );
-  //   }
-  // }
-
   Future<void> loginWithGoogle() async {
     try {
       final GoogleSignInAccount? googleSignInAccount =
@@ -422,7 +333,7 @@ class AuthenticationRepository extends GetxController {
             Email: usersk.email,
             Avatar: usersk.photoURL,
             Status: false,
-            CreateAt: DateTime.now().millisecondsSinceEpoch,
+            CreatedAt: DateTime.now().millisecondsSinceEpoch,
             PackageType: "",
             Password: "GG",
             Address: "",
@@ -442,7 +353,7 @@ class AuthenticationRepository extends GetxController {
             val.Email = newUser.Email;
             val.Avatar = newUser.Avatar;
             val.Status = newUser.Status;
-            val.CreateAt = newUser.CreateAt;
+            val.CreatedAt = newUser.CreatedAt;
             val.PackageType = newUser.PackageType;
             val.Password = newUser.Password;
             val.Address = newUser.Address;
@@ -486,7 +397,7 @@ class AuthenticationRepository extends GetxController {
         val.Email = "";
         val.Avatar = "";
         val.Status = false;
-        val.CreateAt = 0;
+        val.CreatedAt = 0;
         val.PackageType = "";
         val.Password = "";
         val.Address = "";
@@ -513,15 +424,6 @@ class AuthenticationRepository extends GetxController {
     }
   }
 
-  //   //! Code Replace
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setBool('isLoggedIn', true);
-  //   final currentUser = FirebaseAuth.instance.currentUser;
-  //   if (currentUser == null) {
-  //     Get.delete<HomeController>(); // xóa instance cũ để tránh xung đột
-  //   }
-  // }
-
   checkData(id) async {
     if (id != "") {
       DocumentSnapshot doc =
@@ -547,7 +449,7 @@ class AuthenticationRepository extends GetxController {
           ..Password = doc.get('Password')
           ..Status = doc.get('Status')
           ..ActiveAt = doc.get('ActiveAt')
-          ..CreateAt = doc.get('CreatedAt');
+          ..CreatedAt = doc.get('CreatedAt');
 
         updateUser(newUser);
       }
@@ -627,7 +529,7 @@ class AuthenticationRepository extends GetxController {
     } catch (_) {}
   }
 
-  Future<void> updateUserData(String id, Users userin) async {
+  Future<void> updateUserDatass(String id, Users userin) async {
     final CollectionReference usersRef =
         FirebaseFirestore.instance.collection('Users');
     FirebaseAuth auth = FirebaseAuth.instance;

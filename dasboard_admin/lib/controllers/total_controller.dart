@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
@@ -36,6 +38,30 @@ class TotalController extends GetxController {
       users.value =
           snapshot.docs.map((doc) => UserSnapshot.fromSnapshot(doc)).toList();
     });
+  }
+
+  void sendNotificationToUser(String userToken, String notificationTitle,
+      String notificationBody) async {
+    const String serverKey =
+        'AAAAAQaiVfI:APA91bGn_dXpSEwAU7qg4WXV54tdS15B_LcFRN5ubCnLkcijDOzXHJRVfcnO0GNs_kiSZahvjVuAe64VwT5rQQVK0GcJHhjq2RaegF7NXK-EUChoqIgPOe9_yPzEsSxsn9Z9CDmH1KOj';
+    const String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
+
+    Map<String, dynamic> notificationData = {
+      'to': userToken,
+      'notification': {
+        'title': notificationTitle,
+        'body': notificationBody,
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      },
+    };
+  }
+
+  void searchProductByName(String productName) {
+    List<UserSnapshot> searchedTables = users
+        .where((table) =>
+            table.user!.Name!.toLowerCase().contains(productName.toLowerCase()))
+        .toList();
+    users.value = searchedTables;
   }
 
   void updateUserStatus(String userId, bool status) {

@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ScreenUserWalting extends StatefulWidget {
   const ScreenUserWalting({super.key});
@@ -138,8 +142,12 @@ class _ScreenUserWaltingState extends State<ScreenUserWalting> {
                                 color: Colors.white,
                               ),
                               onChanged: (value) {
-                                cu.updateUserStatus(
-                                    cu.listUsers[index].user!.Id!);
+                                // cu.updateUserStatus(
+                                //     cu.listUsers[index].user!.Id!);
+                                sendNotificationToUser(
+                                    cu.listUsers[index].user!.Token!,
+                                    "Active Account Success",
+                                    "Account to you can access to Amager");
                               },
                               inactiveIcon: null,
                               value: cu.listUsers[index].user!.Status!,
@@ -162,5 +170,36 @@ class _ScreenUserWaltingState extends State<ScreenUserWalting> {
         ),
       ),
     );
+  }
+
+  void sendNotificationToUser(String userToken, String notificationTitle,
+      String notificationBody) async {
+    const String serverKey =
+        'AAAAAQaiVfI:APA91bGn_dXpSEwAU7qg4WXV54tdS15B_LcFRN5ubCnLkcijDOzXHJRVfcnO0GNs_kiSZahvjVuAe64VwT5rQQVK0GcJHhjq2RaegF7NXK-EUChoqIgPOe9_yPzEsSxsn9Z9CDmH1KOj';
+    const String fcmEndpoint = 'https://fcm.googleapis.com/fcm/send';
+
+    Map<String, dynamic> notificationData = {
+      'to': userToken,
+      'notification': {
+        'title': notificationTitle,
+        'body': notificationBody,
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      },
+    };
+
+    final response = await http.post(
+      Uri.parse(fcmEndpoint),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      },
+      body: jsonEncode(notificationData),
+    );
+
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Error: ${response.reasonPhrase}');
+    }
   }
 }

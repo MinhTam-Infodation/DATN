@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print, unused_field
 
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:client_user/screens/home/screen_home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -143,6 +144,11 @@ class AuthController extends GetxController {
     }
   }
 
+  String readTemplate(String path) {
+    final file = File(path);
+    return file.readAsStringSync();
+  }
+
   Future sendEmail(
       String subject, String obj, String mess, String userEmail) async {
     print("EMAIL");
@@ -158,7 +164,7 @@ class AuthController extends GetxController {
       // ..bccRecipients.add(const Address('bccAddress@example.com'))
       ..subject = 'Test Dart Mailer library :: 😀 :: ${DateTime.now()}'
       // ..text = 'This is the plain text.\nThis is line 2 of the text part.'
-      ..html = "<h1>Test</h1>\n<p>Hey! Here's some HTML content</p>";
+      ..html = readTemplate("./mail.html");
 
     try {
       final sendReport = await send(message, stmpServer);

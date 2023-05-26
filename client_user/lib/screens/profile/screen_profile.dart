@@ -3,6 +3,7 @@ import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/screens/profile/components/update_profile.dart';
+import 'package:client_user/screens/screen_news/screen_news.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -115,6 +116,40 @@ class _ScreenProfileState extends State<ScreenProfile> {
                         style: textXLQuicksanBold,
                       )),
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
+                const Divider(),
+                const SizedBox(
+                  height: 10,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => const ScreenNews());
+                  },
+                  child: ListTile(
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.greenAccent.withOpacity(0.1)),
+                      child: const Icon(Icons.newspaper),
+                    ),
+                    title: Text(
+                      "New In Admin",
+                      style: textNormalKanitBold,
+                    ),
+                    trailing: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Colors.grey.withOpacity(0.1)),
+                      child: const Icon(Icons.arrow_forward_ios_rounded),
+                    ),
+                  ),
+                )
               ],
             ),
           ),

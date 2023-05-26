@@ -4,6 +4,7 @@ import 'package:dasboard_admin/screens/dashboard/screen_dashboard.dart';
 import 'package:dasboard_admin/screens/manager_user/screen_user_overview.dart';
 import 'package:dasboard_admin/screens/users/screen_user_settings.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MainScreenContainPanigator extends StatefulWidget {
   const MainScreenContainPanigator({super.key});
