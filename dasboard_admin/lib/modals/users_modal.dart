@@ -95,7 +95,6 @@ class UserSnapshot {
   static Stream<List<UserSnapshot>> dsUserTuFirebase() {
     Stream<QuerySnapshot> qs = FirebaseFirestore.instance
         .collection("Users")
-        .orderBy("CreatedAt")
         .orderBy("Status")
         .snapshots();
     // ignore: unnecessary_null_comparison
