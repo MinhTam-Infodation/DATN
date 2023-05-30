@@ -67,7 +67,6 @@ dependencies:
   syncfusion_flutter_pdfviewer: ^21.2.3
   firebase_messaging: ^14.6.1
   flutter_local_notifications: ^14.1.0
-  flutter_zalopay_sdk: ^0.1.13
   vnpay_flutter: ^1.0.1
   expandable: ^5.0.1
   d_chart: ^2.2.11
@@ -77,6 +76,10 @@ dependencies:
   http: ^0.13.6
   awesome_notifications: ^0.7.4+1
   mailer: ^6.0.1
+  sprintf: ^7.0.0
+  crypto: ^3.0.3
+  mustache_template: ^2.0.0
+  grouped_list: ^5.1.2
 
 dev_dependencies:
   flutter_test:
@@ -138,6 +141,8 @@ flutter:
     - assets/fonts/OpenSans-Bold.ttf
     - assets/fonts/OpenSans-Italic.ttf
     - assets/fonts/OpenSans-BoldItalic.ttf
+    - assets/mail.html
+    - assets/mail_active.html
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -7,7 +7,6 @@ import 'package:client_user/screens/forget_password/forget_password_options/forg
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_zalopay_sdk/flutter_zalopay_sdk.dart';
 import 'package:get/get.dart';
 import 'package:vnpay_flutter/vnpay_flutter.dart';
 

@@ -58,6 +58,11 @@ dependencies:
   http: ^0.13.6
   flutter_local_notifications: ^14.1.0
   fswitch_nullsafety: ^2.0.2
+  cached_network_image: ^3.2.3
+  crypto: ^3.0.3
+  salomon_bottom_bar: ^3.3.2
+  grouped_list: ^5.1.2
+  dropdown_input: ^0.0.1
 
 dev_dependencies:
   flutter_test:

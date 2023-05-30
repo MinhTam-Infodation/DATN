@@ -112,44 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 textValue: 'Login',
                 textColor: Colors.white,
                 onPressed: () async {
-                  try {
-                    // ignore: unused_local_variable
-                    cu.login(txtName.text, txtPass.text);
-                    // ignore: use_build_context_synchronously
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              const MainScreenContainPanigator()),
-                    );
-                  } on FirebaseException catch (e) {
-                    if (e.code == 'user-not-found') {
-                      CherryToast(
-                        icon: Icons.cancel,
-                        themeColor: Colors.red,
-                        title: const Text('Login Messege'),
-                        displayTitle: true,
-                        description:
-                            const Text('User not Found for that email'),
-                        toastPosition: Position.top,
-                        animationDuration: const Duration(milliseconds: 1000),
-                        autoDismiss: false,
-                      ).show(context);
-                    } else if (e.code == 'wrong-password') {
-                      // ignore: avoid_print
-
-                      CherryToast(
-                        icon: Icons.cancel,
-                        themeColor: Colors.red,
-                        title: const Text('Login Messege'),
-                        displayTitle: true,
-                        description: const Text('Please retry enter password'),
-                        toastPosition: Position.top,
-                        animationDuration: const Duration(milliseconds: 1000),
-                        autoDismiss: false,
-                      ).show(context);
-                    }
-                  }
+                  cu.login(txtName.text, txtPass.text);
                 },
               ),
             ],

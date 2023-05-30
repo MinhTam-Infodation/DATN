@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable
+// ignore_for_file: unused_local_variable, avoid_print, unnecessary_brace_in_string_interps
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 class TotalController extends GetxController {
   RxList<UserSnapshot> users = RxList<UserSnapshot>();
+  var selectedUser = UserSnapshot(user: Users(), documentReference: null).obs;
   final CollectionReference usersRef =
       FirebaseFirestore.instance.collection('Users');
   final walt = Get.put(WaltingUserController());
@@ -14,8 +15,60 @@ class TotalController extends GetxController {
   @override
   void onInit() {
     // Gọi phương thức lấy dữ liệu từ Firebase và gán cho biến users
-    users.bindStream(UserSnapshot.dsUserTuFirebase());
+    bindingUser();
     super.onInit();
+  }
+
+  bindingUser() {
+    users.bindStream(UserSnapshot.dsUserTuFirebase());
+
+    selectedUser.value = users.first;
+  }
+
+  void setSelectedUser(UserSnapshot user) {
+    selectedUser.value = user;
+  }
+
+  int countUsersInMonth(List<UserSnapshot> users, int year, int month) {
+    print("Month ${month} ${users.where((user) {
+      // Chuyển đổi CreatedAt thành đối tượng DateTime
+      DateTime createdAt =
+          convertTimestampToDate(int.parse(user.user!.CreatedAt!.toString()));
+      // Kiểm tra xem năm và tháng của CreatedAt có khớp với year và month đã cho
+      return createdAt.year == year && createdAt.month == month;
+    }).length}");
+    return users.where((user) {
+      // Chuyển đổi CreatedAt thành đối tượng DateTime
+      DateTime createdAt =
+          convertTimestampToDate(int.parse(user.user!.CreatedAt!.toString()));
+      // Kiểm tra xem năm và tháng của CreatedAt có khớp với year và month đã cho
+      return createdAt.year == year && createdAt.month == month;
+    }).length;
+  }
+
+  DateTime convertTimestampToDate(int timestamp) {
+    // Chuyển đổi số timestamp thành chuỗi
+    String dateString = timestamp.toString();
+    // Lấy ra độ dài của chuỗi timestamp
+    int length = dateString.length;
+
+    // Kiểm tra xem chuỗi timestamp có đủ 13 ký tự hay không (đại diện cho milliseconds)
+    if (length == 13) {
+      // Chia chuỗi thành 2 phần (giây và milliseconds)
+      String seconds = dateString.substring(0, 10);
+      String milliseconds = dateString.substring(10);
+
+      // Chuyển đổi giây và milliseconds thành số
+      int secondsValue = int.parse(seconds);
+      int millisecondsValue = int.parse(milliseconds);
+
+      // Tạo đối tượng DateTime từ giây và milliseconds
+      return DateTime.fromMillisecondsSinceEpoch(
+          secondsValue * 1000 + millisecondsValue);
+    }
+
+    // Nếu không đủ 13 ký tự, trả về ngày mặc định (hoặc giá trị null tùy theo yêu cầu)
+    return DateTime.now(); // Hoặc trả về null: return null;
   }
 
   void getSinhviens() async {
@@ -123,11 +176,11 @@ class TotalController extends GetxController {
         .toList();
   }
 
-  Future<void> addUser(User user) async {
+  Future<void> addUser(Users user) async {
     await usersRef.add(user.toJson());
   }
 
-  Future<void> updateUser(String id, User user) async {
+  Future<void> updateUser(String id, Users user) async {
     await usersRef.doc(id).update(user.toJson());
   }
 

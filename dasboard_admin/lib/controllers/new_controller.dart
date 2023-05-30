@@ -1,5 +1,5 @@
-import 'package:client_user/modal/news.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dasboard_admin/modals/news_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -15,12 +15,12 @@ class ManageNewsController extends GetxController {
   void onInit() {
     super.onInit();
     if (FirebaseAuth.instance.currentUser != null) {
-      getListNews(FirebaseAuth.instance.currentUser!.uid);
+      getListNews();
     }
   }
 
-  getListNews(String id) async {
-    news.bindStream(NewsSnapshot.getListNewsByUser(id));
+  getListNews() async {
+    news.bindStream(NewsSnapshot.getListNewsByAdmin());
   }
 
   getListNewsGroup(id) {
@@ -31,16 +31,16 @@ class ManageNewsController extends GetxController {
     NewsSnapshot.markAllNewsAsRead(id);
   }
 
-  addNews(News news) {
-    NewsSnapshot.themMoiAutoId(news)
+  addNews(News news, String userId) {
+    NewsSnapshot.themMoiAutoId(news, userId)
         .then((value) => {
-              Get.snackbar('Success', "Create Account Success",
+              Get.snackbar('Success', "Add News Success",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.greenAccent.withOpacity(0.1),
                   colorText: Colors.white)
             })
         .catchError((err) => {
-              Get.snackbar('Error', "Create News Fail",
+              Get.snackbar('Error', "Add News Fail",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.redAccent.withOpacity(0.1),
                   colorText: Colors.white)
