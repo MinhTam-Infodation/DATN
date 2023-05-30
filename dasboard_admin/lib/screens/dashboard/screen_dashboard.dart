@@ -1,8 +1,11 @@
+// ignore_for_file: avoid_print
+
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:dasboard_admin/controllers/ticket_controller.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
 import 'package:dasboard_admin/screens/dashboard/components/indicator.dart';
+import 'package:dasboard_admin/screens/manager_news/screen_news.dart';
 import 'package:dasboard_admin/screens/manager_ticket/screen_ticket_overview.dart';
 import 'package:dasboard_admin/screens/manager_user/manager_walting/screen_user_wailting.dart';
 import 'package:dasboard_admin/screens/manager_user/screen_user_overview.dart';
@@ -15,6 +18,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class ScreenDashboard extends StatefulWidget {
   const ScreenDashboard({super.key});
@@ -176,16 +180,19 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                 ),
                               ),
                             ),
-                            CardCustom(
-                              width: size.width / 2 - 23,
-                              height: 88.9,
-                              mLeft: 3,
-                              mRight: 0,
-                              child: ListTileCustom(
-                                bgColor: blueLight,
-                                pathIcon: "eyes.svg",
-                                title: "NEWS",
-                                subTitle: "1",
+                            GestureDetector(
+                              onTap: () => {Get.to(() => const ScreenNews())},
+                              child: CardCustom(
+                                width: size.width / 2 - 23,
+                                height: 88.9,
+                                mLeft: 3,
+                                mRight: 0,
+                                child: ListTileCustom(
+                                  bgColor: blueLight,
+                                  pathIcon: "eyes.svg",
+                                  title: "NEWS",
+                                  subTitle: "1",
+                                ),
                               ),
                             ),
                           ],
@@ -317,96 +324,111 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                   height: 150,
                                   child: AspectRatio(
                                       aspectRatio: 2,
-                                      child: BarChart(BarChartData(
-                                          barGroups: [
-                                            generateGroupData(
-                                                1,
-                                                wail.userCountByMonth[0]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                2,
-                                                wail.userCountByMonth[1]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                3,
-                                                wail.userCountByMonth[2]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                4,
-                                                wail.userCountByMonth[3]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                5,
-                                                wail.userCountByMonth[4]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                6,
-                                                wail.userCountByMonth[5]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                7,
-                                                wail.userCountByMonth[6]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                8,
-                                                wail.userCountByMonth[7]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                9,
-                                                wail.userCountByMonth[8]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                10,
-                                                wail.userCountByMonth[9]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                11,
-                                                wail.userCountByMonth[10]
-                                                        ?.value ??
-                                                    0),
-                                            generateGroupData(
-                                                12,
-                                                wail.userCountByMonth[11]
-                                                        ?.value ??
-                                                    0),
-                                          ],
-                                          barTouchData: BarTouchData(
-                                              enabled: true,
-                                              handleBuiltInTouches: false,
-                                              touchCallback: (event, response) {
-                                                if (response != null &&
-                                                    response.spot != null &&
-                                                    event is FlTapUpEvent) {
-                                                  setState(() {
-                                                    final x = response.spot!
-                                                        .touchedBarGroup.x;
-                                                    final isShowing =
-                                                        showingTooltip == x;
-                                                    if (isShowing) {
-                                                      showingTooltip = -1;
-                                                    } else {
-                                                      showingTooltip = x;
+                                      child: Obx(() => BarChart(BarChartData(
+                                              barGroups: [
+                                                generateGroupData(
+                                                    1,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        1)),
+                                                generateGroupData(
+                                                    2,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        2)),
+                                                generateGroupData(
+                                                    3,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        3)),
+                                                generateGroupData(
+                                                    4,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        4)),
+                                                generateGroupData(
+                                                    5,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        5)),
+                                                generateGroupData(
+                                                    6,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        6)),
+                                                generateGroupData(
+                                                    7,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        7)),
+                                                generateGroupData(
+                                                    8,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        8)),
+                                                generateGroupData(
+                                                    9,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        9)),
+                                                generateGroupData(
+                                                    10,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        10)),
+                                                generateGroupData(
+                                                    11,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        11)),
+                                                generateGroupData(
+                                                    12,
+                                                    cu.countUsersInMonth(
+                                                        cu.users,
+                                                        DateTime.now().year,
+                                                        12)),
+                                              ],
+                                              barTouchData: BarTouchData(
+                                                  enabled: true,
+                                                  handleBuiltInTouches: false,
+                                                  touchCallback:
+                                                      (event, response) {
+                                                    if (response != null &&
+                                                        response.spot != null &&
+                                                        event is FlTapUpEvent) {
+                                                      setState(() {
+                                                        final x = response.spot!
+                                                            .touchedBarGroup.x;
+                                                        final isShowing =
+                                                            showingTooltip == x;
+                                                        if (isShowing) {
+                                                          showingTooltip = -1;
+                                                        } else {
+                                                          showingTooltip = x;
+                                                        }
+                                                      });
                                                     }
-                                                  });
-                                                }
-                                              },
-                                              mouseCursorResolver:
-                                                  (event, response) {
-                                                return response == null ||
-                                                        response.spot == null
-                                                    ? MouseCursor.defer
-                                                    : SystemMouseCursors.click;
-                                              })))),
+                                                  },
+                                                  mouseCursorResolver:
+                                                      (event, response) {
+                                                    return response == null ||
+                                                            response.spot ==
+                                                                null
+                                                        ? MouseCursor.defer
+                                                        : SystemMouseCursors
+                                                            .click;
+                                                  }))))),
                                 ),
                                 const SizedBox(
                                   height: 20,
@@ -425,36 +447,31 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
     );
   }
 
-  //* Item
-  static const List<TabItem> items = [
-    TabItem(
-      icon: Icons.home,
-      title: 'Home',
-    ),
-    TabItem(
-      icon: Icons.chat,
-      title: 'Chat',
-    ),
-    TabItem(
-      icon: Icons.person,
-      title: 'User',
-    ),
-  ];
-
   //* Define Panigator
-  Widget _bottomNavBar() => Container(
-        margin: const EdgeInsets.only(bottom: 15, right: 15, left: 15),
-        child: BottomBarFloating(
-          items: items,
-          borderRadius: BorderRadius.circular(50),
-          backgroundColor: Colors.white,
-          color: Colors.black,
-          colorSelected: Colors.red,
-          indexSelected: _currentIndex,
-          onTap: (int index) => setState(() {
-            _currentIndex = index;
-          }),
-        ),
+  Widget _bottomNavBar() => SalomonBottomBar(
+        currentIndex: _currentIndex,
+        onTap: (i) {
+          setState(() => _currentIndex = i);
+          print(_currentIndex);
+          if (_currentIndex == 1) {
+            Get.to(() => const ScreenUserWalting());
+          }
+        },
+        items: [
+          /// Home
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text("Home"),
+            selectedColor: Colors.purple,
+          ),
+
+          /// Likes
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.favorite_border),
+            title: const Text("Likes"),
+            selectedColor: Colors.pink,
+          ),
+        ],
       );
   //* Pie Data
   // List<PieChartSectionData> showingSections() {

@@ -55,6 +55,7 @@ class _ScreenHomeState extends State<ScreenHome> {
 
     controller.checkData(userId);
     controller.bindingUser(userId);
+    controller.bindingAdminUser();
 
     tableController.getListTable(userId);
     homeController.checkTotalTable(userId);
@@ -181,8 +182,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        tHomeTitle +
-                            controller.users.value.user!.Email.toString(),
+                        "$tHomeTitle${controller.users.value.user!.Email} ${controller.userAdmin.value.user!.Email}",
                         style: textXLQuicksan,
                       ),
                       if (homeController.totalProduct.value.toInt() > 0 &&

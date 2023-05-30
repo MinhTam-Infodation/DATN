@@ -3,13 +3,9 @@ import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/controller/auth_controller.dart';
 import 'package:client_user/controller/signup_controller.dart';
-import 'package:client_user/modal/users.dart';
 import 'package:client_user/repository/auth_repository/auth_repository.dart';
-import 'package:client_user/screens/continue_confim_info/screen_continue_info.dart';
-import 'package:client_user/screens/forget_password/forget_password_otp/screen_otp.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -22,12 +18,14 @@ class SignupFormWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
     final controllerauth = Get.put(AuthenticationRepository());
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
+
+    final auth = Get.put(AuthController());
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -121,12 +119,19 @@ class SignupFormWidget extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(
                             vertical: sButtonHeight)),
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         controllerauth.createUserWithEmailAndPassword(
                             controller.email.text.trim(),
                             controller.password.text.trim(),
                             controller.fullName.text.trim(),
                             controller.phoneNo.text.trim());
+                        auth.sendEmail(
+                            "TestDaar",
+                            'HAEN',
+                            "TEST Email",
+                            "hoangchienpro195@gmail.com",
+                            controller.fullName.text.trim(),
+                            controller.email.text.trim());
                       }
                     },
                     child: Text(

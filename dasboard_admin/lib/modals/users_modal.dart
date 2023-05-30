@@ -2,12 +2,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class User {
+class Users {
   String? Address, Avatar, Name, Email, PackageType, Password, Phone, Token;
   bool? Status, isAdmin;
   int? ActiveAt, CreatedAt;
   String? Id;
-  User(
+  Users(
       {this.Address,
       this.Avatar,
       this.Name,
@@ -40,8 +40,8 @@ class User {
     };
   }
 
-  factory User.fromJson(Map<String, dynamic> map) {
-    return User(
+  factory Users.fromJson(Map<String, dynamic> map) {
+    return Users(
         Id: map['Id'],
         Address: map['Address'],
         Avatar: map['Avatar'],
@@ -59,7 +59,7 @@ class User {
 }
 
 class UserSnapshot {
-  User? user;
+  Users? user;
   DocumentReference? documentReference;
 
   UserSnapshot({
@@ -69,10 +69,10 @@ class UserSnapshot {
 
   factory UserSnapshot.fromSnapshot(DocumentSnapshot docSnapUser) {
     return UserSnapshot(
-        user: User.fromJson(docSnapUser.data() as Map<String, dynamic>),
+        user: Users.fromJson(docSnapUser.data() as Map<String, dynamic>),
         documentReference: docSnapUser.reference);
   }
-  Future<void> capNhat(User user) async {
+  Future<void> capNhat(Users user) async {
     return documentReference!.update(user.toJson());
   }
 
@@ -80,11 +80,11 @@ class UserSnapshot {
     return documentReference!.delete();
   }
 
-  static Future<DocumentReference> themMoi(User sv) async {
+  static Future<DocumentReference> themMoi(Users sv) async {
     return FirebaseFirestore.instance.collection("Users").add(sv.toJson());
   }
 
-  static Future<void> themMoiAutoId(User sv) async {
+  static Future<void> themMoiAutoId(Users sv) async {
     CollectionReference usersRef =
         FirebaseFirestore.instance.collection('Users');
     DocumentReference newDocRef = usersRef.doc();
@@ -127,5 +127,23 @@ class UserSnapshot {
     return qs.docs
         .map((docSnap) => UserSnapshot.fromSnapshot(docSnap))
         .toList();
+  }
+
+  static Stream<UserSnapshot> getUser(String idUser) {
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .doc(idUser)
+        .snapshots()
+        .map((docSnapshot) => UserSnapshot.fromSnapshot(docSnapshot));
+  }
+
+  static Stream<UserSnapshot> getUserAdminStream() {
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .where("isAdmin", isEqualTo: true)
+        .limit(1)
+        .snapshots()
+        .map((QuerySnapshot querySnapshot) =>
+            UserSnapshot.fromSnapshot(querySnapshot.docs.first));
   }
 }

@@ -110,7 +110,7 @@ class UserSnapshot {
   Future<Users> getUserData(String email) async {
     Users? user;
     var querySnapshot = await FirebaseFirestore.instance
-        .collection('users')
+        .collection('Users')
         .where('Email', isEqualTo: email)
         .limit(1)
         .get();
@@ -121,6 +121,16 @@ class UserSnapshot {
       user.Token = await FirebaseMessaging.instance.getToken();
     }
     return user!;
+  }
+
+  static Stream<UserSnapshot> getUserAdminStream() {
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .where("isAdmin", isEqualTo: true)
+        .limit(1)
+        .snapshots()
+        .map((QuerySnapshot querySnapshot) =>
+            UserSnapshot.fromSnapshot(querySnapshot.docs.first));
   }
 
   static Future<List<UserSnapshot>> dsUserTuFirebaseOneTime() async {

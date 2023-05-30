@@ -63,20 +63,20 @@ class NewsSnapshot {
         documentReference: docSnapUser.reference);
   }
 
-  static Future<void> themMoiAutoId(News news) async {
+  static Future<void> themMoiAutoId(News news, userId) async {
     CollectionReference usersRef = FirebaseFirestore.instance
-        .collection('Admin')
-        .doc("admin")
+        .collection('Users')
+        .doc(userId)
         .collection("News");
     DocumentReference newDocRef = usersRef.doc();
     news.Id = newDocRef.id;
     await newDocRef.set(news.toJson());
   }
 
-  static Stream<List<NewsSnapshot>> getListNewsByUser(String idUser) {
+  static Stream<List<NewsSnapshot>> getListNewsByAdmin() {
     Stream<QuerySnapshot> qs = FirebaseFirestore.instance
-        .collection("Users")
-        .doc(idUser)
+        .collection("Admin")
+        .doc("admin")
         .collection("News")
         .orderBy("isRead")
         .snapshots();
@@ -91,8 +91,8 @@ class NewsSnapshot {
   static Future<void> updateNewsIsRead(
       String userId, String newsId, bool isRead) async {
     CollectionReference newsRef = FirebaseFirestore.instance
-        .collection('Users')
-        .doc(userId)
+        .collection('Admin')
+        .doc("admin")
         .collection('News');
     DocumentReference newsDocRef = newsRef.doc(newsId);
 
@@ -102,8 +102,8 @@ class NewsSnapshot {
   static Stream<List<List<NewsSnapshot>>> getListNewsByUserGroupByDate(
       String idUser) {
     Stream<QuerySnapshot> qs = FirebaseFirestore.instance
-        .collection("Users")
-        .doc(idUser)
+        .collection("Admin")
+        .doc("admin")
         .collection("News")
         .orderBy("isRead")
         .snapshots();
@@ -133,8 +133,8 @@ class NewsSnapshot {
 
   static Future<void> markAllNewsAsRead(String idUser) async {
     CollectionReference newsRef = FirebaseFirestore.instance
-        .collection('Users')
-        .doc(idUser)
+        .collection('Admin')
+        .doc("admin")
         .collection('News');
 
     QuerySnapshot querySnapshot = await newsRef.get();

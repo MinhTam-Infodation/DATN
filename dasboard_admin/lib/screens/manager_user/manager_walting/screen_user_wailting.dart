@@ -6,7 +6,6 @@ import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 import 'package:get/get.dart';
-import 'package:getwidget/getwidget.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -63,18 +62,6 @@ class _ScreenUserWaltingState extends State<ScreenUserWalting> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: [
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.filter_alt),
-                color: Colors.black,
-              ),
-            ),
-          ],
         ),
         body: SingleChildScrollView(
           child: Padding(

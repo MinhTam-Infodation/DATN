@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/modal/users.dart';
 import 'package:client_user/repository/exceptions/signup_email_password_failure.dart';
@@ -26,6 +28,8 @@ class AuthenticationRepository extends GetxController {
   final box = GetStorage();
   final _auth = FirebaseAuth.instance;
   late final Rx<User?> firebaseUser;
+  final userAdmin = UserSnapshot(user: Users(), documentReference: null).obs;
+  StreamSubscription? userAdminSubscription;
   var verificationId = "".obs;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -37,6 +41,7 @@ class AuthenticationRepository extends GetxController {
     if (_auth.currentUser != null) {
       bindingUser(_auth.currentUser!.uid);
     }
+    bindingAdminUser();
   }
 
   void bindingUser(id) {
@@ -53,6 +58,10 @@ class AuthenticationRepository extends GetxController {
         }
       }
     });
+  }
+
+  bindingAdminUser() {
+    userAdmin.bindStream(UserSnapshot.getUserAdminStream());
   }
 
   void updateTokenIfNeeded(Users user) async {
@@ -216,6 +225,7 @@ class AuthenticationRepository extends GetxController {
             'Status': false,
             'ActiveAt': 0,
             'CreatedAt': timestampNumber,
+            'isAdmin': false
           })
           .whenComplete(
             () => Get.snackbar('Success', "Create Profile Success",
@@ -328,18 +338,18 @@ class AuthenticationRepository extends GetxController {
           // Người dùng không tồn tại trong Firestore
           // Thêm thông tin người dùng vào Firestore
           final newUser = Users(
-            Id: usersk.uid,
-            Name: usersk.displayName,
-            Email: usersk.email,
-            Avatar: usersk.photoURL,
-            Status: false,
-            CreatedAt: DateTime.now().millisecondsSinceEpoch,
-            PackageType: "",
-            Password: "GG",
-            Address: "",
-            ActiveAt: 0,
-            Phone: "32522353",
-          );
+              Id: usersk.uid,
+              Name: usersk.displayName,
+              Email: usersk.email,
+              Avatar: usersk.photoURL,
+              Status: false,
+              CreatedAt: DateTime.now().millisecondsSinceEpoch,
+              PackageType: "",
+              Password: "GG",
+              Address: "",
+              ActiveAt: 0,
+              Phone: "32522353",
+              isAdmin: false);
 
           await _firestore
               .collection('Users')

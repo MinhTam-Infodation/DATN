@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:mustache_template/mustache_template.dart';
 
 import 'package:client_user/screens/home/screen_home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +14,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 class AuthController extends GetxController {
   static AuthController get instance => Get.find();
@@ -144,27 +146,74 @@ class AuthController extends GetxController {
     }
   }
 
-  String readTemplate(String path) {
-    final file = File(path);
-    return file.readAsStringSync();
+  String renderTemplate(String template, Map<String, dynamic> variables) {
+    final templateRenderer = Template(template);
+    return templateRenderer.renderString(variables);
   }
 
-  Future sendEmail(
-      String subject, String obj, String mess, String userEmail) async {
+  Future sendEmail(String subject, String obj, String mess, String userEmail,
+      username, email) async {
     print("EMAIL");
     String username = "tam.hm.61cntt@ntu.edu.vn";
     String password = "hoangminhtam123pro";
 
+    final templateContent = await rootBundle.loadString('assets/mail.html');
+
+    final variables = {
+      'name': username, // Ví dụ: Biến tùy chỉnh 'username'
+      'email': email, // Ví dụ: Biến tùy chỉnh 'message'
+    };
+
+    final emailContent = renderTemplate(templateContent, variables);
+
     final stmpServer = gmail(username, password);
 
     final message = Message()
-      ..from = Address(username, 'Your name $userEmail')
+      ..from = Address(username, 'SYSTEM')
       ..recipients.add(userEmail)
       // ..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
       // ..bccRecipients.add(const Address('bccAddress@example.com'))
-      ..subject = 'Test Dart Mailer library :: 😀 :: ${DateTime.now()}'
+      ..subject = 'New User Register'
       // ..text = 'This is the plain text.\nThis is line 2 of the text part.'
-      ..html = readTemplate("./mail.html");
+      ..html = emailContent;
+
+    try {
+      final sendReport = await send(message, stmpServer);
+      print('Message sent: $sendReport');
+    } on MailerException catch (e) {
+      print('Message not sent. $e');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
+    }
+  }
+
+  Future sendEmailActive(String subject, String obj, String mess,
+      String userEmail, username, createAt) async {
+    print("EMAIL");
+    String username = "tam.hm.61cntt@ntu.edu.vn";
+    String password = "hoangminhtam123pro";
+
+    final templateContent =
+        await rootBundle.loadString('assets/mail_active.html');
+
+    final variables = {
+      'name': username, // Ví dụ: Biến tùy chỉnh 'username'
+      'createAt': createAt
+    };
+
+    final emailContent = renderTemplate(templateContent, variables);
+
+    final stmpServer = gmail(username, password);
+
+    final message = Message()
+      ..from = Address(username, 'SYSTEM')
+      ..recipients.add(userEmail)
+      // ..ccRecipients.addAll(['destCc1@example.com', 'destCc2@example.com'])
+      // ..bccRecipients.add(const Address('bccAddress@example.com'))
+      ..subject = 'User Request Active'
+      // ..text = 'This is the plain text.\nThis is line 2 of the text part.'
+      ..html = emailContent;
 
     try {
       final sendReport = await send(message, stmpServer);

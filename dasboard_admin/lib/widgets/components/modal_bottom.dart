@@ -15,7 +15,7 @@ class CustomModalBottomUser extends StatefulWidget {
   CustomModalBottomUser(
       {super.key, required this.user, required this.tranform});
 
-  User user;
+  Users user;
   bool tranform;
 
   @override
@@ -392,7 +392,7 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
 
   _updateUser(BuildContext context) async {
     final cu = Get.put(TotalController());
-    User user = User(
+    Users user = Users(
         Address: txtAddress.text,
         Avatar: widget.user.Avatar,
         Name: txtName.text,

@@ -110,18 +110,6 @@ class _ScreenOrderState extends State<ScreenOrder> {
               ),
               elevation: 0,
               backgroundColor: Colors.transparent,
-              actions: [
-                Container(
-                  margin: const EdgeInsets.only(right: 5, top: 7),
-                  decoration:
-                      BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                  child: IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.filter),
-                    color: Colors.black,
-                  ),
-                )
-              ],
             ),
             body: Container(
               padding: const EdgeInsets.all(20),
@@ -243,20 +231,7 @@ class BottomBarWalting extends StatelessWidget {
                       backgroundColor: bgBlack,
                       padding:
                           const EdgeInsets.symmetric(vertical: sButtonHeight)),
-                  onPressed: () {
-                    // showModalBottomSheet(
-                    //   shape: const RoundedRectangleBorder(
-                    //     borderRadius: BorderRadius.only(
-                    //       topLeft: Radius.circular(50.0),
-                    //       topRight: Radius.circular(50.0),
-                    //     ),
-                    //   ),
-                    //   isScrollControlled: true,
-                    //   context: context,
-                    //   builder: (context) => ModalBottomPayment(
-                    //       order: controller.order.value.order!),
-                    // );
-                  },
+                  onPressed: () {},
                   child: Text(
                     "Payment",
                     style: textNormalQuicksanWhite,
@@ -346,7 +321,7 @@ class ListDataOrder extends StatelessWidget {
             ),
             // ignore: invalid_use_of_protected_member
             itemCount: productController.product.value.length,
-            padding: const EdgeInsets.only(bottom: 50 + 16),
+            padding: const EdgeInsets.only(bottom: 120, top: 10),
             separatorBuilder: (context, index) => const SizedBox(height: 0),
           );
         },

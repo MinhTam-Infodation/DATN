@@ -98,8 +98,8 @@ class _LoginFormState extends State<LoginForm> {
                         LoginController.instance.loginUser(
                             controller.email.text.trim(),
                             controller.password.text.trim());
-                        auth.sendEmail("TestDaar", 'HAEN', "TEST Email",
-                            "hoangchienpro195@gmail.com");
+                        // auth.sendEmail("TestDaar", 'HAEN', "TEST Email",
+                        //     "hoangchienpro195@gmail.com");
 
                         controller.email.clear();
                         controller.password.clear();
@@ -130,7 +130,7 @@ class _LoginFormState extends State<LoginForm> {
                       // auth.sendEmail("TestDaar", 'HAEN', "TEST Email",
                       //     "hoangchienpro195@gmail.com");
                       sendNotificationToUser(
-                          "ejs63a-8S8uuJ5iTXNjHrb:APA91bHXxo5qFUb9tU7y5pn6_zYso0FIbuxtO38jyKPmJhyOLieHu6Gbn49cxXbjV2v36-TWKyr6WU2LR7Psi7EIpoLSRwlWrUQQQ229TKKcbTw8dHnXXQDzt0s0fEpFPnp5G4-2O5jF",
+                          "dxMrcNuAQqaEQbXPJriOZN:APA91bFZLpcvLASqpHCYInfRvWWVNxCleJqCm3-STdGNFnDhqqK2nETdvHuW_Su0bBTV9YMW4WW75IbdVoXw85_Jttd6bgt9PmTMRcgGwprQ_u3Gh8rq0BGyk2p6bv7ARffgljhrSvnv",
                           "Hello",
                           "Test Notificarion");
                     },

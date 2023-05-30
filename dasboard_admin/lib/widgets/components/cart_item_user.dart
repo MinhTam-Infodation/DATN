@@ -1,4 +1,7 @@
 // ignore: must_be_immutable
+// ignore_for_file: avoid_unnecessary_containers, sort_child_properties_last
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
@@ -6,11 +9,12 @@ import 'package:dasboard_admin/widgets/components/modal_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
 class CartItemUser extends StatelessWidget {
   CartItemUser({super.key, required this.user, required this.parentContext});
-  User user;
+  Users user;
   BuildContext parentContext;
 
   @override
@@ -58,101 +62,101 @@ class CartItemUser extends StatelessWidget {
                 CustomModalBottomUser(user: user, tranform: false),
           );
         },
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          elevation: 3,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  padding: const EdgeInsets.all(
-                      2), // thêm khoảng cách giữa viền và CircleAvatar
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 2.0,
-                    ),
-                  ),
-                  child: ClipOval(
-                    child: Container(
-                      color: Colors.greenAccent.withOpacity(0.5),
-                    ),
-                  ),
-                ),
-                // ClipOval(
-                //     child: user.Avatar != null && user.Avatar != ""
-                //         ? Image.network(
-                //             user.Avatar!,
-                //             fit: BoxFit.cover,
-                //           )
-                //         : Container(
-                //             color: Colors.greenAccent.withOpacity(0.5),
-                //           ),
-                //   ),
-                // )
-                const SizedBox(width: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      // ignore: invalid_use_of_protected_member
-                      user.Name ?? '',
-                      style: textXLQuicksanBold,
-                    ),
-                    const SizedBox(height: 10),
-                    Wrap(
+                    Row(
                       children: [
                         SizedBox(
-                          width: 170,
-                          child: Text(
-                            // ignore: invalid_use_of_protected_member
-                            user.Email ?? '',
-                            style: textNormalQuicksan,
-                            overflow: TextOverflow.ellipsis,
+                          width: 40,
+                          child: user.Avatar!.isNotEmpty
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        width: 2, color: Colors.black),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: CachedNetworkImage(
+                                      imageUrl: user.Avatar!,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.greenAccent.withOpacity(0.4),
+                                  ),
+                                  width: 40,
+                                  height: 40,
+                                ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.Name ?? '',
+                                style: textNormalLatoBold,
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                user.Name ?? '',
+                                style: textNormalQuicksanGrey,
+                              ),
+                            ],
                           ),
                         ),
-                        // ignore: invalid_use_of_protected_member
-                        if (user.Status == true)
-                          Container(
-                            margin: const EdgeInsets.only(left: 10),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              'Active',
-                              style: cartTag,
-                            ),
-                          )
-                        else
-                          Container(
-                            margin: const EdgeInsets.only(left: 10),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              'Wailting',
-                              style: cartTag,
-                            ),
-                          ),
                       ],
-                    )
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          user.Status! == true ? "ACTIVE" : "WALTING",
+                          style: textSmallQuicksan.apply(
+                              fontWeightDelta: 900,
+                              color: user.Status == true
+                                  ? Colors.greenAccent
+                                  : Colors.redAccent),
+                        ),
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Text(
+                          DateFormat('dd MMMM').format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                  user.CreatedAt ?? 0)),
+                          style: textNormalQuicksanGrey,
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
+              ),
+              Divider(
+                height: 2,
+                color: Colors.black.withOpacity(0.5),
+              )
+            ],
           ),
         ),
       ),
@@ -194,7 +198,7 @@ class CartItemUser extends StatelessWidget {
     );
   }
 
-  Widget _modalBuilder(BuildContext context, bool isEdit, User data) {
+  Widget _modalBuilder(BuildContext context, bool isEdit, Users data) {
     return Container(
       height: 450,
       padding: const EdgeInsets.all(20),

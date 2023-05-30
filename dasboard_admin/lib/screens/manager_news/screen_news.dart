@@ -1,15 +1,21 @@
-// ignore_for_file: avoid_unnecessary_containers, sized_box_for_whitespace, avoid_print
-import 'package:client_user/controller/manage_news.dart';
-import 'package:client_user/modal/news.dart';
-import 'package:client_user/repository/auth_repository/auth_repository.dart';
-import 'package:client_user/uilt/style/text_style/text_style.dart';
+// ignore_for_file: avoid_unnecessary_containers, avoid_print, unnecessary_null_comparison
+
+import 'dart:convert';
+
+import 'package:dasboard_admin/controllers/login_controller.dart';
+import 'package:dasboard_admin/controllers/new_controller.dart';
+import 'package:dasboard_admin/controllers/total_controller.dart';
+import 'package:dasboard_admin/modals/news_modal.dart';
+import 'package:dasboard_admin/modals/users_modal.dart';
+import 'package:dasboard_admin/ulti/styles/main_styles.dart';
+import 'package:dropdown_input/dropdown_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:getwidget/getwidget.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class ScreenNews extends StatefulWidget {
   const ScreenNews({super.key});
@@ -20,6 +26,7 @@ class ScreenNews extends StatefulWidget {
 
 class _ScreenNewsState extends State<ScreenNews> {
   final controller = Get.put(ManageNewsController());
+  final user = Get.put(AuthController());
   var userId = "";
 
   @override
@@ -29,7 +36,7 @@ class _ScreenNewsState extends State<ScreenNews> {
     } else {
       userId = "";
     }
-    controller.getListNews(userId);
+    controller.getListNews();
     controller.getListNewsGroup(userId);
 
     return SafeArea(
@@ -56,9 +63,7 @@ class _ScreenNewsState extends State<ScreenNews> {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(10)),
                 child: IconButton(
-                  onPressed: () => showDialogWithCustomUI(
-                    context,
-                  ),
+                  onPressed: () => showDialogWithCustomUI(context),
                   icon: const Icon(Icons.add),
                   color: Colors.black,
                 ),
@@ -80,13 +85,14 @@ class _ScreenNewsState extends State<ScreenNews> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
                       groupByValue,
-                      style: textNormalQuicksanBoldGray,
+                      style: textNormalLatoBold,
                       textAlign: TextAlign.center,
                     ),
                   );
                 },
                 itemBuilder: (context, newsSnapshot) {
                   final news = newsSnapshot.orderDetail!;
+                  user.getUserById(news.IdUserCreate!);
                   return Container(
                     margin: const EdgeInsets.only(bottom: 5),
                     decoration: BoxDecoration(
@@ -126,61 +132,68 @@ class _ScreenNewsState extends State<ScreenNews> {
                           width: 10,
                         ),
                         Expanded(
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      news.Title!,
-                                      style: textNormalQuicksanBold,
-                                    ),
-                                    Text(
-                                      DateFormat.jm().format(
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                              news.CreateAt!)),
-                                      style: textSmailQuicksanBoldGray,
-                                    )
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                        child: Container(
-                                            child: Text(news.Message!))),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                          color: news.isRead!
-                                              ? Colors.greenAccent
-                                                  .withOpacity(0.5)
-                                              : Colors.orangeAccent
-                                                  .withOpacity(0.5),
-                                          borderRadius:
-                                              BorderRadius.circular(6)),
-                                      child: Center(
-                                          child: news.isRead!
-                                              ? const Icon(
-                                                  Icons.done,
-                                                )
-                                              : const Icon(
-                                                  Icons.circle,
-                                                  size: 10,
-                                                )),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "From: ${user.usersClient.value.user!.Name!}",
+                                    style: textNormalQuicksanBold,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Title: ${news.Title!}",
+                                    style: textNormalQuicksanBold,
+                                  ),
+                                  Text(
+                                    DateFormat.jm().format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            news.CreateAt!)),
+                                    style: textNormalKanit,
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                          child: Text(news.Message!))),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    width: 30,
+                                    height: 30,
+                                    decoration: BoxDecoration(
+                                        color: news.isRead!
+                                            ? Colors.greenAccent
+                                                .withOpacity(0.5)
+                                            : Colors.orangeAccent
+                                                .withOpacity(0.5),
+                                        borderRadius: BorderRadius.circular(6)),
+                                    child: Center(
+                                        child: news.isRead!
+                                            ? const Icon(
+                                                Icons.done,
+                                              )
+                                            : const Icon(
+                                                Icons.circle,
+                                                size: 10,
+                                              )),
+                                  )
+                                ],
+                              )
+                            ],
                           ),
                         )
                       ],
@@ -199,16 +212,12 @@ class _ScreenNewsState extends State<ScreenNews> {
 void showDialogWithCustomUI(BuildContext context) {
   final TextEditingController txtTitle = TextEditingController();
   final TextEditingController txtMess = TextEditingController();
-  var userId = "";
-  if (FirebaseAuth.instance.currentUser != null) {
-    userId = FirebaseAuth.instance.currentUser!.uid;
-  } else {
-    userId = "";
-  }
-  final controller = Get.put(ManageNewsController());
-  final user = Get.put(AuthenticationRepository());
-  user.bindingUser(userId);
-  user.bindingAdminUser();
+
+  final controller = Get.put(AuthController());
+  final total = Get.put(TotalController());
+  total.bindingUser();
+  controller.bindingAdminUser();
+  // controller.getUserById(userID);
 
   showDialog(
     barrierDismissible: false,
@@ -243,6 +252,25 @@ void showDialogWithCustomUI(BuildContext context) {
                   )
                 ],
               ),
+              DropdownButton<UserSnapshot>(
+                  value: total.selectedUser.value,
+                  icon: const Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (UserSnapshot? value) {
+                    print(value!.user!.Email!);
+                  },
+                  items: total.users
+                      .map<DropdownMenuItem<UserSnapshot>>((UserSnapshot user) {
+                    return DropdownMenuItem<UserSnapshot>(
+                      value: user,
+                      child: Text(user.user!.Email!),
+                    );
+                  }).toList()),
               const SizedBox(height: 20.0),
               TextFormField(
                 controller: txtTitle,
@@ -278,7 +306,7 @@ void showDialogWithCustomUI(BuildContext context) {
                     ),
                     child: Text(
                       "Cancel",
-                      style: textNormalQuicksanBoldGray,
+                      style: textAppKanit,
                     ),
                     onPressed: () {
                       Navigator.of(context).pop(); // Đóng dialog
@@ -297,25 +325,9 @@ void showDialogWithCustomUI(BuildContext context) {
                         )),
                     child: Text(
                       "Confirm",
-                      style: textNormalQuicksanBoldWhite,
+                      style: textAppKanit,
                     ),
                     onPressed: () {
-                      final news = News(
-                          Id: "",
-                          isRead: false,
-                          Title: txtTitle.text,
-                          Message: txtMess.text,
-                          IdUserCreate: user.users.value.user!.Id,
-                          UserCreate: user.users.value.user!.Name,
-                          CreateAt: convertInputDateTimetoNumber(
-                              DateTime.now().toString()));
-                      if (txtTitle.text.isNotEmpty && txtMess.text.isNotEmpty) {
-                        controller.addNews(news);
-                        sendNotificationToUser(
-                            user.userAdmin.value.user!.Token!,
-                            "Notification",
-                            "1 News Form ${user.users.value.user!.Email}");
-                      }
                       Navigator.of(context).pop();
                     },
                   )),
