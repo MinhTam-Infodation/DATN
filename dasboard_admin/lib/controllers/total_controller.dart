@@ -21,8 +21,6 @@ class TotalController extends GetxController {
 
   bindingUser() {
     users.bindStream(UserSnapshot.dsUserTuFirebase());
-
-    selectedUser.value = users.first;
   }
 
   void setSelectedUser(UserSnapshot user) {
