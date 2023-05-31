@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class WaltingUserController extends GetxController {
@@ -31,8 +32,27 @@ class WaltingUserController extends GetxController {
   }
 
   void updateUserStatus(String userId) {
-    usersRef.doc(userId).update({
-      'Status': true,
+    final usersRef = FirebaseFirestore.instance.collection('Users');
+
+    usersRef.doc(userId).get().then((DocumentSnapshot document) {
+      if (document.exists) {
+        UserSnapshot userSnapshot = UserSnapshot.fromSnapshot(document);
+        Users? user = userSnapshot.user;
+
+        if (user != null && (user.ActiveAt == null || user.ActiveAt == 0)) {
+          usersRef.doc(userId).update({
+            'Status': true,
+            'ActiveAt': DateTime.now().millisecondsSinceEpoch,
+          });
+        } else {
+          usersRef.doc(userId).update({'Status': true});
+        }
+      }
+    }).catchError((error) {
+      Get.snackbar('Error', "Active User Error",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent.withOpacity(0.1),
+          colorText: Colors.black);
     });
     countMyDocuments();
     countMyDocumentsWithStatusFalse();

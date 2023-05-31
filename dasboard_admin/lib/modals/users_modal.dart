@@ -72,6 +72,7 @@ class UserSnapshot {
         user: Users.fromJson(docSnapUser.data() as Map<String, dynamic>),
         documentReference: docSnapUser.reference);
   }
+
   Future<void> capNhat(Users user) async {
     return documentReference!.update(user.toJson());
   }

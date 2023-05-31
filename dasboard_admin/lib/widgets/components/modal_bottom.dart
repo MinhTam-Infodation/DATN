@@ -124,24 +124,81 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                 height: 20,
               ),
               if (!widget.tranform)
-                Container(
-                    width: 130,
-                    height: 130,
-                    padding: const EdgeInsets.all(
-                        2), // thêm khoảng cách giữa viền và CircleAvatar
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 2.0,
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: Container(
-                        color: Colors.greenAccent,
-                      ),
-                    ))
+                Column(
+                  children: [
+                    if (cu.isOver30Days(widget.user) &&
+                        widget.user.Status == false)
+                      Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.only(left: 10, right: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Colors.redAccent.withOpacity(0.1),
+                                border:
+                                    Border.all(width: 2, color: Colors.red)),
+                            width: double.infinity,
+                            height: 50,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.details,
+                                  color: Colors.redAccent,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  "WARNING: User Over Active 30 days",
+                                  style: textNormalQuicksanRed,
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                              width: 130,
+                              height: 130,
+                              padding: const EdgeInsets.all(
+                                  2), // thêm khoảng cách giữa viền và CircleAvatar
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: Container(
+                                  color: Colors.greenAccent,
+                                ),
+                              ))
+                        ],
+                      )
+                    else
+                      Container(
+                          width: 130,
+                          height: 130,
+                          padding: const EdgeInsets.all(
+                              2), // thêm khoảng cách giữa viền và CircleAvatar
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: ClipOval(
+                            child: Container(
+                              color: Colors.greenAccent,
+                            ),
+                          )),
+                  ],
+                )
               else
                 Stack(
                   children: [
