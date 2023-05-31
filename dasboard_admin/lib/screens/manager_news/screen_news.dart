@@ -74,133 +74,128 @@ class _ScreenNewsState extends State<ScreenNews> {
             width: double.infinity,
             height: 600,
             padding: const EdgeInsets.all(20),
-            child: Obx(
-              () => GroupedListView<NewsSnapshot, String>(
-                elements:
-                    controller.newListGroup.expand((group) => group).toList(),
-                groupBy: (newsSnapshot) =>
-                    newsSnapshot.orderDetail!.formattedDate,
-                groupSeparatorBuilder: (String groupByValue) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      groupByValue,
-                      style: textNormalLatoBold,
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                },
-                itemBuilder: (context, newsSnapshot) {
-                  final news = newsSnapshot.orderDetail!;
-                  user.getUserById(news.IdUserCreate!);
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 5),
-                    decoration: BoxDecoration(
-                        border: news.isRead!
-                            ? Border.all(
-                                width: 1, color: Colors.grey.withOpacity(0.5))
-                            : Border.all(),
-                        color: news.isRead!
-                            ? Colors.white.withOpacity(0.5)
-                            : Colors.white.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(15),
-                        boxShadow: news.isRead!
-                            ? []
-                            : [
-                                BoxShadow(
+            child: GroupedListView<NewsSnapshot, String>(
+              elements:
+                  controller.newListGroup.expand((group) => group).toList(),
+              groupBy: (newsSnapshot) =>
+                  newsSnapshot.orderDetail!.formattedDate,
+              groupSeparatorBuilder: (String groupByValue) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    groupByValue,
+                    style: textNormalLatoBold,
+                    textAlign: TextAlign.center,
+                  ),
+                );
+              },
+              itemBuilder: (context, newsSnapshot) {
+                final news = newsSnapshot.orderDetail!;
+                user.getUserById(news.IdUserCreate!);
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 5),
+                  decoration: BoxDecoration(
+                      border: news.isRead!
+                          ? Border.all(
+                              width: 1, color: Colors.grey.withOpacity(0.5))
+                          : Border.all(),
+                      color: news.isRead!
+                          ? Colors.white.withOpacity(0.5)
+                          : Colors.white.withOpacity(0.8),
+                      borderRadius: BorderRadius.circular(15),
+                      boxShadow: news.isRead!
+                          ? []
+                          : [
+                              BoxShadow(
+                                color:
+                                    const Color(0xFFA3014F).withOpacity(0.05),
+                                offset: const Offset(0, 9),
+                                blurRadius: 30,
+                                spreadRadius: 0,
+                              ),
+                              BoxShadow(
                                   color:
-                                      const Color(0xFFA3014F).withOpacity(0.05),
-                                  offset: const Offset(0, 9),
-                                  blurRadius: 30,
-                                  spreadRadius: 0,
+                                      const Color(0xFFB2036C).withOpacity(0.03),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 10,
+                                  spreadRadius: 0)
+                            ]),
+                  padding: const EdgeInsets.all(20),
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Container(
+                        child: const Icon(Icons.newspaper),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Obx(() => Text(
+                                      "From: ${user.usersClient.value.user!.Name!}",
+                                      style: textNormalQuicksanBold,
+                                    )),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Title: ${news.Title!}",
+                                  style: textNormalQuicksanBold,
                                 ),
-                                BoxShadow(
-                                    color: const Color(0xFFB2036C)
-                                        .withOpacity(0.03),
-                                    offset: const Offset(0, 2),
-                                    blurRadius: 10,
-                                    spreadRadius: 0)
-                              ]),
-                    padding: const EdgeInsets.all(20),
-                    width: double.infinity,
-                    child: Row(
-                      children: [
-                        Container(
-                          child: const Icon(Icons.newspaper),
+                                Text(
+                                  DateFormat.jm().format(
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                          news.CreateAt!)),
+                                  style: textNormalKanit,
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                Expanded(
+                                    child:
+                                        Container(child: Text(news.Message!))),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  width: 30,
+                                  height: 30,
+                                  decoration: BoxDecoration(
+                                      color: news.isRead!
+                                          ? Colors.greenAccent.withOpacity(0.5)
+                                          : Colors.orangeAccent
+                                              .withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(6)),
+                                  child: Center(
+                                      child: news.isRead!
+                                          ? const Icon(
+                                              Icons.done,
+                                            )
+                                          : const Icon(
+                                              Icons.circle,
+                                              size: 10,
+                                            )),
+                                )
+                              ],
+                            )
+                          ],
                         ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "From: ${user.usersClient.value.user!.Name!}",
-                                    style: textNormalQuicksanBold,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Title: ${news.Title!}",
-                                    style: textNormalQuicksanBold,
-                                  ),
-                                  Text(
-                                    DateFormat.jm().format(
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                            news.CreateAt!)),
-                                    style: textNormalKanit,
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                          child: Text(news.Message!))),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    width: 30,
-                                    height: 30,
-                                    decoration: BoxDecoration(
-                                        color: news.isRead!
-                                            ? Colors.greenAccent
-                                                .withOpacity(0.5)
-                                            : Colors.orangeAccent
-                                                .withOpacity(0.5),
-                                        borderRadius: BorderRadius.circular(6)),
-                                    child: Center(
-                                        child: news.isRead!
-                                            ? const Icon(
-                                                Icons.done,
-                                              )
-                                            : const Icon(
-                                                Icons.circle,
-                                                size: 10,
-                                              )),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  );
-                },
-              ),
+                      )
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -252,25 +247,33 @@ void showDialogWithCustomUI(BuildContext context) {
                   )
                 ],
               ),
-              DropdownButton<UserSnapshot>(
-                  value: total.selectedUser.value,
-                  icon: const Icon(Icons.arrow_downward),
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
+              DropdownButtonFormField(
+                decoration: const InputDecoration(
+                  enabledBorder: OutlineInputBorder(
+                    //<-- SEE HERE
+                    borderSide: BorderSide(color: Colors.black, width: 2),
                   ),
-                  onChanged: (UserSnapshot? value) {
-                    print(value!.user!.Email!);
-                  },
-                  items: total.users
-                      .map<DropdownMenuItem<UserSnapshot>>((UserSnapshot user) {
-                    return DropdownMenuItem<UserSnapshot>(
-                      value: user,
-                      child: Text(user.user!.Email!),
-                    );
-                  }).toList()),
+                  focusedBorder: OutlineInputBorder(
+                    //<-- SEE HERE
+                    borderSide: BorderSide(color: Colors.black, width: 2),
+                  ),
+                  filled: true,
+                  fillColor: Colors.greenAccent,
+                ),
+                dropdownColor: Colors.greenAccent,
+                value: "DOG",
+                onChanged: (String? newValue) {},
+                items: <String>['Dog', 'Cat', 'Tiger', 'Lion']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(
+                      value,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  );
+                }).toList(),
+              ),
               const SizedBox(height: 20.0),
               TextFormField(
                 controller: txtTitle,

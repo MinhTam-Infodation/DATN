@@ -121,7 +121,7 @@ class ButtonBottomCustom extends StatelessWidget {
             ),
             child: Container(
               height: 50,
-              width: 130,
+              width: 150,
               alignment: Alignment.center,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

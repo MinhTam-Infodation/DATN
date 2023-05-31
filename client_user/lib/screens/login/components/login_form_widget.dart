@@ -113,32 +113,32 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(
                 height: sButtonHeight,
               ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                          side: BorderSide(color: bgBlack, width: 5.0),
-                        ),
-                        foregroundColor: bgWhite,
-                        backgroundColor: bgBlack,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: sButtonHeight)),
-                    onPressed: () {
-                      // auth.sendEmail("TestDaar", 'HAEN', "TEST Email",
-                      //     "hoangchienpro195@gmail.com");
-                      sendNotificationToUser(
-                          "dxMrcNuAQqaEQbXPJriOZN:APA91bFZLpcvLASqpHCYInfRvWWVNxCleJqCm3-STdGNFnDhqqK2nETdvHuW_Su0bBTV9YMW4WW75IbdVoXw85_Jttd6bgt9PmTMRcgGwprQ_u3Gh8rq0BGyk2p6bv7ARffgljhrSvnv",
-                          "Hello",
-                          "Test Notificarion");
-                    },
-                    child: Text(
-                      "TEST FCM".toUpperCase(),
-                      style: textSmallQuicksanWhite,
-                    )),
-              )
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //       style: ElevatedButton.styleFrom(
+              //           elevation: 0,
+              //           shape: RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(5.0),
+              //             side: BorderSide(color: bgBlack, width: 5.0),
+              //           ),
+              //           foregroundColor: bgWhite,
+              //           backgroundColor: bgBlack,
+              //           padding: const EdgeInsets.symmetric(
+              //               vertical: sButtonHeight)),
+              //       onPressed: () {
+              //         // auth.sendEmail("TestDaar", 'HAEN', "TEST Email",
+              //         //     "hoangchienpro195@gmail.com");
+              //         sendNotificationToUser(
+              //             "dxMrcNuAQqaEQbXPJriOZN:APA91bFZLpcvLASqpHCYInfRvWWVNxCleJqCm3-STdGNFnDhqqK2nETdvHuW_Su0bBTV9YMW4WW75IbdVoXw85_Jttd6bgt9PmTMRcgGwprQ_u3Gh8rq0BGyk2p6bv7ARffgljhrSvnv",
+              //             "Hello",
+              //             "Test Notificarion");
+              //       },
+              //       child: Text(
+              //         "TEST FCM".toUpperCase(),
+              //         style: textSmallQuicksanWhite,
+              //       )),
+              // )
             ],
           ),
         ));

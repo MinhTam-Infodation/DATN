@@ -89,18 +89,18 @@ class _ScreenManageSellerState extends State<ScreenManageSeller> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: [
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.filter_alt),
-                color: Colors.black,
-              ),
-            ),
-          ],
+          // actions: [
+          //   Container(
+          //     margin: const EdgeInsets.only(top: 5),
+          //     decoration:
+          //         BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          //     child: IconButton(
+          //       onPressed: () {},
+          //       icon: const Icon(Icons.filter_alt),
+          //       color: Colors.black,
+          //     ),
+          //   ),
+          // ],
         ),
         body: SingleChildScrollView(
           child: Container(
