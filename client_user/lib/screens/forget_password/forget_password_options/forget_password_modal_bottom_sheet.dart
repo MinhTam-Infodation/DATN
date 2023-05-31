@@ -13,7 +13,7 @@ class ForgetPasswordScreen {
         context: context,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         builder: (context) => Container(
-              height: 400,
+              height: 300,
               padding: const EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,18 +38,18 @@ class ForgetPasswordScreen {
                       Get.to(() => const ForgetPasswordMailScreen());
                     },
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  ForgetPasswordBtnWidget(
-                    btnIcon: Icons.mobile_friendly_rounded,
-                    title: tInputPhone,
-                    subTitle: tResetViaPhone,
-                    onTap: () {
-                      Navigator.pop(context);
-                      Get.to(() => const ForgetPasswordPhoneScreen());
-                    },
-                  ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
+                  // ForgetPasswordBtnWidget(
+                  //   btnIcon: Icons.mobile_friendly_rounded,
+                  //   title: tInputPhone,
+                  //   subTitle: tResetViaPhone,
+                  //   onTap: () {
+                  //     Navigator.pop(context);
+                  //     Get.to(() => const ForgetPasswordPhoneScreen());
+                  //   },
+                  // ),
                 ],
               ),
             ));

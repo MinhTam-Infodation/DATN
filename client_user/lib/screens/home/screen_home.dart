@@ -182,7 +182,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "$tHomeTitle${controller.users.value.user!.Email} ${controller.userAdmin.value.user!.Email}",
+                        "$tHomeTitle${controller.users.value.user!.Email}",
                         style: textXLQuicksan,
                       ),
                       if (homeController.totalProduct.value.toInt() > 0 &&

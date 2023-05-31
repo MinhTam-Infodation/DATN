@@ -240,7 +240,7 @@ class _ScreenManagerProductState extends State<ScreenManagerProduct> {
                                     ),
                                   ),
                                   ButtonBottomCustom(
-                                      textContent: "Add Table",
+                                      textContent: "Add Products",
                                       onPress: () => showModalBottomSheet(
                                             shape: const RoundedRectangleBorder(
                                               borderRadius: BorderRadius.only(
