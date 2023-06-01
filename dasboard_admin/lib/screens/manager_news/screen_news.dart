@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_unnecessary_containers, avoid_print, unnecessary_null_comparison
+// ignore_for_file: avoid_unnecessary_containers, avoid_print, unnecessary_null_comparison, library_private_types_in_public_api
 
 import 'dart:convert';
 
@@ -92,109 +92,113 @@ class _ScreenNewsState extends State<ScreenNews> {
               itemBuilder: (context, newsSnapshot) {
                 final news = newsSnapshot.orderDetail!;
                 user.getUserById(news.IdUserCreate!);
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 5),
-                  decoration: BoxDecoration(
-                      border: news.isRead!
-                          ? Border.all(
-                              width: 1, color: Colors.grey.withOpacity(0.5))
-                          : Border.all(),
-                      color: news.isRead!
-                          ? Colors.white.withOpacity(0.5)
-                          : Colors.white.withOpacity(0.8),
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: news.isRead!
-                          ? []
-                          : [
-                              BoxShadow(
-                                color:
-                                    const Color(0xFFA3014F).withOpacity(0.05),
-                                offset: const Offset(0, 9),
-                                blurRadius: 30,
-                                spreadRadius: 0,
-                              ),
-                              BoxShadow(
-                                  color:
-                                      const Color(0xFFB2036C).withOpacity(0.03),
-                                  offset: const Offset(0, 2),
-                                  blurRadius: 10,
-                                  spreadRadius: 0)
-                            ]),
-                  padding: const EdgeInsets.all(20),
-                  width: double.infinity,
-                  child: Row(
-                    children: [
-                      Container(
-                        child: const Icon(Icons.newspaper),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                return Obx(() => Container(
+                      margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                          border: news.isRead!
+                              ? Border.all(
+                                  width: 1, color: Colors.grey.withOpacity(0.5))
+                              : Border.all(),
+                          color: news.isRead!
+                              ? Colors.white.withOpacity(0.5)
+                              : Colors.white.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: news.isRead!
+                              ? []
+                              : [
+                                  BoxShadow(
+                                    color: const Color(0xFFA3014F)
+                                        .withOpacity(0.05),
+                                    offset: const Offset(0, 9),
+                                    blurRadius: 30,
+                                    spreadRadius: 0,
+                                  ),
+                                  BoxShadow(
+                                      color: const Color(0xFFB2036C)
+                                          .withOpacity(0.03),
+                                      offset: const Offset(0, 2),
+                                      blurRadius: 10,
+                                      spreadRadius: 0)
+                                ]),
+                      padding: const EdgeInsets.all(20),
+                      width: double.infinity,
+                      child: Row(
+                        children: [
+                          Container(
+                            child: const Icon(Icons.newspaper),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Column(
                               children: [
-                                Obx(() => Text(
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
                                       "From: ${user.usersClient.value.user!.Name!}",
                                       style: textNormalQuicksanBold,
-                                    )),
-                              ],
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Title: ${news.Title!}",
-                                  style: textNormalQuicksanBold,
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  DateFormat.jm().format(
-                                      DateTime.fromMillisecondsSinceEpoch(
-                                          news.CreateAt!)),
-                                  style: textNormalKanit,
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child:
-                                        Container(child: Text(news.Message!))),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Title: ${news.Title!}",
+                                      style: textNormalQuicksanBold,
+                                    ),
+                                    Text(
+                                      DateFormat.jm().format(
+                                          DateTime.fromMillisecondsSinceEpoch(
+                                              news.CreateAt!)),
+                                      style: textNormalKanit,
+                                    )
+                                  ],
+                                ),
                                 const SizedBox(
-                                  width: 10,
+                                  height: 10,
                                 ),
-                                Container(
-                                  width: 30,
-                                  height: 30,
-                                  decoration: BoxDecoration(
-                                      color: news.isRead!
-                                          ? Colors.greenAccent.withOpacity(0.5)
-                                          : Colors.orangeAccent
-                                              .withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(6)),
-                                  child: Center(
-                                      child: news.isRead!
-                                          ? const Icon(
-                                              Icons.done,
-                                            )
-                                          : const Icon(
-                                              Icons.circle,
-                                              size: 10,
-                                            )),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: Container(
+                                            child: Text(news.Message!))),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                      width: 30,
+                                      height: 30,
+                                      decoration: BoxDecoration(
+                                          color: news.isRead!
+                                              ? Colors.greenAccent
+                                                  .withOpacity(0.5)
+                                              : Colors.orangeAccent
+                                                  .withOpacity(0.5),
+                                          borderRadius:
+                                              BorderRadius.circular(6)),
+                                      child: Center(
+                                          child: news.isRead!
+                                              ? const Icon(
+                                                  Icons.done,
+                                                )
+                                              : const Icon(
+                                                  Icons.circle,
+                                                  size: 10,
+                                                )),
+                                    )
+                                  ],
                                 )
                               ],
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                );
+                            ),
+                          )
+                        ],
+                      ),
+                    ));
               },
             ),
           ),
@@ -205,9 +209,6 @@ class _ScreenNewsState extends State<ScreenNews> {
 }
 
 void showDialogWithCustomUI(BuildContext context) {
-  final TextEditingController txtTitle = TextEditingController();
-  final TextEditingController txtMess = TextEditingController();
-
   final controller = Get.put(AuthController());
   final total = Get.put(TotalController());
   total.bindingUser();
@@ -218,128 +219,7 @@ void showDialogWithCustomUI(BuildContext context) {
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      return Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.circular(16.0), // Đặt border radius tại đây
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Add News",
-                    style: textNormalKanitBold,
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.grey.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(50)),
-                        child: const Icon(Icons.close)),
-                  )
-                ],
-              ),
-              DropdownButtonFormField(
-                decoration: const InputDecoration(
-                  enabledBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 2),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    //<-- SEE HERE
-                    borderSide: BorderSide(color: Colors.black, width: 2),
-                  ),
-                  filled: true,
-                  fillColor: Colors.greenAccent,
-                ),
-                dropdownColor: Colors.greenAccent,
-                value: "DOG",
-                onChanged: (String? newValue) {},
-                items: <String>['Dog', 'Cat', 'Tiger', 'Lion']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(
-                      value,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                controller: txtTitle,
-                decoration: InputDecoration(
-                    labelStyle: textSmallQuicksan,
-                    prefixIcon: const Icon(Icons.abc),
-                    labelText: "Title",
-                    border: const OutlineInputBorder()),
-              ),
-              const SizedBox(height: 10.0),
-              TextFormField(
-                controller: txtMess,
-                decoration: InputDecoration(
-                    labelStyle: textSmallQuicksan,
-                    prefixIcon: const Icon(Icons.message),
-                    labelText: "Message",
-                    border: const OutlineInputBorder()),
-              ),
-              const SizedBox(height: 15.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                      child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shadowColor: Colors.white,
-                      backgroundColor: Colors.grey.withOpacity(0.2),
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            8.0), // Góc bo tròn với giá trị 8.0
-                      ),
-                    ),
-                    child: Text(
-                      "Cancel",
-                      style: textAppKanit,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Đóng dialog
-                    },
-                  )),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Expanded(
-                      child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              8.0), // Góc bo tròn với giá trị 8.0
-                        )),
-                    child: Text(
-                      "Confirm",
-                      style: textAppKanit,
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  )),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
+      return CustomDialog();
     },
   );
 }
@@ -380,5 +260,155 @@ void sendNotificationToUser(
     print('Notification sent successfully');
   } else {
     print('Failed to send notification. Error: ${response.reasonPhrase}');
+  }
+}
+
+class CustomDialog extends StatefulWidget {
+  const CustomDialog({super.key});
+
+  @override
+  _CustomDialogState createState() => _CustomDialogState();
+}
+
+class _CustomDialogState extends State<CustomDialog> {
+  final TextEditingController txtTitle = TextEditingController();
+  final TextEditingController txtMess = TextEditingController();
+
+  final controller = Get.put(AuthController());
+  final total = Get.put(TotalController());
+
+  @override
+  void initState() {
+    super.initState();
+    total.bindingUser();
+    controller.bindingAdminUser();
+
+    if (total.users.isNotEmpty) {
+      total.selectedUser.value = total.users.first;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Container(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Add News",
+                  style: textNormalKanitBold,
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    child: const Icon(Icons.close),
+                  ),
+                ),
+              ],
+            ),
+            DropdownButton<UserSnapshot>(
+              value: total.selectedUser.value,
+              icon: const Icon(Icons.arrow_downward),
+              elevation: 16,
+              style: const TextStyle(color: Colors.deepPurple),
+              underline: Container(
+                height: 2,
+                color: Colors.deepPurpleAccent,
+              ),
+              onChanged: (UserSnapshot? value) {
+                setState(() {
+                  total.selectedUser.value = value ?? total.users.first;
+                });
+              },
+              items: total.users
+                  .map<DropdownMenuItem<UserSnapshot>>((UserSnapshot user) {
+                return DropdownMenuItem<UserSnapshot>(
+                  key: ValueKey(user.user!.Id),
+                  value: user,
+                  child: Text(user.user!.Email!),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20.0),
+            TextFormField(
+              controller: txtTitle,
+              decoration: InputDecoration(
+                labelStyle: textSmallQuicksan,
+                prefixIcon: const Icon(Icons.abc),
+                labelText: "Title",
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            TextFormField(
+              controller: txtMess,
+              decoration: InputDecoration(
+                labelStyle: textSmallQuicksan,
+                prefixIcon: const Icon(Icons.message),
+                labelText: "Message",
+                border: const OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 15.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shadowColor: Colors.white,
+                      backgroundColor: Colors.grey.withOpacity(0.2),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Text(
+                      "Cancel",
+                      style: textAppKanit,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Đóng dialog
+                    },
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    child: Text(
+                      "Confirm",
+                      style: textAppKanit,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

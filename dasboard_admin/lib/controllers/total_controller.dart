@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, avoid_print, unnecessary_brace_in_string_interps
+// ignore_for_file: unused_local_variable, avoid_print, unnecessary_brace_in_string_interps, unnecessary_null_comparison
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
@@ -42,6 +42,21 @@ class TotalController extends GetxController {
       // Kiểm tra xem năm và tháng của CreatedAt có khớp với year và month đã cho
       return createdAt.year == year && createdAt.month == month;
     }).length;
+  }
+
+  bool isOver30Days(Users userSnapshot) {
+    const int millisecondsInADay = 24 * 60 * 60 * 1000;
+
+    if (userSnapshot != null && userSnapshot.ActiveAt != null) {
+      int activeAt = userSnapshot.ActiveAt!;
+      int currentTimestamp = DateTime.now().millisecondsSinceEpoch;
+
+      int daysDiff = (currentTimestamp - activeAt) ~/ millisecondsInADay;
+
+      return daysDiff > 30;
+    }
+
+    return false;
   }
 
   DateTime convertTimestampToDate(int timestamp) {
