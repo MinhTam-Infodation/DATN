@@ -9,6 +9,7 @@ import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class ViewOrderProducts extends StatefulWidget {
   // ignore: prefer_const_constructors_in_immutables
@@ -54,52 +55,64 @@ class _ViewOrderProductsState extends State<ViewOrderProducts> {
                       return Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
                           children: [
-                            CircleAvatar(
-                              radius: 40,
-                              backgroundImage: NetworkImage(productController
-                                  .cartItems[index].products!.Images![0].image),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CircleAvatar(
+                                  radius: 40,
+                                  backgroundImage: NetworkImage(
+                                      productController.cartItems[index]
+                                          .products!.Images![0].image),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Expanded(
+                                    child: Text(productController
+                                        .cartItems[index].products!.Name!)),
+                                IconButton(
+                                    onPressed: () {
+                                      productController.addToCart(
+                                          productController
+                                              .cartItems[index].products!,
+                                          widget.table);
+                                      // ignore: avoid_print, prefer_interpolation_to_compose_strings
+                                      print("Quan GUI" +
+                                          productController
+                                              .cartItems[index].Quantity.value
+                                              .toString());
+                                    },
+                                    icon: const Icon(Icons.add_circle)),
+                                Obx(
+                                  () => Text(
+                                    // ignore: unnecessary_brace_in_string_interps
+                                    productController.cartItems[index].Quantity
+                                        .toString(),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                IconButton(
+                                    onPressed: () {
+                                      final data = OrderDetailLocal(
+                                          products: productController
+                                              .cartItems[index].products!,
+                                          Quantity: productController
+                                              .cartItems[index].Quantity.value,
+                                          tables: widget.table);
+                                      productController.removeFromCart(data);
+                                    },
+                                    icon: const Icon(Icons.remove_circle)),
+                              ],
                             ),
                             const SizedBox(
-                              width: 20,
+                              height: 5,
                             ),
-                            Expanded(
-                                child: Text(productController
-                                    .cartItems[index].products!.Name!)),
-                            IconButton(
-                                onPressed: () {
-                                  productController.addToCart(
-                                      productController
-                                          .cartItems[index].products!,
-                                      widget.table);
-                                  // ignore: avoid_print, prefer_interpolation_to_compose_strings
-                                  print("Quan GUI" +
-                                      productController
-                                          .cartItems[index].Quantity.value
-                                          .toString());
-                                },
-                                icon: const Icon(Icons.add_circle)),
-                            Obx(
-                              () => Text(
-                                // ignore: unnecessary_brace_in_string_interps
-                                productController.cartItems[index].Quantity
-                                    .toString(),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  final data = OrderDetailLocal(
-                                      products: productController
-                                          .cartItems[index].products!,
-                                      Quantity: productController
-                                          .cartItems[index].Quantity.value,
-                                      tables: widget.table);
-                                  productController.removeFromCart(data);
-                                },
-                                icon: const Icon(Icons.remove_circle)),
+                            const Divider(
+                              thickness: 2,
+                              color: Colors.black,
+                            )
                           ],
                         ),
                       );
@@ -132,7 +145,7 @@ class _ViewOrderProductsState extends State<ViewOrderProducts> {
                 Obx(() => Row(
                       children: [
                         Text(
-                          "Total: ${productController.totalPrice}",
+                          "Total: ${NumberFormat.currency(locale: 'vi_VN', symbol: '').format(productController.totalPrice)}VND",
                           style: textAppKanitNormal,
                         ),
                       ],

@@ -7,6 +7,7 @@ import 'package:dasboard_admin/controllers/new_controller.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/modals/news_modal.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
+import 'package:dasboard_admin/screens/manager_news/screen_add_news.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:dropdown_input/dropdown_input.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,36 +64,36 @@ class _ScreenNewsState extends State<ScreenNews> {
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(10)),
                 child: IconButton(
-                  onPressed: () => showDialogWithCustomUI(context),
+                  onPressed: () => Get.to(() => const ScreenAddNews()),
                   icon: const Icon(Icons.add),
                   color: Colors.black,
                 ),
               ),
             ]),
         body: SingleChildScrollView(
-          child: Container(
-            width: double.infinity,
-            height: 600,
-            padding: const EdgeInsets.all(20),
-            child: GroupedListView<NewsSnapshot, String>(
-              elements:
-                  controller.newListGroup.expand((group) => group).toList(),
-              groupBy: (newsSnapshot) =>
-                  newsSnapshot.orderDetail!.formattedDate,
-              groupSeparatorBuilder: (String groupByValue) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    groupByValue,
-                    style: textNormalLatoBold,
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              },
-              itemBuilder: (context, newsSnapshot) {
-                final news = newsSnapshot.orderDetail!;
-                user.getUserById(news.IdUserCreate!);
-                return Obx(() => Container(
+          child: Obx(() => Container(
+                width: double.infinity,
+                height: 600,
+                padding: const EdgeInsets.all(20),
+                child: GroupedListView<NewsSnapshot, String>(
+                  elements:
+                      controller.newListGroup.expand((group) => group).toList(),
+                  groupBy: (newsSnapshot) =>
+                      newsSnapshot.orderDetail!.formattedDate,
+                  groupSeparatorBuilder: (String groupByValue) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        groupByValue,
+                        style: textNormalLatoBold,
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  },
+                  itemBuilder: (context, newsSnapshot) {
+                    final news = newsSnapshot.orderDetail!;
+                    user.getUserById(news.IdUserCreate!);
+                    return Container(
                       margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
                           border: news.isRead!
@@ -198,10 +199,10 @@ class _ScreenNewsState extends State<ScreenNews> {
                           )
                         ],
                       ),
-                    ));
-              },
-            ),
-          ),
+                    );
+                  },
+                ),
+              )),
         ),
       ),
     );

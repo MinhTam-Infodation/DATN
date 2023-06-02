@@ -26,6 +26,7 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
   bool _imageChange = false;
   XFile? _xImage;
   var userId = "";
+  bool isTooglePassword = false;
 
   late TextEditingController txtName;
   late TextEditingController txtEmail;
@@ -58,6 +59,12 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
     txtPhone.text = controller.users.value.user!.Phone!;
     txtPassword.text = controller.users.value.user!.Password!;
     txtCreateDate.text = DateFormat('dd-MM-yyyy').format(tsdatecreate);
+  }
+
+  void toggleShowPass() {
+    setState(() {
+      isTooglePassword = !isTooglePassword;
+    });
   }
 
   @override
@@ -209,8 +216,14 @@ class _ScreenUpdateProfileState extends State<ScreenUpdateProfile> {
                           height: sButtonHeight,
                         ),
                         TextFormField(
+                          obscureText: !isTooglePassword,
                           controller: txtPassword,
                           decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                  onPressed: toggleShowPass,
+                                  icon: Icon(isTooglePassword
+                                      ? Icons.visibility_rounded
+                                      : Icons.visibility_off)),
                               label: Text(
                                 tPassword,
                                 style: textSmallQuicksan,

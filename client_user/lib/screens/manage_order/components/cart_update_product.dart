@@ -33,6 +33,7 @@ class _CartUpdateProductState extends State<CartUpdateProduct> {
 
     return SizedBox(
       child: Container(
+        width: 500,
         decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(width: 2, color: Colors.black))),
         child: Padding(

@@ -52,6 +52,7 @@ class _CartItemOrderState extends State<CartItemOrder> {
                       NetworkImage(widget.product.Images![0].image),
                 ),
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                         // ignore: invalid_use_of_protected_member
@@ -62,7 +63,7 @@ class _CartItemOrderState extends State<CartItemOrder> {
                       children: [
                         Text(
                           // ignore: invalid_use_of_protected_member
-                          "Slot: ${widget.product.Price.toString()}",
+                          "Price: ${widget.product.Price.toString()}",
                           style: textNormalQuicksanBold,
                         ),
                       ],

@@ -101,6 +101,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
                         final orderDetail = orderDetailList[index];
                         return CartItemDb(order: orderDetail);
                       },
+                      padding: const EdgeInsets.only(bottom: 50),
                     ),
                   ),
                 );
@@ -239,16 +240,27 @@ class _ExampleScreenState extends State<ExampleScreen> {
 
     // Tạo bảng và điền dữ liệu
     final table = pw.Table.fromTextArray(
-      headers: headers,
-      data: data,
-      headerStyle: pw.TextStyle(
-        fontWeight: pw.FontWeight.bold,
-        font: ttfFont,
-      ),
-      border: pw.TableBorder.all(),
-      headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
-      cellAlignments: {0: pw.Alignment.center},
-    );
+        headers: headers,
+        data: data,
+        headerStyle: pw.TextStyle(
+          fontWeight: pw.FontWeight.bold,
+          font: ttfFont,
+          fontFallback: <pw.Font>[
+            for (String fontName in [
+              'Roboto-Regular'
+            ]) // Thay thế bằng font hỗ trợ tiếng Việt
+              pw.Font.ttf(await rootBundle.load('assets/fonts/$fontName.ttf')),
+          ],
+        ),
+        border: pw.TableBorder.all(),
+        headerDecoration: const pw.BoxDecoration(color: PdfColors.grey300),
+        cellAlignments: {0: pw.Alignment.center},
+        cellStyle: pw.TextStyle(
+          font: ttfFont,
+          fontFallback: [
+            pw.Font.ttf(robotoRegular),
+          ],
+        ));
 
     // Thêm nội dung hóa đơn vào tài liệu PDF
     pdf.addPage(

@@ -116,4 +116,4 @@ const String tPaymentCashOption = "Cash";
 const String tPaymentCashOptionDes = "Payment in cash";
 
 const String tPaymentPayPalOption = "PayPal";
-const String tPaymentPayPalOptionDes = "Payment via PayPal";
+const String tPaymentPayPalOptionDes = "Payment via VN PAY";

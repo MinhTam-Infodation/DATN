@@ -53,15 +53,15 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
               tPaymentOrderDes,
               style: textNormalQuicksan,
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            ForgetPasswordBtnWidget(
-              btnIcon: Icons.qr_code,
-              title: tPaymentQRCodeOption,
-              subTitle: tPaymentQRCodeOptionDes,
-              onTap: () {},
-            ),
+            // const SizedBox(
+            //   height: 30,
+            // ),
+            // ForgetPasswordBtnWidget(
+            //   btnIcon: Icons.qr_code,
+            //   title: tPaymentQRCodeOption,
+            //   subTitle: tPaymentQRCodeOptionDes,
+            //   onTap: () {},
+            // ),
             const SizedBox(
               height: 20,
             ),
@@ -84,20 +84,20 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
             ),
             ForgetPasswordBtnWidget(
               btnIcon: Icons.payments_outlined,
-              title: tPaymentPayPalOption,
+              title: "VN PAY",
               subTitle: tPaymentPayPalOptionDes,
               onTap: () =>
                   orderPayment(double.parse(widget.order.Total.toString())),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            ForgetPasswordBtnWidget(
-              btnIcon: Icons.payments_outlined,
-              title: tPaymentPayPalOption,
-              subTitle: tPaymentPayPalOptionDes,
-              onTap: () {},
-            ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
+            // ForgetPasswordBtnWidget(
+            //   btnIcon: Icons.payments_outlined,
+            //   title: tPaymentPayPalOption,
+            //   subTitle: tPaymentPayPalOptionDes,
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),

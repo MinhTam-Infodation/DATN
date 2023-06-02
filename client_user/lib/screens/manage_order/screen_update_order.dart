@@ -33,6 +33,36 @@ class _ScreenUpdateOrderState extends State<ScreenUpdateOrder> {
       Get.put(ManageProductsController());
   var userId = "";
 
+  final TextEditingController _searchController = TextEditingController();
+  bool _isClearVisible = false;
+
+  void _onSearchTextChanged(String value) {
+    setState(() {
+      _isClearVisible = value.isNotEmpty;
+    });
+
+    // Get UserId
+    if (FirebaseAuth.instance.currentUser != null) {
+      userId = FirebaseAuth.instance.currentUser!.uid;
+    } else {
+      userId = "";
+    }
+
+    if (value.isNotEmpty) {
+      productController.searchProductByName(value, userId);
+    } else {
+      productController.getListProduct(userId);
+    }
+  }
+
+  void _onClearPressed() {
+    setState(() {
+      _searchController.clear();
+      _isClearVisible = false;
+      productController.getListProduct(userId);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (FirebaseAuth.instance.currentUser != null) {
@@ -68,39 +98,78 @@ class _ScreenUpdateOrderState extends State<ScreenUpdateOrder> {
                         'Add Product',
                         style: textAppKanit,
                       ),
-                      content: SizedBox(
-                        width: 300,
-                        height: 300,
-                        child: Obx(
-                          () {
-                            final productList = productController.product;
-                            return SingleChildScrollView(
-                              child: SizedBox(
-                                height: 300, // Đặt chiều cao cho SizedBox
-                                child: ListView.separated(
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    final product = productList[index].products;
-                                    return CartUpdateProduct(
-                                      product: product!,
-                                      orders: widget.order,
-                                    );
-                                  },
-                                  itemCount: productList.length,
-                                  separatorBuilder: (context, index) =>
-                                      const SizedBox(height: 0),
-                                ),
+                      content: Column(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                color: Colors.black,
+                                width: 2,
                               ),
-                            );
-                          },
-                        ),
+                            ),
+                            padding: const EdgeInsets.only(
+                                top: 2, bottom: 2, right: 10, left: 10),
+                            child: Row(
+                              children: [
+                                const Icon(Icons.search),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: TextField(
+                                    controller: _searchController,
+                                    onChanged: _onSearchTextChanged,
+                                    decoration: const InputDecoration(
+                                        hintText: 'Search...',
+                                        border: InputBorder.none),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible: _isClearVisible,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.clear),
+                                    onPressed: _onClearPressed,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 400,
+                            height: 400,
+                            child: Obx(
+                              () {
+                                final productList = productController.product;
+                                return SingleChildScrollView(
+                                  child: SizedBox(
+                                    height: 400, // Đặt chiều cao cho SizedBox
+                                    child: ListView.separated(
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      itemBuilder: (context, index) {
+                                        final product =
+                                            productList[index].products;
+                                        return CartUpdateProduct(
+                                          product: product!,
+                                          orders: widget.order,
+                                        );
+                                      },
+                                      itemCount: productList.length,
+                                      separatorBuilder: (context, index) =>
+                                          const SizedBox(height: 0),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       actions: [
                         TextButton(
-                          child: const Text("Close"),
-                          onPressed: () => Get.back(),
-                        ),
+                            child: const Text("Close"),
+                            onPressed: () =>
+                                Navigator.of(context).pop() // Đóng dialog,
+                            ),
                       ],
                     ),
                   );
@@ -115,13 +184,10 @@ class _ScreenUpdateOrderState extends State<ScreenUpdateOrder> {
           padding: const EdgeInsets.all(20),
           child: Column(
             children: [
-              Text(widget.table.Name!),
-              Text(widget.order.Total!.toString()),
-              Text(widget.listOrder.length.toString()),
               Obx(() {
                 if (orderController.orderDetailList.isNotEmpty) {
                   return SizedBox(
-                    height: 300,
+                    height: 650,
                     child: ListView.builder(
                       shrinkWrap: true,
                       itemCount: orderController.orderDetailList.length,

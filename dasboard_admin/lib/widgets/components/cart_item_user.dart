@@ -119,7 +119,7 @@ class CartItemUser extends StatelessWidget {
                                 height: 5,
                               ),
                               Text(
-                                user.Name ?? '',
+                                user.Email ?? '',
                                 style: textNormalQuicksanGrey,
                               ),
                             ],
