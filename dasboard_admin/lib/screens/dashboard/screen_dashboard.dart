@@ -36,6 +36,12 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
 
   int _currentIndex = 0;
   int touchedGroupIndex = -1;
+  List<Color> gradientColors = [
+    Colors.greenAccent,
+    Colors.black,
+  ];
+
+  bool showAvg = false;
 
   @override
   void initState() {
@@ -211,85 +217,88 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                         const SizedBox(
                           height: 20,
                         ),
-                        // CardCustom(
-                        //     mLeft: 0,
-                        //     mRight: 0,
-                        //     width: size.width - 40,
-                        //     height: 235,
-                        //     child: Column(
-                        //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //       children: [
-                        //         Padding(
-                        //           padding: const EdgeInsets.all(20),
-                        //           child: Row(
-                        //             mainAxisAlignment:
-                        //                 MainAxisAlignment.spaceEvenly,
-                        //             children: <Widget>[
-                        //               Indicator(
-                        //                 color: Colors.greenAccent,
-                        //                 text: 'Active',
-                        //                 isSquare: false,
-                        //                 size: touchedIndex == 0 ? 14 : 12,
-                        //                 textColor: touchedIndex == 0
-                        //                     ? Colors.black
-                        //                     : Colors.grey,
-                        //               ),
-                        //               Indicator(
-                        //                 color: Colors.blueAccent,
-                        //                 text: 'Walting',
-                        //                 isSquare: false,
-                        //                 size: touchedIndex == 1 ? 14 : 12,
-                        //                 textColor: touchedIndex == 1
-                        //                     ? Colors.black
-                        //                     : Colors.grey,
-                        //               ),
-                        //             ],
-                        //           ),
-                        //         ),
-                        //         // Bar Cusstom
-                        //         SizedBox(
-                        //           width: 200,
-                        //           height: 150,
-                        //           child: PieChart(
-                        //             PieChartData(
-                        //               pieTouchData: PieTouchData(
-                        //                 touchCallback: (FlTouchEvent event,
-                        //                     pieTouchResponse) {
-                        //                   setState(() {
-                        //                     if (!event
-                        //                             .isInterestedForInteractions ||
-                        //                         pieTouchResponse == null ||
-                        //                         pieTouchResponse
-                        //                                 .touchedSection ==
-                        //                             null) {
-                        //                       touchedIndex = -1;
-                        //                       return;
-                        //                     }
-                        //                     touchedIndex = pieTouchResponse
-                        //                         .touchedSection!
-                        //                         .touchedSectionIndex;
-                        //                   });
-                        //                 },
-                        //               ),
-                        //               startDegreeOffset: 180,
-                        //               borderData: FlBorderData(
-                        //                 show: false,
-                        //               ),
-                        //               sectionsSpace: 10,
-                        //               centerSpaceRadius: 0,
-                        //               sections: showingSections(),
-                        //             ),
-                        //             swapAnimationDuration: const Duration(
-                        //                 milliseconds: 150), // Optional
-                        //             swapAnimationCurve:
-                        //                 Curves.linear, // Optional
-                        //           ),
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 20,
-                        //         )
-                        //       ],
-                        //     )),
+                        CardCustom(
+                            mLeft: 0,
+                            mRight: 0,
+                            width: size.width - 40,
+                            height: 235,
+                            child: AspectRatio(
+                              aspectRatio: 1.3,
+                              child: Column(
+                                children: <Widget>[
+                                  const SizedBox(
+                                    height: 28,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                      Indicator(
+                                        color:
+                                            Colors.greenAccent.withOpacity(0.3),
+                                        text: 'Active',
+                                        isSquare: false,
+                                        size: touchedIndex == 0 ? 18 : 16,
+                                        textColor: touchedIndex == 0
+                                            ? Colors.greenAccent
+                                                .withOpacity(0.3)
+                                            : Colors.greenAccent
+                                                .withOpacity(0.3),
+                                      ),
+                                      Indicator(
+                                        color:
+                                            Colors.blueAccent.withOpacity(0.3),
+                                        text: 'Walting',
+                                        isSquare: false,
+                                        size: touchedIndex == 1 ? 18 : 16,
+                                        textColor: touchedIndex == 1
+                                            ? Colors.blueAccent.withOpacity(0.3)
+                                            : Colors.blueAccent
+                                                .withOpacity(0.3),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 18,
+                                  ),
+                                  Expanded(
+                                    child: AspectRatio(
+                                      aspectRatio: 1,
+                                      child: PieChart(
+                                        PieChartData(
+                                          pieTouchData: PieTouchData(
+                                            touchCallback: (FlTouchEvent event,
+                                                pieTouchResponse) {
+                                              setState(() {
+                                                if (!event
+                                                        .isInterestedForInteractions ||
+                                                    pieTouchResponse == null ||
+                                                    pieTouchResponse
+                                                            .touchedSection ==
+                                                        null) {
+                                                  touchedIndex = -1;
+                                                  return;
+                                                }
+                                                touchedIndex = pieTouchResponse
+                                                    .touchedSection!
+                                                    .touchedSectionIndex;
+                                              });
+                                            },
+                                          ),
+                                          startDegreeOffset: 180,
+                                          borderData: FlBorderData(
+                                            show: false,
+                                          ),
+                                          sectionsSpace: 1,
+                                          centerSpaceRadius: 0,
+                                          sections: showingSections(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )),
                         const SizedBox(
                           height: 20,
                         ),
@@ -435,6 +444,52 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                 )
                               ],
                             )),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        CardCustom(
+                            mLeft: 0,
+                            mRight: 0,
+                            width: size.width - 40,
+                            height: 250,
+                            child: Column(
+                              children: [
+                                AspectRatio(
+                                  aspectRatio: 1.70,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      right: 18,
+                                      left: 12,
+                                      top: 24,
+                                      bottom: 12,
+                                    ),
+                                    child: LineChart(
+                                      showAvg ? avgData() : mainData(),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 60,
+                                  height: 34,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        showAvg = !showAvg;
+                                      });
+                                    },
+                                    child: Text(
+                                      'avg',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: showAvg
+                                            ? Colors.white.withOpacity(0.5)
+                                            : Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ))
                       ],
                     ),
                   ),
@@ -473,44 +528,276 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           ),
         ],
       );
-  //* Pie Data
-  // List<PieChartSectionData> showingSections() {
-  //   final wail = Get.put(WaltingUserController());
-  //   return List.generate(
-  //     2,
-  //     (i) {
-  //       final isTouched = i == touchedIndex;
-  //       const color0 = Colors.greenAccent;
-  //       const color1 = Colors.blueAccent;
-  //       switch (i) {
-  //         case 0:
-  //           return PieChartSectionData(
-  //             color: color0,
-  //             value: double.parse(wail.totalActive.value.toString()),
-  //             title:
-  //                 '${((double.parse(wail.totalActive.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
-  //             radius: 80,
-  //             titlePositionPercentageOffset: 0.55,
-  //             borderSide: isTouched
-  //                 ? const BorderSide(color: Colors.white, width: 6)
-  //                 : BorderSide(color: Colors.white.withOpacity(0)),
-  //           );
-  //         case 1:
-  //           return PieChartSectionData(
-  //             color: color1,
-  //             value: double.parse(wail.totalWalting.value.toString()),
-  //             title:
-  //                 '${((double.parse(wail.totalWalting.value.toString()) / double.parse(wail.totalAll.value.toString())) * 100).round()} %',
-  //             radius: 65,
-  //             titlePositionPercentageOffset: 0.55,
-  //             borderSide: isTouched
-  //                 ? const BorderSide(color: Colors.white, width: 6)
-  //                 : BorderSide(color: Colors.white.withOpacity(0)),
-  //           );
-  //         default:
-  //           throw Error();
-  //       }
-  //     },
-  //   );
-  // }
+  List<PieChartSectionData> showingSections() {
+    return List.generate(
+      2,
+      (i) {
+        final isTouched = i == touchedIndex;
+
+        switch (i) {
+          case 0:
+            return PieChartSectionData(
+              color: Colors.greenAccent.withOpacity(0.3),
+              value: 25,
+              title: '',
+              radius: 80,
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? const BorderSide(color: Colors.greenAccent, width: 6)
+                  : BorderSide(color: Colors.greenAccent.withOpacity(0.2)),
+            );
+          case 1:
+            return PieChartSectionData(
+              color: Colors.blueAccent.withOpacity(0.3),
+              value: 25,
+              title: '',
+              radius: 65,
+              titlePositionPercentageOffset: 0.55,
+              borderSide: isTouched
+                  ? const BorderSide(color: Colors.blue, width: 6)
+                  : BorderSide(color: Colors.greenAccent.withOpacity(0.2)),
+            );
+
+          default:
+            throw Error();
+        }
+      },
+    );
+  }
+
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 16,
+    );
+    Widget text;
+    switch (value.toInt()) {
+      case 1:
+        text = const Text('MON', style: style);
+        break;
+      case 2:
+        text = const Text('MAR', style: style);
+        break;
+      case 5:
+        text = const Text('JUN', style: style);
+        break;
+      case 8:
+        text = const Text('SEP', style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
+    );
+  }
+
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 15,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 1:
+        text = '10K';
+        break;
+      case 3:
+        text = '30k';
+        break;
+      case 5:
+        text = '50k';
+        break;
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.left);
+  }
+
+  LineChartData mainData() {
+    return LineChartData(
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        horizontalInterval: 1,
+        verticalInterval: 1,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: Colors.blueAccent.withOpacity(0.3),
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: Colors.blueAccent.withOpacity(0.3),
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            interval: 1,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            interval: 1,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 42,
+          ),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      minX: 0,
+      maxX: 11,
+      minY: 0,
+      maxY: 6,
+      lineBarsData: [
+        LineChartBarData(
+          spots: const [
+            FlSpot(0, 3),
+            FlSpot(2.6, 2),
+            FlSpot(4.9, 5),
+            FlSpot(6.8, 3.1),
+            FlSpot(8, 4),
+            FlSpot(9.5, 3),
+            FlSpot(11, 4),
+          ],
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: gradientColors,
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: gradientColors
+                  .map((color) => color.withOpacity(0.3))
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  LineChartData avgData() {
+    return LineChartData(
+      lineTouchData: LineTouchData(enabled: false),
+      gridData: FlGridData(
+        show: true,
+        drawHorizontalLine: true,
+        verticalInterval: 1,
+        horizontalInterval: 1,
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: const Color(0xff37434d),
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 30,
+            getTitlesWidget: bottomTitleWidgets,
+            interval: 1,
+          ),
+        ),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 42,
+            interval: 1,
+          ),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: const Color(0xff37434d)),
+      ),
+      minX: 0,
+      maxX: 11,
+      minY: 0,
+      maxY: 6,
+      lineBarsData: [
+        LineChartBarData(
+          spots: const [
+            FlSpot(0, 3.44),
+            FlSpot(2.6, 3.44),
+            FlSpot(4.9, 3.44),
+            FlSpot(6.8, 3.44),
+            FlSpot(8, 3.44),
+            FlSpot(9.5, 3.44),
+            FlSpot(11, 3.44),
+          ],
+          isCurved: true,
+          gradient: LinearGradient(
+            colors: [
+              ColorTween(begin: gradientColors[0], end: gradientColors[1])
+                  .lerp(0.2)!,
+              ColorTween(begin: gradientColors[0], end: gradientColors[1])
+                  .lerp(0.2)!,
+            ],
+          ),
+          barWidth: 5,
+          isStrokeCapRound: true,
+          dotData: FlDotData(
+            show: false,
+          ),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: [
+                ColorTween(begin: gradientColors[0], end: gradientColors[1])
+                    .lerp(0.2)!
+                    .withOpacity(0.1),
+                ColorTween(begin: gradientColors[0], end: gradientColors[1])
+                    .lerp(0.2)!
+                    .withOpacity(0.1),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 }
