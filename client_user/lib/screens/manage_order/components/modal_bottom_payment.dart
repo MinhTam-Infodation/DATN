@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print, duplicate_ignore, non_constant_identifier_names, constant_identifier_names
+
+import 'dart:convert';
+
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/controller/manage_history_order_controller.dart';
 import 'package:client_user/modal/order.dart';
@@ -22,12 +26,15 @@ class ModalBottomPayment extends StatefulWidget {
 }
 
 class _ModalBottomPaymentState extends State<ModalBottomPayment> {
+  Map<String, dynamic>? paymentIntent;
   var userId = "";
   String responseCode = '';
   String zpTransToken = "";
   String payResult = "";
   String payAmount = "10000";
   bool showResult = false;
+  final SECRET_KEY =
+      "sk_test_51NErBXGDIUTvV4PmuelNiZh2h5jdmS0cChahzQU6sHbBhc8Tech0IOHFhtFmqJps1seWr3qHlwepm2GYDx2B3P5y00GStQ5oQ0";
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +46,7 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
     final orderHistoryController = Get.put(ManageHistoryOrderController());
 
     return Container(
-      height: 420,
+      height: 400,
       padding: const EdgeInsets.all(20),
       child: SingleChildScrollView(
         child: Column(
@@ -89,21 +96,13 @@ class _ModalBottomPaymentState extends State<ModalBottomPayment> {
               onTap: () =>
                   orderPayment(double.parse(widget.order.Total.toString())),
             ),
-            // const SizedBox(
-            //   height: 20,
-            // ),
-            // ForgetPasswordBtnWidget(
-            //   btnIcon: Icons.payments_outlined,
-            //   title: tPaymentPayPalOption,
-            //   subTitle: tPaymentPayPalOptionDes,
-            //   onTap: () {},
-            // ),
           ],
         ),
       ),
     );
   }
 
+  // Payment width VN Pay
   void orderPayment(double total) async {
     final orderHistoryController = Get.put(ManageHistoryOrderController());
 

@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'dart:io';
 
 import 'package:client_user/constants/const_spacer.dart';
@@ -31,7 +33,6 @@ class _ScreenContinueInfoState extends State<ScreenContinueInfo> {
   Widget build(BuildContext context) {
     final controller = Get.put(ConfirmInfo());
     final box = GetStorage();
-    // ignore: no_leading_underscores_for_local_identifiers
     final _formKey = GlobalKey<FormState>();
     return SafeArea(
       child: Scaffold(

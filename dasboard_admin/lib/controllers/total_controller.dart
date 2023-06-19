@@ -1,4 +1,4 @@
-// ignore_for_file: unused_local_variable, avoid_print, unnecessary_brace_in_string_interps, unnecessary_null_comparison
+// ignore_for_file: unused_local_variable, avoid_print, unnecessary_brace_in_string_interps, unnecessary_null_comparison, invalid_use_of_protected_member
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
@@ -12,6 +12,9 @@ class TotalController extends GetxController {
       FirebaseFirestore.instance.collection('Users');
   final walt = Get.put(WaltingUserController());
 
+  final totalUserWalting = 0.obs;
+  final totalUserActive = 0.obs;
+
   @override
   void onInit() {
     // Gọi phương thức lấy dữ liệu từ Firebase và gán cho biến users
@@ -21,6 +24,22 @@ class TotalController extends GetxController {
 
   bindingUser() {
     users.bindStream(UserSnapshot.dsUserTuFirebase());
+  }
+
+  void updateTotalCounts() {
+    int waitingCount = 0;
+    int activeCount = 0;
+
+    for (var element in users.value) {
+      if (element.user!.Status == false) {
+        waitingCount++;
+      } else {
+        activeCount++;
+      }
+    }
+
+    totalUserWalting.value = waitingCount;
+    totalUserActive.value = activeCount;
   }
 
   void setSelectedUser(UserSnapshot user) {

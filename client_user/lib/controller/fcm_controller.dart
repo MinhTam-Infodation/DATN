@@ -29,8 +29,6 @@ class FirebaseMessagingService {
     // Hiển thị thông báo hoặc thực hiện hành động cần thiết
     String title = message.notification?.title ?? '';
     String body = message.notification?.body ?? '';
-    print('Title: $title');
-    print('Body: $body');
     AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: 123,
@@ -47,14 +45,9 @@ class FirebaseMessagingService {
         actionButtons: [
           NotificationActionButton(
               key: "ACCEPT",
-              label: "ACCEPT NOTIFICATION",
+              label: "Accep",
               color: Colors.green,
               autoDismissible: true),
-          // NotificationActionButton(
-          //     key: "REJECT",
-          //     label: "REJECT NOTIFICATION",
-          //     color: Colors.green,
-          //     autoDismissible: true)
         ]);
   }
 
@@ -64,7 +57,6 @@ class FirebaseMessagingService {
       final title = notification.title;
       final body = notification.body;
 
-      // Tạo thông báo và hiển thị nó cho người dùng
       final androidPlatformChannelSpecifics = const AndroidNotificationDetails(
         'your_channel_id',
         'your_channel_name',

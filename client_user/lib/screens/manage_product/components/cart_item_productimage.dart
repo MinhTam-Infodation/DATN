@@ -43,7 +43,7 @@ class _CartItemProductImageState extends State<CartItemProductImage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       width: 250,
                       child: Text(
                         // ignore: invalid_use_of_protected_member

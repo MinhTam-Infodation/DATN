@@ -1,4 +1,5 @@
 import 'package:client_user/controller/manage_orderv3controller.dart';
+import 'package:client_user/material/bilions_ui.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
@@ -9,10 +10,14 @@ import 'package:intl/intl.dart';
 
 class CartItemUpdate extends StatefulWidget {
   const CartItemUpdate(
-      {super.key, required this.orderDetail, required this.order});
+      {super.key,
+      required this.orderDetail,
+      required this.order,
+      required this.length});
 
   final OrderDetail orderDetail;
   final Orders order;
+  final int length;
 
   @override
   State<CartItemUpdate> createState() => _CartItemUpdateState();
@@ -49,8 +54,28 @@ class _CartItemUpdateState extends State<CartItemUpdate> {
                         GestureDetector(
                           child: const Icon(Icons.cancel_outlined),
                           onTap: () {
-                            orderController.deleteOrderDetail(
-                                widget.orderDetail, userId, widget.order.Id!);
+                            if (widget.length > 1) {
+                              orderController.deleteOrderDetail(
+                                  widget.orderDetail, userId, widget.order.Id!);
+                            } else {
+                              confirm(
+                                context,
+                                ConfirmDialog(
+                                  'Are you sure?',
+                                  message:
+                                      "This action cannot be undone!. Your invoice will be deleted.",
+                                  variant: Variant.danger,
+                                  confirmed: () {
+                                    orderController.deleteOrderDetail(
+                                        widget.orderDetail,
+                                        userId,
+                                        widget.order.Id!);
+                                    orderController.deleteOrder(
+                                        userId, widget.order);
+                                  },
+                                ),
+                              );
+                            }
                           },
                         ),
                       ],
@@ -66,7 +91,7 @@ class _CartItemUpdateState extends State<CartItemUpdate> {
                         alignment: Alignment.topLeft,
                         child: Text(
                           // ignore: invalid_use_of_protected_member
-                          "${widget.orderDetail.NameProduct} ",
+                          "${widget.orderDetail.NameProduct} ${widget.length}",
                           style: textAppKanitNormal, textAlign: TextAlign.start,
                         ),
                       ),

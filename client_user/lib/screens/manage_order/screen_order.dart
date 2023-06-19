@@ -6,6 +6,7 @@ import 'package:client_user/controller/manage_product.dart';
 import 'package:client_user/controller/manager_order.dart';
 import 'package:client_user/controller/order_detail.dart';
 import 'package:client_user/controller/order_local.dart';
+import 'package:client_user/material/bilions_ui.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/tables.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_order.dart';
@@ -100,7 +101,19 @@ class _ScreenOrderState extends State<ScreenOrder> {
                     if (orderController.totalOrder.value == 0) {
                       Get.back();
                     } else {
-                      showDialogWithCustomUI(context);
+                      // showDialogWithCustomUI(context);
+                      confirm(
+                        context,
+                        ConfirmDialog(
+                          'Are you sure?',
+                          message:
+                              "Do you want to cancel the current menu selection?",
+                          variant: Variant.success,
+                          confirmed: () {
+                            Get.back();
+                          },
+                        ),
+                      );
                     }
                   },
                   icon: const Icon(Icons.close, color: Colors.black)),

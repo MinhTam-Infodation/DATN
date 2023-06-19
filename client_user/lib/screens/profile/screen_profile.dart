@@ -149,7 +149,7 @@ class _ScreenProfileState extends State<ScreenProfile> {
                       child: const Icon(Icons.arrow_forward_ios_rounded),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

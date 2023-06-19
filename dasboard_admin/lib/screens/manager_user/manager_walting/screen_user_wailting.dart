@@ -4,10 +4,15 @@ import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/controllers/waltinguser_controller.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fswitch_nullsafety/fswitch_nullsafety.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:mailer/mailer.dart';
 import 'dart:convert';
+
+import 'package:mailer/smtp_server/gmail.dart';
+import 'package:mustache_template/mustache_template.dart';
 
 class ScreenUserWalting extends StatefulWidget {
   const ScreenUserWalting({super.key});
@@ -156,6 +161,12 @@ class _ScreenUserWaltingState extends State<ScreenUserWalting> {
                                                     .Token!,
                                                 "Access Pemission",
                                                 "Your Account Can Access In Amager");
+                                            sendEmailActive(
+                                                cu.listUsers[index].user!
+                                                    .Email!,
+                                                cu.listUsers[index].user!.Name!,
+                                                cu.listUsers[index].user!
+                                                    .Name!);
                                             Get.snackbar('Success',
                                                 "Access Account To Success",
                                                 snackPosition:
@@ -232,8 +243,52 @@ class _ScreenUserWaltingState extends State<ScreenUserWalting> {
 
     if (response.statusCode == 200) {
       print('Notification sent successfully');
+      Get.snackbar('Success', "Notification Successful",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.greenAccent.withOpacity(0.1),
+          colorText: Colors.black);
     } else {
       print('Failed to send notification. Error: ${response.reasonPhrase}');
+    }
+  }
+
+  String renderTemplate(String template, Map<String, dynamic> variables) {
+    final templateRenderer = Template(template);
+    return templateRenderer.renderString(variables);
+  }
+
+  Future sendEmailActive(String userEmail, username, usersendname) async {
+    print("EMAIL");
+    String username = "tam.hm.61cntt@ntu.edu.vn";
+    String password = "hoangminhtam123pro";
+
+    final templateContent =
+        await rootBundle.loadString('assets/temp/mail_active.html');
+
+    final variables = {
+      'username': usersendname, // Ví dụ: Biến tùy chỉnh 'username'
+      'useremail': userEmail,
+      'usernamesen': usersendname
+    };
+
+    final emailContent = renderTemplate(templateContent, variables);
+
+    final stmpServer = gmail(username, password);
+
+    final message = Message()
+      ..from = Address(username, 'SYSTEM')
+      ..recipients.add(userEmail)
+      ..subject = 'Active Account Success'
+      ..html = emailContent;
+
+    try {
+      final sendReport = await send(message, stmpServer);
+      print('Message sent: $sendReport');
+    } on MailerException catch (e) {
+      print('Message not sent. $e');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
     }
   }
 }

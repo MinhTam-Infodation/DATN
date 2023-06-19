@@ -37,45 +37,30 @@ class _ScreenSignupState extends State<ScreenSignup> {
                 const SignupFormWidget(),
 
                 // Section 3
-                // Column(
-                //   children: [
-                //     Text(
-                //       "OR",
-                //       style: textSmallQuicksan,
-                //     ),
-                //     const SizedBox(
-                //       height: 5,
-                //     ),
-                //     SizedBox(
-                //       width: double.infinity,
-                //       child: OutlinedButton.icon(
-                //           style: ElevatedButton.styleFrom(
-                //             elevation: 0,
-                //             shape: RoundedRectangleBorder(
-                //               borderRadius: BorderRadius.circular(5.0),
-                //               side: BorderSide(color: bgBlack, width: 5.0),
-                //             ),
-                //             foregroundColor: bgBlack,
-                //             backgroundColor: bgWhite,
-                //             padding: const EdgeInsets.symmetric(
-                //                 vertical: sButtonHeight),
-                //           ),
-                //           onPressed: () {
-                //             controller.loginWithGoogle();
-                //           },
-                //           icon: Image.asset(
-                //             iLoginGG,
-                //             width: 20.0,
-                //           ),
-                //           label: Text(
-                //             tButtonSigninGG,
-                //             style: textSmallQuicksan,
-                //           )),
-                //     )
-                //   ],
-                // ),
                 const SizedBox(
                   height: 10,
+                ),
+
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          side: BorderSide(color: bgBlack, width: 5.0),
+                        ),
+                        foregroundColor: bgBlack,
+                        backgroundColor: bgWhite,
+                        padding:
+                            const EdgeInsets.symmetric(vertical: sButtonHeight),
+                      ),
+                      icon: const Icon(Icons.phone_android_sharp),
+                      onPressed: () {},
+                      label: Text(
+                        "Sign up With Phone Number",
+                        style: textSmallQuicksan,
+                      )),
                 ),
                 TextButton(
                     onPressed: () {
@@ -88,7 +73,10 @@ class _ScreenSignupState extends State<ScreenSignup> {
                           TextSpan(
                               text: tButtonLogin.toUpperCase(),
                               style: textSmallQuicksanLink)
-                        ])))
+                        ]))),
+                const SizedBox(
+                  height: 10,
+                ),
               ],
             ),
           ),

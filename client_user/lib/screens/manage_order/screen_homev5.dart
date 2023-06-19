@@ -7,6 +7,8 @@ import 'package:client_user/controller/manage_orderv3controller.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/modal/tables.dart';
+import 'package:client_user/modal/users.dart';
+import 'package:client_user/repository/auth_repository/auth_repository.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_db.dart';
 import 'package:client_user/screens/manage_order/components/cart_order.dart';
 import 'package:client_user/screens/manage_order/components/modal_bottom_payment.dart';
@@ -35,6 +37,7 @@ class ExampleScreen extends StatefulWidget {
 
 class _ExampleScreenState extends State<ExampleScreen> {
   final OrderV2sController orderController = Get.put(OrderV2sController());
+  final controller = Get.put(AuthenticationRepository());
   var userId = "";
 
   @override
@@ -46,6 +49,7 @@ class _ExampleScreenState extends State<ExampleScreen> {
     }
 
     orderController.fetchOrderDataFromFirestore(userId, widget.table.Id!);
+    controller.bindingUser(userId);
 
     return Scaffold(
       appBar: AppBar(
@@ -65,8 +69,23 @@ class _ExampleScreenState extends State<ExampleScreen> {
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 onPressed: () {
-                  exportInvoiceToPDF(orderController.orderDetailList,
-                      widget.table, orderController.order!);
+                  orderController.deleteOrder(userId, orderController.order!);
+                },
+                icon: const Icon(Icons.delete),
+                color: Colors.black,
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(right: 5, top: 7),
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
+              child: IconButton(
+                onPressed: () {
+                  exportInvoiceToPDF(
+                      orderController.orderDetailList,
+                      widget.table,
+                      orderController.order!,
+                      controller.users.value.user!);
                 },
                 icon: const Icon(Icons.receipt_long_rounded),
                 color: Colors.black,
@@ -212,8 +231,8 @@ class _ExampleScreenState extends State<ExampleScreen> {
     );
   }
 
-  Future<void> exportInvoiceToPDF(
-      List<OrderDetail> orderDetails, Tables tables, Orders orders) async {
+  Future<void> exportInvoiceToPDF(List<OrderDetail> orderDetails, Tables tables,
+      Orders orders, Users user) async {
     final robotoRegular =
         await rootBundle.load('assets/fonts/Roboto-Regular.ttf');
     final ttfFont = pw.Font.ttf(robotoRegular);
@@ -296,7 +315,12 @@ class _ExampleScreenState extends State<ExampleScreen> {
                       pw.Text(
                           "Time Print: ${DateFormat.Hm().format(DateTime.now())}")
                     ]),
-                pw.Text("Table: ${tables.Name}"),
+                pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Text("Restaurants: ${user.Name}"),
+                      pw.Text("Table: ${tables.Name}"),
+                    ]),
                 pw.SizedBox(height: 40),
                 table,
                 pw.SizedBox(height: 40),
@@ -310,6 +334,14 @@ class _ExampleScreenState extends State<ExampleScreen> {
                       style: pw.TextStyle(
                           font: ttfFont,
                           fontSize: 24,
+                          fontWeight: pw.FontWeight
+                              .bold)), // Thay thế bằng nội dung hóa đơn thực tế
+                ),
+                pw.Center(
+                  child: pw.Text('Địa chỉ: ${user.Address}',
+                      style: pw.TextStyle(
+                          font: ttfFont,
+                          fontSize: 14,
                           fontWeight: pw.FontWeight
                               .bold)), // Thay thế bằng nội dung hóa đơn thực tế
                 ),

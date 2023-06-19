@@ -2,14 +2,12 @@
 
 import 'dart:io';
 
-import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/controller/productimage_controller.dart';
+import 'package:client_user/material/bilions_ui.dart';
 import 'package:client_user/modal/product_image.dart';
-import 'package:client_user/screens/manage_product/components/cart_item_productimage.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +39,16 @@ class _TestMultiPickerState extends State<TestMultiPicker> {
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future pickImageFromCamera() async {
+    final pickedImageCamera =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedImageCamera != null) {
+      setState(() {
+        _imageList.add(pickedImageCamera);
+      });
     }
   }
 
@@ -158,6 +166,30 @@ class _TestMultiPickerState extends State<TestMultiPicker> {
                       backgroundColor: padua,
                       padding: const EdgeInsets.symmetric(vertical: 15)),
                   onPressed: () {
+                    // pickImageFromCamera();
+                    openUploader(
+                      context,
+                      variant: 'primary',
+                      onPicked: (FileInfo file) {},
+                    );
+                  },
+                  child: Text(
+                    'Pick Images From Camera',
+                    style: textNormalQuicksanBold,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      shape: const StadiumBorder(),
+                      foregroundColor: bgBlack,
+                      backgroundColor: padua,
+                      padding: const EdgeInsets.symmetric(vertical: 15)),
+                  onPressed: () {
                     uploadImages(_imageList);
                   },
                   child: Text(
@@ -173,27 +205,6 @@ class _TestMultiPickerState extends State<TestMultiPicker> {
     );
   }
 }
-
-// Future<void> uploadImages(List<XFile> imagesList) async {
-//   final sellerController = Get.put(ProductImageController());
-//   List<File> fileList = [];
-//   List<ProductImage> productImage = [];
-//   for (XFile image in imagesList) {
-//     fileList.add(File(image.path));
-//   }
-//   for (File image in fileList) {
-//     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-//     String storagePath = 'images_product/$fileName.jpg';
-//     await FirebaseStorage.instance.ref(storagePath).putFile(image);
-
-//     String imageUrl =
-//         await FirebaseStorage.instance.ref(storagePath).getDownloadURL();
-
-//     final productItem = ProductImage(image: imageUrl, uploadAt: DateTime.now());
-//     productImage.add(productItem);
-//   }
-//   sellerController.addListProductImage(productImage);
-// }
 
 Future<void> uploadImages(List<XFile> imagesList) async {
   final sellerController = Get.put(ProductImageController());

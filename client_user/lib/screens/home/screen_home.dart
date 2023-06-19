@@ -331,7 +331,7 @@ class _ScreenHomeState extends State<ScreenHome> {
                                                   padding:
                                                       const EdgeInsets.all(10),
                                                   child: Text(
-                                                    " ${tableController.users[index].table!.Name!} ${tableController.users[index].table!.Status!}",
+                                                    " ${tableController.users[index].table!.Name!}",
                                                     style: textXLQuicksanBold,
                                                     overflow:
                                                         TextOverflow.visible,

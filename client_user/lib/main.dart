@@ -60,7 +60,6 @@ void main() async {
 
   final fcmToken = await FirebaseMessaging.instance.getToken();
   print("Token: $fcmToken ==========================");
-
   runApp(const MyApp());
 }
 

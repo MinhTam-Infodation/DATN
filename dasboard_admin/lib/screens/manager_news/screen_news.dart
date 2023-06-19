@@ -138,10 +138,10 @@ class _ScreenNewsState extends State<ScreenNews> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      "From: ${user.usersClient.value.user!.Name!}",
-                                      style: textNormalQuicksanBold,
-                                    ),
+                                    Obx(() => Text(
+                                          "From: ${user.usersClient.value.user!.Name!}",
+                                          style: textNormalQuicksanBold,
+                                        )),
                                   ],
                                 ),
                                 Row(

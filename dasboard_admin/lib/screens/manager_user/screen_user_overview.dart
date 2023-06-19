@@ -1,8 +1,6 @@
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
-import 'package:dasboard_admin/widgets/components/button_bottom_custom.dart';
 import 'package:dasboard_admin/widgets/components/cart_item_user.dart';
-import 'package:dasboard_admin/widgets/components/modal_bottom.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -58,18 +56,6 @@ class _UserOverviewScreenState extends State<UserOverviewScreen> {
           centerTitle: true,
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: [
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              decoration:
-                  BoxDecoration(borderRadius: BorderRadius.circular(10)),
-              child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.filter_alt),
-                color: Colors.black,
-              ),
-            ),
-          ],
         ),
         body: SingleChildScrollView(
           child: Padding(

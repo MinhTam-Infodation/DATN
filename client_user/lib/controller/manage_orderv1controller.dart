@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, unnecessary_brace_in_string_interps
+
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/order_detail.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

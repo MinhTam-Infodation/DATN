@@ -1,14 +1,20 @@
 // ignore: must_be_immutable
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dasboard_admin/controllers/total_controller.dart';
 import 'package:dasboard_admin/modals/users_modal.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'dart:io';
+
+import 'package:mustache_template/mustache_template.dart';
 
 // ignore: must_be_immutable
 class CustomModalBottomUser extends StatefulWidget {
@@ -158,45 +164,61 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                           const SizedBox(
                             height: 20,
                           ),
-                          Container(
-                              width: 130,
-                              height: 130,
-                              padding: const EdgeInsets.all(
-                                  2), // thêm khoảng cách giữa viền và CircleAvatar
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                              ),
-                              child: ClipOval(
-                                child: Container(
-                                  color: Colors.greenAccent,
-                                ),
-                              ))
+                          widget.user.Avatar!.isNotEmpty
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                        width: 2, color: Colors.black),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(50),
+                                    child: CachedNetworkImage(
+                                      imageUrl: widget.user.Avatar!,
+                                      placeholder: (context, url) =>
+                                          const CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          const Icon(Icons.error),
+                                    ),
+                                  ),
+                                )
+                              : Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.greenAccent.withOpacity(0.4),
+                                  ),
+                                  width: 40,
+                                  height: 40,
+                                )
                         ],
                       )
                     else
-                      Container(
-                          width: 130,
-                          height: 130,
-                          padding: const EdgeInsets.all(
-                              2), // thêm khoảng cách giữa viền và CircleAvatar
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.grey,
-                              width: 2.0,
+                      widget.user.Avatar!.isNotEmpty
+                          ? Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(width: 2, color: Colors.black),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50),
+                                child: CachedNetworkImage(
+                                  imageUrl: widget.user.Avatar!,
+                                  placeholder: (context, url) =>
+                                      const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                      const Icon(Icons.error),
+                                ),
+                              ),
+                            )
+                          : Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.greenAccent.withOpacity(0.4),
+                              ),
+                              width: 40,
+                              height: 40,
                             ),
-                          ),
-                          child: ClipOval(
-                            child: Container(
-                              color: Colors.greenAccent,
-                            ),
-                          )),
                   ],
                 )
               else
@@ -221,9 +243,33 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                                   File(_xImage!.path),
                                   fit: BoxFit.cover,
                                 )
-                              : Container(
-                                  color: Colors.greenAccent,
-                                )),
+                              : widget.user.Avatar!.isNotEmpty
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            width: 2, color: Colors.black),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(50),
+                                        child: CachedNetworkImage(
+                                          imageUrl: widget.user.Avatar!,
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              const Icon(Icons.error),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color:
+                                            Colors.greenAccent.withOpacity(0.4),
+                                      ),
+                                      width: 40,
+                                      height: 40,
+                                    )),
                     ),
                     Positioned(
                         left: 105,
@@ -423,6 +469,7 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
                         padding: const EdgeInsets.symmetric(vertical: 20)),
                     onPressed: () {
                       cu.updateUserStatus(widget.user.Id!, false);
+                      sendEmailFobident(widget.user.Email!, widget.user.Name);
                       Navigator.pop(context);
                     },
                     child: Text(
@@ -474,6 +521,41 @@ class _CustomModalBottomUserState extends State<CustomModalBottomUser> {
       });
     } else {
       cu.updateUser(widget.user.Id!, user);
+    }
+  }
+
+  String renderTemplate(String template, Map<String, dynamic> variables) {
+    final templateRenderer = Template(template);
+    return templateRenderer.renderString(variables);
+  }
+
+  Future sendEmailFobident(String userEmail, usersendname) async {
+    String username = "tam.hm.61cntt@ntu.edu.vn";
+    String password = "hoangminhtam123pro";
+
+    final templateContent =
+        await rootBundle.loadString('assets/temp/mail_fobident.html');
+
+    final variables = {'username': usersendname};
+
+    final emailContent = renderTemplate(templateContent, variables);
+
+    final stmpServer = gmail(username, password);
+
+    final message = Message()
+      ..from = Address(username, 'SYSTEM')
+      ..recipients.add(userEmail)
+      ..subject = 'Lock Account'
+      ..html = emailContent;
+
+    try {
+      final sendReport = await send(message, stmpServer);
+      print('Message sent: $sendReport');
+    } on MailerException catch (e) {
+      print('Message not sent. $e');
+      for (var p in e.problems) {
+        print('Problem: ${p.code}: ${p.msg}');
+      }
     }
   }
 }

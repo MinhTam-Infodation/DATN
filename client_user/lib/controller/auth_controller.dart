@@ -189,7 +189,7 @@ class AuthController extends GetxController {
   }
 
   Future sendEmailActive(String subject, String obj, String mess,
-      String userEmail, username, createAt) async {
+      String userEmail, usernames, createAt) async {
     print("EMAIL");
     String username = "tam.hm.61cntt@ntu.edu.vn";
     String password = "hoangminhtam123pro";
@@ -198,7 +198,7 @@ class AuthController extends GetxController {
         await rootBundle.loadString('assets/mail_active.html');
 
     final variables = {
-      'name': username, // Ví dụ: Biến tùy chỉnh 'username'
+      'name': usernames, // Ví dụ: Biến tùy chỉnh 'username'
       'createAt': createAt
     };
 

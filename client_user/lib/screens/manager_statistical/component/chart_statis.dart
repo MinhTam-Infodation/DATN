@@ -1,8 +1,6 @@
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:client_user/controller/history_order_controller.dart';
-import 'package:client_user/modal/custom_modal/chart_data.dart';
 import 'package:client_user/screens/manager_statistical/component/bar_chart.dart';
-import 'package:client_user/screens/manager_statistical/component/bar_chart_today.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:d_chart/d_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';

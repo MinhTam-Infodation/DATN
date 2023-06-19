@@ -63,6 +63,8 @@ dependencies:
   salomon_bottom_bar: ^3.3.2
   grouped_list: ^5.1.2
   dropdown_input: ^0.0.1
+  mailer: ^6.0.1
+  mustache_template: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +92,8 @@ flutter:
     - assets/images/
     - assets/fonts/
     - assets/icons/
+    - assets/temp/mail_active.html
+    - assets/temp/mail_fobident.html
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

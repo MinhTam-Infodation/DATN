@@ -8,6 +8,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart';
 
 class AuthController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -141,6 +142,11 @@ class AuthController extends GetxController {
   void logout() async {
     await _auth.signOut();
     user.value = null;
+    Get.to(() => const LoginScreen());
+    Get.snackbar('Success', "Logout Successful",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.greenAccent.withOpacity(0.1),
+        colorText: Colors.black);
   }
 }
 

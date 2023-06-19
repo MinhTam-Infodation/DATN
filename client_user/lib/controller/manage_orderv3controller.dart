@@ -4,6 +4,8 @@ import 'dart:async';
 
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/order_detail.dart';
+import 'package:client_user/screens/home/screen_home.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -127,6 +129,11 @@ class OrderV2sController extends GetxController {
     }
 
     recalculateOrderTotal(userId, orderId);
+
+    Get.snackbar('Success', "Add Products Orders Success",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.greenAccent.withOpacity(0.1),
+        colorText: Colors.black);
   }
 
   void updateOrderDetail(
@@ -162,5 +169,22 @@ class OrderV2sController extends GetxController {
 
     orderDetailsRef.delete();
     recalculateOrderTotal(idUser, idOrder); // Tín
+  }
+
+  void deleteOrder(String idUser, Orders order) {
+    OrdersSnapshot.deleteOrder(order, idUser)
+        .then((_) => {
+              Get.snackbar('Success', "Delete Order Success",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.greenAccent.withOpacity(0.1),
+                  colorText: Colors.black),
+            })
+        .catchError((err) => {
+              Get.snackbar('Error', err.toString(),
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.greenAccent.withOpacity(0.1),
+                  colorText: Colors.black)
+            });
+    Get.to(() => const ScreenHome());
   }
 }

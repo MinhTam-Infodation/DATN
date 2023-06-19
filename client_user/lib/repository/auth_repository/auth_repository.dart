@@ -5,6 +5,7 @@ import 'package:client_user/modal/users.dart';
 import 'package:client_user/repository/exceptions/signup_email_password_failure.dart';
 import 'package:client_user/screens/continue_confim_info/screen_continue_info.dart';
 import 'package:client_user/screens/fobiden/screen_fobident.dart';
+import 'package:client_user/screens/forget_password/forget_password_otp/screen_otp%20phone.dart';
 import 'package:client_user/screens/home/screen_home.dart';
 import 'package:client_user/screens/login/screen_login.dart';
 import 'package:client_user/screens/welcome/screen_welcome.dart';
@@ -479,8 +480,16 @@ class AuthenticationRepository extends GetxController {
             Get.snackbar("Error", "Something went wrong. Try again");
           }
         },
-        codeSent: (verificationId, forceResendingToken) {
+        codeSent: (verificationId, forceResendingToken) async {
           this.verificationId.value = verificationId;
+          String smsCode = '';
+          PhoneAuthCredential credential = PhoneAuthProvider.credential(
+              verificationId: verificationId, smsCode: smsCode);
+          Get.to(() => ScreenOTPPhone(
+                verificationId: verificationId,
+                phone: phoneNo,
+              ));
+          await _auth.signInWithCredential(credential);
         },
         codeAutoRetrievalTimeout: (verificationId) {
           this.verificationId.value = verificationId;

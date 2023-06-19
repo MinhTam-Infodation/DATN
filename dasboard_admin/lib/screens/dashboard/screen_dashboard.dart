@@ -9,6 +9,7 @@ import 'package:dasboard_admin/screens/manager_news/screen_news.dart';
 import 'package:dasboard_admin/screens/manager_ticket/screen_ticket_overview.dart';
 import 'package:dasboard_admin/screens/manager_user/manager_walting/screen_user_wailting.dart';
 import 'package:dasboard_admin/screens/manager_user/screen_user_overview.dart';
+import 'package:dasboard_admin/screens/profile/screen_profile.dart';
 import 'package:dasboard_admin/ulti/styles/main_styles.dart';
 import 'package:dasboard_admin/widgets/components/card_custom.dart';
 import 'package:dasboard_admin/widgets/components/list_tile_custom.dart';
@@ -30,6 +31,7 @@ class ScreenDashboard extends StatefulWidget {
 class _ScreenDashboardState extends State<ScreenDashboard> {
   late double width = 7;
   int touchedIndex = -1;
+  int touchedbarIndex = -1;
   late List<BarChartGroupData> rawBarGroups;
   late List<BarChartGroupData> showingBarGroups;
   late int showingTooltip = -1;
@@ -70,6 +72,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
     wail.countMyDocuments();
     wail.countMyDocumentsWithStatusFalse();
     wail.countMyDocumentsWithStatusTrue();
+    cu.updateTotalCounts();
 
     Size size = MediaQuery.of(context).size;
     return SafeArea(
@@ -92,20 +95,12 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                     child: Column(
                       children: [
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Text(
                               "Hello ${FirebaseAuth.instance.currentUser?.email}",
                               style: headerUser,
                             ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: SvgPicture.asset(
-                                'assets/icons/notifications.svg',
-                                // ignore: deprecated_member_use
-                                color: Colors.black,
-                              ),
-                            )
                           ],
                         ),
                         const SizedBox(
@@ -221,7 +216,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                             mLeft: 0,
                             mRight: 0,
                             width: size.width - 40,
-                            height: 235,
+                            height: 255,
                             child: AspectRatio(
                               aspectRatio: 1.3,
                               child: Column(
@@ -250,8 +245,8 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                             Colors.blueAccent.withOpacity(0.3),
                                         text: 'Walting',
                                         isSquare: false,
-                                        size: touchedIndex == 1 ? 18 : 16,
-                                        textColor: touchedIndex == 1
+                                        size: touchedbarIndex == 1 ? 18 : 16,
+                                        textColor: touchedbarIndex == 1
                                             ? Colors.blueAccent.withOpacity(0.3)
                                             : Colors.blueAccent
                                                 .withOpacity(0.3),
@@ -264,36 +259,40 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                                   Expanded(
                                     child: AspectRatio(
                                       aspectRatio: 1,
-                                      child: PieChart(
-                                        PieChartData(
-                                          pieTouchData: PieTouchData(
-                                            touchCallback: (FlTouchEvent event,
-                                                pieTouchResponse) {
-                                              setState(() {
-                                                if (!event
-                                                        .isInterestedForInteractions ||
-                                                    pieTouchResponse == null ||
-                                                    pieTouchResponse
-                                                            .touchedSection ==
-                                                        null) {
-                                                  touchedIndex = -1;
-                                                  return;
-                                                }
-                                                touchedIndex = pieTouchResponse
-                                                    .touchedSection!
-                                                    .touchedSectionIndex;
-                                              });
-                                            },
-                                          ),
-                                          startDegreeOffset: 180,
-                                          borderData: FlBorderData(
-                                            show: false,
-                                          ),
-                                          sectionsSpace: 1,
-                                          centerSpaceRadius: 0,
-                                          sections: showingSections(),
-                                        ),
-                                      ),
+                                      child: Obx(() => PieChart(
+                                            PieChartData(
+                                              pieTouchData: PieTouchData(
+                                                touchCallback:
+                                                    (FlTouchEvent event,
+                                                        pieTouchResponse) {
+                                                  setState(() {
+                                                    if (!event
+                                                            .isInterestedForInteractions ||
+                                                        pieTouchResponse ==
+                                                            null ||
+                                                        pieTouchResponse
+                                                                .touchedSection ==
+                                                            null) {
+                                                      touchedIndex = -1;
+                                                      touchedbarIndex = -1;
+                                                      return;
+                                                    }
+                                                    touchedIndex =
+                                                        pieTouchResponse
+                                                            .touchedSection!
+                                                            .touchedSectionIndex;
+                                                  });
+                                                },
+                                              ),
+                                              startDegreeOffset: 180,
+                                              borderData: FlBorderData(
+                                                show: false,
+                                              ),
+                                              sectionsSpace: 1,
+                                              centerSpaceRadius: 0,
+                                              sections: showingSections(),
+                                            ),
+                                          )),
                                     ),
                                   ),
                                 ],
@@ -447,49 +446,6 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
                         const SizedBox(
                           height: 20,
                         ),
-                        CardCustom(
-                            mLeft: 0,
-                            mRight: 0,
-                            width: size.width - 40,
-                            height: 250,
-                            child: Column(
-                              children: [
-                                AspectRatio(
-                                  aspectRatio: 1.70,
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      right: 18,
-                                      left: 12,
-                                      top: 24,
-                                      bottom: 12,
-                                    ),
-                                    child: LineChart(
-                                      showAvg ? avgData() : mainData(),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 60,
-                                  height: 34,
-                                  child: TextButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        showAvg = !showAvg;
-                                      });
-                                    },
-                                    child: Text(
-                                      'avg',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: showAvg
-                                            ? Colors.white.withOpacity(0.5)
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ))
                       ],
                     ),
                   ),
@@ -509,7 +465,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           setState(() => _currentIndex = i);
           print(_currentIndex);
           if (_currentIndex == 1) {
-            Get.to(() => const ScreenUserWalting());
+            Get.to(() => const ScreenProfile());
           }
         },
         items: [
@@ -517,18 +473,20 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           SalomonBottomBarItem(
             icon: const Icon(Icons.home),
             title: const Text("Home"),
-            selectedColor: Colors.purple,
+            selectedColor: Colors.greenAccent.withOpacity(0.5),
           ),
 
           /// Likes
           SalomonBottomBarItem(
-            icon: const Icon(Icons.favorite_border),
-            title: const Text("Likes"),
-            selectedColor: Colors.pink,
+            icon: const Icon(Icons.settings),
+            title: const Text("Setting"),
+            selectedColor: Colors.grey,
           ),
         ],
       );
   List<PieChartSectionData> showingSections() {
+    final cu = Get.put(TotalController());
+    cu.updateTotalCounts();
     return List.generate(
       2,
       (i) {
@@ -538,7 +496,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           case 0:
             return PieChartSectionData(
               color: Colors.greenAccent.withOpacity(0.3),
-              value: 25,
+              value: double.parse(cu.totalUserActive.value.toString()),
               title: '',
               radius: 80,
               titlePositionPercentageOffset: 0.55,
@@ -549,7 +507,7 @@ class _ScreenDashboardState extends State<ScreenDashboard> {
           case 1:
             return PieChartSectionData(
               color: Colors.blueAccent.withOpacity(0.3),
-              value: 25,
+              value: double.parse(cu.totalUserWalting.value.toString()),
               title: '',
               radius: 65,
               titlePositionPercentageOffset: 0.55,

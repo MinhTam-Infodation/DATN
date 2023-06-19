@@ -2,11 +2,9 @@
 import 'package:client_user/controller/history_order_controller.dart';
 import 'package:client_user/controller/home_controller.dart';
 import 'package:client_user/controller/manage_seller.dart';
-import 'package:client_user/screens/manager_statistical/component/bar_chart.dart';
 import 'package:client_user/screens/manager_statistical/component/chart_statis.dart';
 import 'package:client_user/screens/manager_statistical/component/overview_dashboard.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
-import 'package:d_chart/d_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

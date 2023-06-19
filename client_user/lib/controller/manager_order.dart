@@ -84,7 +84,7 @@ class ManagerOrderController extends GetxController {
   void deleteOrder(String idUser, Orders order) {
     OrdersSnapshot.deleteOrder(order, idUser)
         .then((_) => {
-              Get.snackbar('Success', "Update Order Success",
+              Get.snackbar('Success', "Delete Order Success",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: Colors.greenAccent.withOpacity(0.1),
                   colorText: Colors.black),

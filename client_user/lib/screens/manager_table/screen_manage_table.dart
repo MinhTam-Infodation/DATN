@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_context.dart';
 import 'package:client_user/constants/string_img.dart';
@@ -139,7 +141,6 @@ class _ScreenManageTableState extends State<ScreenManageTable> {
                                           tableController.users[index].table!,
                                       parentContext: context,
                                     ),
-                                    // ignore: invalid_use_of_protected_member
                                     itemCount:
                                         tableController.users.value.length,
                                     padding:

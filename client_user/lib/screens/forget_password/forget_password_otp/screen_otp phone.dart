@@ -1,19 +1,19 @@
+// ignore_for_file: file_names
+
 import 'package:client_user/constants/const_spacer.dart';
 import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/constants/string_context.dart';
-import 'package:client_user/controller/login_controller.dart';
-import 'package:client_user/controller/otp_controller.dart';
-import 'package:client_user/shared/input/input.dart';
+
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ScreenOTPPhone extends StatefulWidget {
-  const ScreenOTPPhone({super.key, required this.email});
-  final String email;
+  const ScreenOTPPhone(
+      {super.key, required this.verificationId, required this.phone});
+  final String verificationId;
+  final String phone;
 
   @override
   State<ScreenOTPPhone> createState() => _ScreenOTPPhoneState();
@@ -62,7 +62,7 @@ class _ScreenOTPPhoneState extends State<ScreenOTPPhone> {
                   height: 40,
                 ),
                 Text(
-                  "$tOptMessage ${widget.email}",
+                  widget.phone,
                   style: textNormalQuicksanBold,
                   textAlign: TextAlign.center,
                 ),
@@ -104,10 +104,7 @@ class _ScreenOTPPhoneState extends State<ScreenOTPPhone> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: () {
-                        LoginController.instance
-                            .loginUser(widget.email, txtPass.text.trim());
-                      },
+                      onPressed: () {},
                       // ignore: sort_child_properties_last
                       child: Text(
                         "LOGIN",

@@ -6,7 +6,6 @@ import 'package:client_user/controller/manage_product.dart';
 import 'package:client_user/screens/manage_product/components/cart_item_products.dart';
 import 'package:client_user/screens/manage_product/components/modal_bottom_add.dart';
 import 'package:client_user/screens/manage_product/components/modal_filter.dart';
-import 'package:client_user/screens/manage_product/components/test_multi_file.dart';
 import 'package:client_user/uilt/style/button_style/button_style.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';

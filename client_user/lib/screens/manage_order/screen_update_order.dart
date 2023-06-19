@@ -1,5 +1,6 @@
 import 'package:client_user/controller/manage_orderv3controller.dart';
 import 'package:client_user/controller/manage_product.dart';
+import 'package:client_user/material/bilions_ui.dart';
 import 'package:client_user/modal/order.dart';
 import 'package:client_user/modal/order_detail.dart';
 import 'package:client_user/modal/tables.dart';
@@ -7,6 +8,7 @@ import 'package:client_user/screens/manage_order/components/cart_item_db.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_order.dart';
 import 'package:client_user/screens/manage_order/components/cart_item_update.dart';
 import 'package:client_user/screens/manage_order/components/cart_update_product.dart';
+import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -92,85 +94,89 @@ class _ScreenUpdateOrderState extends State<ScreenUpdateOrder> {
                   BoxDecoration(borderRadius: BorderRadius.circular(10)),
               child: IconButton(
                 onPressed: () {
-                  Get.dialog(
-                    AlertDialog(
-                      title: Text(
-                        'Add Product',
-                        style: textAppKanit,
-                      ),
-                      content: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 2,
-                              ),
-                            ),
-                            padding: const EdgeInsets.only(
-                                top: 2, bottom: 2, right: 10, left: 10),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.search),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: TextField(
-                                    controller: _searchController,
-                                    onChanged: _onSearchTextChanged,
-                                    decoration: const InputDecoration(
-                                        hintText: 'Search...',
-                                        border: InputBorder.none),
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: _isClearVisible,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.clear),
-                                    onPressed: _onClearPressed,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            width: 400,
-                            height: 400,
-                            child: Obx(
-                              () {
-                                final productList = productController.product;
-                                return SingleChildScrollView(
-                                  child: SizedBox(
-                                    height: 400, // Đặt chiều cao cho SizedBox
-                                    child: ListView.separated(
-                                      physics:
-                                          const AlwaysScrollableScrollPhysics(),
-                                      itemBuilder: (context, index) {
-                                        final product =
-                                            productList[index].products;
-                                        return CartUpdateProduct(
-                                          product: product!,
-                                          orders: widget.order,
-                                        );
-                                      },
-                                      itemCount: productList.length,
-                                      separatorBuilder: (context, index) =>
-                                          const SizedBox(height: 0),
+                  updateProduct(
+                    context,
+                    SingleChildScrollView(
+                      child: ConfirmUpdateDialog(
+                        'Add Products',
+                        variant: Variant.success,
+                        widget: Column(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.only(
+                                        top: 2, bottom: 2, right: 10, left: 10),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.search),
+                                        const SizedBox(width: 8),
+                                        Expanded(
+                                          child: TextField(
+                                            controller: _searchController,
+                                            onChanged: _onSearchTextChanged,
+                                            decoration: const InputDecoration(
+                                                hintText: 'Search...',
+                                                border: InputBorder.none),
+                                          ),
+                                        ),
+                                        Visibility(
+                                          visible: _isClearVisible,
+                                          child: IconButton(
+                                            icon: const Icon(Icons.clear),
+                                            onPressed: _onClearPressed,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
+                                  SizedBox(
+                                    height: 400,
+                                    child: Obx(
+                                      () {
+                                        final productList =
+                                            productController.product;
+                                        return SingleChildScrollView(
+                                          child: SizedBox(
+                                            height:
+                                                400, // Đặt chiều cao cho SizedBox
+                                            child: ListView.separated(
+                                              physics:
+                                                  const AlwaysScrollableScrollPhysics(),
+                                              itemBuilder: (context, index) {
+                                                final product =
+                                                    productList[index].products;
+                                                return CartUpdateProduct(
+                                                  product: product!,
+                                                  orders: widget.order,
+                                                );
+                                              },
+                                              itemCount: productList.length,
+                                              separatorBuilder:
+                                                  (context, index) =>
+                                                      const SizedBox(height: 0),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        confirmed: () {},
                       ),
-                      actions: [
-                        TextButton(
-                            child: const Text("Close"),
-                            onPressed: () =>
-                                Navigator.of(context).pop() // Đóng dialog,
-                            ),
-                      ],
                     ),
                   );
                 },
@@ -182,33 +188,29 @@ class _ScreenUpdateOrderState extends State<ScreenUpdateOrder> {
         ),
         body: Container(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            children: [
-              Obx(() {
-                if (orderController.orderDetailList.isNotEmpty) {
-                  return SizedBox(
-                    height: 650,
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: orderController.orderDetailList.length,
-                      itemBuilder: (context, index) {
-                        final orderDetail =
-                            orderController.orderDetailList[index];
-                        return CartItemUpdate(
-                          orderDetail: orderDetail,
-                          order: widget.order,
-                        );
-                      },
-                    ),
-                  );
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              })
-            ],
-          ),
+          child: Obx(() {
+            if (orderController.orderDetailList.isNotEmpty) {
+              return SizedBox(
+                height: 650,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: orderController.orderDetailList.length,
+                  itemBuilder: (context, index) {
+                    final orderDetail = orderController.orderDetailList[index];
+                    return CartItemUpdate(
+                      orderDetail: orderDetail,
+                      order: widget.order,
+                      length: orderController.orderDetailList.length,
+                    );
+                  },
+                ),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          }),
         ),
       ),
     );

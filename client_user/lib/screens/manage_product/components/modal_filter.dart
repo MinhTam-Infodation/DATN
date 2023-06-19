@@ -1,7 +1,6 @@
 // ignore_for_file: camel_case_types
 
 import 'package:client_user/constants/const_spacer.dart';
-import 'package:client_user/constants/string_button.dart';
 import 'package:client_user/uilt/style/color/color_main.dart';
 import 'package:client_user/uilt/style/text_style/text_style.dart';
 import 'package:flutter/material.dart';

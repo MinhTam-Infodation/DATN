@@ -70,6 +70,8 @@ class OrdersSnapshot {
         .collection('Orders')
         .doc(order.Id)
         .delete();
+
+    updateStatusTableActive(userId, order.TableId);
   }
 
   static Future<void> updateOrder(Orders order, String userId) async {
@@ -120,6 +122,18 @@ class OrdersSnapshot {
     DocumentSnapshot tableSnapshot = tableQuerySnapshot.docs.first;
     DocumentReference tableDocRef = tablesRef.doc(tableSnapshot.id);
     tableDocRef.update({'Status': 'Walting'});
+  }
+
+  static Future<void> updateStatusTableActive(idUser, idTable) async {
+    CollectionReference tablesRef = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(idUser)
+        .collection('Tables');
+    QuerySnapshot tableQuerySnapshot =
+        await tablesRef.where('Id', isEqualTo: idTable).get();
+    DocumentSnapshot tableSnapshot = tableQuerySnapshot.docs.first;
+    DocumentReference tableDocRef = tablesRef.doc(tableSnapshot.id);
+    tableDocRef.update({'Status': 'Normal'});
   }
 
   static Stream<List<OrdersSnapshot>> getListOrder(String idUser) {
